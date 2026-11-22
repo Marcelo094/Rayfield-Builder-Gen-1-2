@@ -64,8 +64,11 @@ h1{font:600 22px/1.2 "Space Grotesk",Inter,sans-serif;margin:0;letter-spacing:-.
 
 /* ---- ventana Rayfield (aproximación) ---- */
 .rf{--rbg:#191a1d;--rel:#232428;--rstroke:#34363c;--rtext:#eef0f4;--rsub:#9a9fab;--racc:#3d8fe0;--rfield:#131417;
-  height:100%;max-height:100%;display:flex;flex-direction:column;background:var(--rbg);color:var(--rtext);border:1px solid var(--rstroke);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35);overflow:hidden;font-size:13px}
+  height:100%;max-height:100%;display:flex;flex-direction:column;background:var(--rbg);color:var(--rtext);border:1px solid var(--rstroke);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35);overflow:hidden;font-size:13px;transition:height .13s cubic-bezier(.2,.8,.2,1)}
 .rf.minimized{height:auto!important;flex:0 0 auto}
+.rf.minimizing .rf-body{opacity:0;transform:translateY(-4px) scaleY(.96)}
+.rf.restoring .rf-body{opacity:0;transform:translateY(-4px) scaleY(.96)}
+.rf.restore-prep,.rf.restore-prep .rf-body{transition:none!important}
 .rf[data-th="cobalt"]{--rbg:#0f1829;--rel:#162540;--rstroke:#243a5e;--rtext:#e9f0ff;--rsub:#8fa4c8;--racc:#3b82f6;--rfield:#0b1322}
 .rf[data-th="ember"]{--rbg:#1b1310;--rel:#2a1d17;--rstroke:#43302a;--rtext:#fbeee8;--rsub:#b69a8d;--racc:#f2733a;--rfield:#140d0b}
 .rf[data-th="amethyst"]{--rbg:#181228;--rel:#231a3b;--rstroke:#382a5c;--rtext:#f1eaff;--rsub:#a99bc9;--racc:#a574ff;--rfield:#110c1d}
@@ -78,7 +81,7 @@ h1{font:600 22px/1.2 "Space Grotesk",Inter,sans-serif;margin:0;letter-spacing:-.
 .rf-sub{font-size:11.5px;color:var(--rsub);margin-top:1px}
 .rf-wb{width:30px;height:30px;border-radius:10px;border:1px solid var(--rstroke);background:var(--rel);color:var(--rsub);line-height:1;font-size:15px;padding:0;box-shadow:0 2px 5px rgba(0,0,0,.18)}
 .rf-wb:hover{color:var(--racc);border-color:var(--racc);background:var(--rfield);box-shadow:0 4px 10px rgba(0,0,0,.2)}
-.rf-body{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden}
+.rf-body{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden;transform-origin:top;transition:opacity .1s ease,transform .13s cubic-bezier(.2,.8,.2,1)}
 .rf-tabs{display:flex;gap:6px;padding:3px 14px 10px;overflow-x:auto}
 .rf-tabs{flex:0 0 auto}
 .rf-tab{display:inline-flex;align-items:center;gap:7px;max-width:100%;overflow:hidden;border:1px solid transparent;background:transparent;color:var(--rsub);padding:6px 12px;border-radius:9px;white-space:nowrap;font-weight:600}
@@ -160,6 +163,8 @@ input[type=color].cp::-webkit-color-swatch{border:0;border-radius:6px}
 .mode.on{color:var(--accent-fg);border-color:transparent;background:transparent;box-shadow:none}
 .badge{display:inline-block;min-width:17px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--accent);color:var(--accent-fg);font-size:10.5px;line-height:17px;text-align:center}
 .con-body{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:14px;min-height:0}
+.con-body.console-tab-enter{transform-origin:top left;animation:lang-menu-in .2s ease-out backwards}
+.con-body.console-tab-enter button,.con-body.console-tab-enter input,.con-body.console-tab-enter select,.con-body.console-tab-enter textarea{animation:lang-item-in .22s ease-out backwards;animation-delay:var(--console-item-delay,0ms)}
 .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;font-weight:600}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--panel);color:var(--mut);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;box-shadow:0 1px 3px rgba(10,20,40,.06)}
@@ -545,7 +550,7 @@ tabN:'Tab {n}',tabs:'Tabs',addTab:'Tab',tabName:'Tab name',tabImage:'Roblox imag
 editing:'Editing',dup:'Duplicate',pickEdit:'Select an element in the preview or in the Create list to edit its properties.',emptyTab:'Empty tab. Add elements from the Create mode.',
 lines:'{n} lines · Rayfield Gen2',events:'Preview events',clear:'Clear',noEvents:'No events yet. Click, drag or type in the preview.',ready:'Preview ready. Events are simulated here; the Lua is not executed.',pressKey:'Press a key…',capture:'Capture',
 w_name:'Window name',w_sub:'Subtitle',w_theme:'Theme',w_orient:'Window layout',w_v:'Vertical',w_vd:'Tabs on top, narrow window',w_h:'Horizontal',w_hd:'Side tab rail, wide window',w_save:'Save configuration automatically',w_file:'Configuration file name',w_example:'Load example',w_reset:'Clear everything',w_note:'The preview approximates Rayfield Gen2. Real colors and sizes may differ in game.',
-up:'Move up',down:'Move down',rm:'Delete',minz:'Minimize',close:'Close',closeHint:'In game, × unloads the window',
+up:'Move up',down:'Move down',rm:'Delete',minz:'Minimize',restore:'Restore',close:'Close',closeHint:'In game, × unloads the window',
 n_intro:'Notifications appear when the script loads or when an element runs its callback.',n_add:'Add notification',n_none:'No notifications yet.',n_kind:'Type',n_notify:'Notify',n_toast:'Toast',n_title:'Title',n_content:'Content',n_subt:'Subtitle',n_dur:'Duration in seconds (0 = automatic)',n_pos:'Position',n_top:'Top',n_bottom:'Bottom',n_when:'When it appears',n_load:'When the script loads',n_on:'When “{x}” runs',n_test:'Test',n_defT:'Notice',n_defC:'Something happened.',
 projects:'Projects',newProject:'New project',importProject:'Import project',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectHome:'Project home',projectCount:'{n} projects',untitledProject:'Untitled project',
 exportTitle:'What do you want to export?',exportBody:'Choose the export format.',exportLua:'Export Lua',cancel:'Cancel'
@@ -563,7 +568,7 @@ tabN:'Pestaña {n}',tabs:'Pestañas',addTab:'Pestaña',tabName:'Nombre de la pes
 editing:'Editando',dup:'Duplicar',pickEdit:'Selecciona un elemento en la vista previa o en la lista del modo Crear para editar sus propiedades.',emptyTab:'Pestaña vacía. Añade elementos desde el modo Crear.',
 lines:'{n} líneas · Rayfield Gen2',events:'Eventos de la vista previa',clear:'Limpiar',noEvents:'Sin eventos todavía. Pulsa, mueve o escribe en la vista previa.',ready:'Vista previa lista. Los eventos se simulan aquí; el Lua no se ejecuta.',pressKey:'Pulsa una tecla…',capture:'Capturar',
 w_name:'Nombre de la ventana',w_sub:'Subtítulo',w_theme:'Tema',w_orient:'Disposición de la ventana',w_v:'Vertical',w_vd:'Pestañas arriba, ventana estrecha',w_h:'Horizontal',w_hd:'Barra lateral de pestañas, ventana ancha',w_save:'Guardar configuración automáticamente',w_file:'Nombre del archivo de configuración',w_example:'Cargar ejemplo',w_reset:'Vaciar todo',w_note:'La vista previa aproxima Rayfield Gen2. Los colores y medidas reales pueden variar en el juego.',
-up:'Subir',down:'Bajar',rm:'Borrar',minz:'Minimizar',close:'Cerrar',closeHint:'En el juego, × descarga la ventana',
+up:'Subir',down:'Bajar',rm:'Borrar',minz:'Minimizar',restore:'Restaurar',close:'Cerrar',closeHint:'En el juego, × descarga la ventana',
 n_intro:'Las notificaciones aparecen al cargar el script o cuando un elemento ejecuta su callback.',n_add:'Añadir notificación',n_none:'Todavía no hay notificaciones.',n_kind:'Tipo',n_notify:'Notify',n_toast:'Toast',n_title:'Título',n_content:'Contenido',n_subt:'Subtítulo',n_dur:'Duración en segundos (0 = automática)',n_pos:'Posición',n_top:'Arriba',n_bottom:'Abajo',n_when:'Cuándo aparece',n_load:'Al cargar el script',n_on:'Cuando se ejecuta «{x}»',n_test:'Probar',n_defT:'Aviso',n_defC:'Ha pasado algo.',
 projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar proyecto',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectHome:'Inicio de proyectos',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',
 exportTitle:'¿Qué quieres exportar?',exportBody:'Elige el formato de exportación.',exportLua:'Exportar Lua',cancel:'Cancelar'
@@ -1403,7 +1408,7 @@ var MODES=[['crear','m_create'],['editar','m_edit'],['notify','m_notify'],['vent
 
 /* ---------- state ---------- */
 var KEY='rfgen2-builder-v2',LKEY='rfgen2-lang',VKEY='rfgen2-version',PROJECTS_KEY='rfgen2-projects',ACTIVE_PROJECT_KEY='rfgen2-active-project',WELCOME_KEY='rfgen2-welcome-seen';
-var S,version='gen2',rt={},logs=[],mode='crear',unseen=0,minimized=false,capture=null,saveT=null,toastT=null,previewScale=1,previewZoomMin=.5,previewZoomMax=1.5,previewOffsetX=0,previewOffsetY=0,previewDrag=null,activeProjectId=null,homeOpen=false,versionSwitchTimer=null,versionConfirmReturn=null,uiAudioContext=null,uiAudioUnavailable=false;
+var S,version='gen2',rt={},logs=[],mode='crear',unseen=0,minimized=false,minimizeTimer=null,minimizeFrame=null,capture=null,saveT=null,toastT=null,previewScale=1,previewZoomMin=.5,previewZoomMax=1.5,previewOffsetX=0,previewOffsetY=0,previewDrag=null,activeProjectId=null,homeOpen=false,versionSwitchTimer=null,versionConfirmReturn=null,uiAudioContext=null,uiAudioUnavailable=false;
 function playUiSfx(kind){
   if(uiAudioUnavailable)return;
   var AudioContextType=window.AudioContext||window.webkitAudioContext;
@@ -1553,12 +1558,14 @@ function closeHome(animate){
   if(animate){void top.offsetWidth;void app.offsetWidth;top.classList.add('project-entering');app.classList.add('project-entering');}
 }
 function newProject(){
+  cancelPreviewMinimize();
   syncActiveProject();blank();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
   logs=[];rt={};mode='crear';minimized=false;closeHome();persist();
 }
 function openProject(id){
   syncActiveProject();var project=loadProjects().find(function(p){return p.id===id;});
   if(!project||!project.state)return;
+  cancelPreviewMinimize();
   activeProjectId=id;try{localStorage.setItem(ACTIVE_PROJECT_KEY,id);}catch(e){}
   S=JSON.parse(JSON.stringify(project.state));S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
   version=project.version==='classic'?'classic':'gen2';try{localStorage.setItem(VKEY,version);}catch(e){}
@@ -1786,6 +1793,7 @@ function importProjectFile(file){
   reader.onload=function(){
     try{
       var text=String(reader.result||''),isLua=/\.lua$/i.test(file.name);
+      cancelPreviewMinimize();
       syncActiveProject();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
       if(isLua){
         version=parseLuaProject(text,file.name);
@@ -2042,11 +2050,56 @@ B.section=function(it){return bare(it,'sec','',[it.props.name,h('span',{class:'l
 B.divider=function(it){var p=it.props,pad='padding:'+(Math.max(0,+p.spacing||0)/2)+'px 0';
   return bare(it,'',pad,p.line?[h('span',{class:'ln'}),p.text||null,p.text?h('span',{class:'ln'}):null]:[p.text||' ']);};
 
+function cancelPreviewMinimize(){
+  if(minimizeTimer!==null){clearTimeout(minimizeTimer);minimizeTimer=null;}
+  if(minimizeFrame!==null){cancelAnimationFrame(minimizeFrame);minimizeFrame=null;}
+  var host=$('#rf'),root=host&&$('.rf',host);
+  if(root){root.classList.remove('minimizing','restoring','restore-prep');root.style.removeProperty('height');}
+}
+function togglePreviewMinimized(){
+  if(minimizeTimer!==null||minimizeFrame!==null)return;
+  var host=$('#rf'),root=host&&$('.rf',host),top=root&&$('.rf-top',root);
+  if(minimized){
+    var collapsedHeight=root?root.offsetHeight:0;
+    var reducedRestore=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    minimized=false;
+    renderPreview();
+    root=$('.rf',host);
+    if(reducedRestore||!root){return;}
+    var expandedHeight=root.offsetHeight;
+    root.style.height=collapsedHeight+'px';
+    root.classList.add('restoring','restore-prep');
+    void root.offsetHeight;
+    minimizeFrame=requestAnimationFrame(function(){
+      minimizeFrame=null;
+      if(!host.contains(root))return;
+      root.classList.remove('restoring','restore-prep');
+      root.style.height=expandedHeight+'px';
+      minimizeTimer=setTimeout(function(){
+        minimizeTimer=null;
+        if(host.contains(root))root.style.removeProperty('height');
+      },130);
+    });
+    return;
+  }
+  if(!root||!top){minimized=true;renderPreview();return;}
+  var fullHeight=root.offsetHeight,headerHeight=top.offsetHeight;
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced||fullHeight<=headerHeight+1){minimized=true;renderPreview();return;}
+  root.style.height=fullHeight+'px';
+  void root.offsetHeight;
+  root.classList.add('minimizing');
+  root.style.height=headerHeight+'px';
+  minimizeTimer=setTimeout(function(){
+    minimizeTimer=null;
+    if(host.contains(root)){minimized=true;renderPreview();}
+  },130);
+}
 function buildWindow(){
   var w=S.win,tab=S.tabs[S.tab],side=w.orient==='horizontal';
   var top=h('div',{class:'rf-top'},
     h('div',{class:'rf-tt'},h('div',{class:'rf-title'},w.name||'Window'),w.subtitle?h('div',{class:'rf-sub'},w.subtitle):null),
-    h('button',{class:'rf-wb',type:'button','aria-label':tr('minz'),onclick:function(){minimized=!minimized;renderPreview();}},icon('minus')),
+    h('button',{class:'rf-wb',type:'button','aria-label':tr(minimized?'restore':'minz'),onclick:togglePreviewMinimized},icon(minimized?'plus':'minus')),
     h('button',{class:'rf-wb',type:'button','aria-label':tr('close'),onclick:function(){toast(tr('closeHint'));}},icon('x')));
   var tabs=h('div',{class:'rf-tabs'},S.tabs.map(function(t,i){
     var id=tabImageId(t.icon),children=[];
@@ -2141,19 +2194,26 @@ function updateModeIndicator(){
 function updateModes(){
   var m=$('#modes');
   var indicator=$('.mode-indicator',m),buttons=MODES.map(function(x){
-    var b=h('button',{class:'mode'+(mode===x[0]?' on':''),type:'button',role:'tab','aria-selected':String(mode===x[0]),onclick:function(){capture=null;mode=x[0];renderCon();}},tr(x[1]));
+    var b=h('button',{class:'mode'+(mode===x[0]?' on':''),type:'button',role:'tab','aria-selected':String(mode===x[0]),onclick:function(){capture=null;mode=x[0];renderCon(true);}},tr(x[1]));
     if(x[0]==='log'&&unseen&&mode!=='log')b.append(h('span',{class:'badge'},String(unseen)));
     return b;});
   if(!indicator)indicator=h('span',{class:'mode-indicator','aria-hidden':'true'});
   m.replaceChildren.apply(m,[indicator].concat(buttons));
   updateModeIndicator();
 }
-function renderCon(){
+function renderCon(animateContent){
   if(mode==='log')unseen=0;
   updateModes();
   var b=$('#conBody'),nodes=mode==='crear'?panelCrear():mode==='editar'?panelEditar():mode==='notify'?panelNotify():mode==='ventana'?panelVentana():mode==='lua'?panelLua():panelLog();
   var flat=[];(function walk(a){[].concat(a).forEach(function(x){if(Array.isArray(x))walk(x);else if(x)flat.push(x);});})(nodes);
   b.replaceChildren.apply(b,flat);
+  b.classList.remove('console-tab-enter');
+  if(animateContent){
+    Array.prototype.forEach.call(b.querySelectorAll('button,input,select,textarea'),function(control,i){
+      control.style.setProperty('--console-item-delay',Math.min(i*32,320)+'ms');
+    });
+    b.classList.add('console-tab-enter');
+  }
   if(mode==='log'){var lg=$('.logs',b);if(lg)lg.scrollTop=lg.scrollHeight;}
 }
 function listRow(it,i,arr){
@@ -2478,6 +2538,7 @@ function requestVersion(target,origin){
   applyVersion(target,false);
 }
 function applyVersion(next,reset){
+  cancelPreviewMinimize();
   versionConfirmReturn=null;hideOptions();
   version=next;
   try{localStorage.setItem(VKEY,version);}catch(e){}
