@@ -1372,7 +1372,7 @@ var THEMES=['default','cobalt','ember','amethyst','frost','rose'];
 var MODES=[['crear','m_create'],['editar','m_edit'],['notify','m_notify'],['ventana','m_window'],['lua','m_lua'],['log','m_log']];
 
 /* ---------- state ---------- */
-var KEY='rfgen2-builder-v2',LKEY='rfgen2-lang',VKEY='rfgen2-version',PROJECTS_KEY='rfgen2-projects',ACTIVE_PROJECT_KEY='rfgen2-active-project';
+var KEY='rfgen2-builder-v2',LKEY='rfgen2-lang',VKEY='rfgen2-version',PROJECTS_KEY='rfgen2-projects',ACTIVE_PROJECT_KEY='rfgen2-active-project',WELCOME_KEY='rfgen2-welcome-seen';
 var S,version='gen2',rt={},logs=[],mode='crear',unseen=0,minimized=false,capture=null,saveT=null,toastT=null,previewScale=1,previewZoomMin=.5,previewZoomMax=1.5,previewOffsetX=0,previewOffsetY=0,previewDrag=null,activeProjectId=null,homeOpen=false,versionSwitchTimer=null,versionConfirmReturn=null,uiAudioContext=null,uiAudioUnavailable=false;
 function playUiSfx(kind){
   if(uiAudioUnavailable)return;
@@ -1429,6 +1429,12 @@ function blank(){
   S={n:1,tab:0,sel:null,notifs:[],win:{name:'My Hub',subtitle:versionName(),theme:'default',orient:'vertical',save:true,file:'MyHub'},tabs:[{name:tr('d_tab'),items:[]}]};
   rt={};
 }
+function restoreState(state){
+  if(!state||!Array.isArray(state.tabs)||!state.tabs.length||!state.win)return false;
+  S=state;S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
+  if(!S.win.orient)S.win.orient=S.win.sidebar?'horizontal':'vertical';
+  return true;
+}
 function example(){
   blank();
   var rb=mk('button',{name:'Respawn',description:'Reset your character',cb:'game.Players.LocalPlayer.Character:BreakJoints()'});
@@ -1457,11 +1463,15 @@ function load(){
   try{var l=localStorage.getItem(LKEY);if(l&&D[l])lang=l;}catch(e){}
   try{var v=localStorage.getItem(VKEY);if(v==='gen2'||v==='classic')version=v;}catch(e){}
   try{var r=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(r&&Array.isArray(r.tabs)&&r.tabs.length&&r.win){
-      S=r;S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
-      if(!S.win.orient)S.win.orient=S.win.sidebar?'horizontal':'vertical';
-      return;}}catch(e){}
+    if(restoreState(r))return true;}catch(e){}
+  var projects=loadProjects(),project=projects.find(function(p){return p.id===activeProjectId;})||projects[0];
+  if(project&&restoreState(project.state)){
+    activeProjectId=project.id;version=project.version==='classic'?'classic':'gen2';
+    try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);localStorage.setItem(VKEY,version);}catch(e){}
+    return true;
+  }
   blank();
+  return false;
 }
 function projectName(){return (S&&S.win&&S.win.name)||tr('untitledProject');}
 function loadProjects(){
@@ -2238,7 +2248,7 @@ function renderAll(){
 function setLang(c){
   lang=c;closeMenu();try{localStorage.setItem(LKEY,c);}catch(e){}renderAll();
 }
-function dismissWelcome(){try{sessionStorage.setItem('rfgen2-welcome-seen','1');}catch(e){}}
+function dismissWelcome(){try{localStorage.setItem(WELCOME_KEY,'1');}catch(e){}}
 function closeModal(){var root=$('#modalRoot');if(root)root.replaceChildren();}
 function hideOptions(){
   if(versionSwitchTimer!==null){clearTimeout(versionSwitchTimer);versionSwitchTimer=null;}
@@ -2490,12 +2500,14 @@ $('#copyTop').addEventListener('click',copyLua);
 $('#optionsBtn').addEventListener('click',toggleOptions);
 
 /* ---------- boot ---------- */
-load();
+var restored=load(),welcomeSeen=false;
+try{welcomeSeen=localStorage.getItem(WELCOME_KEY)==='1';}catch(e){}
+if(restored)dismissWelcome();
 syncActiveProject();
 logs.push({t:new Date(),kind:'sy',msg:tr('ready')});
 renderAll();
 openHome();
-try{if(sessionStorage.getItem('rfgen2-welcome-seen')!=='1')showWelcome();}catch(e){showWelcome();}
+if(!restored&&!welcomeSeen)showWelcome();
 })();
 </script>
 </body>
