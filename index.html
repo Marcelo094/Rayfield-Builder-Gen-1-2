@@ -36,7 +36,11 @@ button:focus-visible{box-shadow:0 0 0 3px var(--accent-soft),0 5px 16px var(--ac
 @keyframes button-press{0%{transform:translateY(-1px) scale(1.015)}55%{transform:translateY(1px) scale(.93)}100%{transform:translateY(1px) scale(.96)}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1{font:600 22px/1.2 "Space Grotesk",Inter,sans-serif;margin:0;letter-spacing:-.01em}
-.top{width:100%;max-width:none;margin:0 auto 14px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px}
+.top{position:relative;z-index:32;width:100%;max-width:none;margin:0 auto 14px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px}
+.top.project-editor{grid-template-columns:auto minmax(0,1fr) auto}
+.top.project-editor>div:first-child{display:none}
+.top.project-editor .options-wrap{grid-column:1;justify-self:start}
+.top.project-editor .top-r{grid-column:3}
 .sub{margin:2px 0 0;color:var(--mut);font-size:13px}
 .btn{padding:7px 13px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:500;font-size:13px}
 .btn:hover{background:var(--panel2)}
@@ -203,11 +207,19 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .top-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-self:end}
 .app.hidden,.home.hidden{display:none}
 .home{width:100%;max-width:none;margin:0 auto;min-height:calc(100vh - 100px);border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:22px}
-.home-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.home-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:18px;animation:home-enter 420ms cubic-bezier(.2,.7,.25,1) both;direction:ltr}
 .home-head h2{margin:0;font:600 20px/1.2 "Space Grotesk",Inter,sans-serif}
 .home-actions{display:flex;gap:8px;flex-wrap:wrap}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .project-card{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.project-grid>*{animation:home-enter 420ms cubic-bezier(.2,.7,.25,1) both;animation-delay:var(--project-enter-delay,360ms)}
+@keyframes home-enter{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.top.project-entering{animation:project-header-enter 380ms cubic-bezier(.2,.7,.25,1) both}
+.app.project-entering .stage,.app.project-entering .con{animation:project-panel-enter 440ms cubic-bezier(.2,.7,.25,1) both}
+.app.project-entering .stage{animation-delay:80ms}
+.app.project-entering .con{animation-delay:160ms}
+@keyframes project-header-enter{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+@keyframes project-panel-enter{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
 .project-card h3{margin:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .project-meta{font-size:12px;color:var(--mut)}
 .project-card .acts{margin-top:auto}
@@ -316,8 +328,12 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
   :root{--preview-height:max(250px,min(52vh,390px))}
   body{padding-block:12px calc(20px + env(safe-area-inset-bottom,0px))}
   .top{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:flex-start;gap:10px;margin-bottom:10px}
+  .top.project-editor{grid-template-columns:minmax(0,1fr);align-items:flex-start}
+  .top.project-editor>div:first-child{display:none}
   .options-wrap{grid-column:2;grid-row:1}
+  .top.project-editor .options-wrap{grid-column:1;grid-row:1;justify-self:start}
   .top-r{grid-column:1/-1;grid-row:2;justify-self:start;width:100%}
+  .top.project-editor .top-r{grid-column:1/-1;grid-row:2;justify-self:start;width:100%}
   h1{font-size:20px}
   .top-r{justify-content:flex-start}
   .stage{padding:42px 10px 12px;border-radius:12px}
@@ -331,7 +347,10 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
   .top{grid-template-columns:minmax(0,1fr) auto;gap:8px}
   .top>div:first-child{grid-column:1;min-width:0}
   .options-wrap{grid-column:2;grid-row:1}
+  .top.project-editor{grid-template-columns:minmax(0,1fr) auto}
+  .top.project-editor .options-wrap{grid-column:1;grid-row:1}
   .top-r{grid-column:1/-1;grid-row:2;gap:6px}
+  .top.project-editor .top-r{grid-column:1/-1;grid-row:2}
   .top-r .lb{min-width:0;flex:1}
   .stage-tools{left:8px;right:8px;max-width:none;gap:3px}
   .chip.sm{padding-left:7px;padding-right:7px}
@@ -856,6 +875,31 @@ n_intro:'Le notifiche compaiono al caricamento dello script o quando un elemento
 
 /* ---------- missing dictionary entries ---------- */
 function addTranslations(code,values){for(var key in values)D[code][key]=values[key];}
+addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import project',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the export format.',exportLua:'EXPORT LUA',exportJson:'EXPORT JSON',cancel:'Cancel'});
+addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar proyecto',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige el formato de exportación.',exportLua:'EXPORTAR LUA',exportJson:'EXPORTAR JSON',cancel:'Cancelar'});
+addTranslations('ca',{projectHome:'Inici de projectes',projects:'Projectes',newProject:'Nou projecte',importProject:'Importa el projecte',exportProject:'Exporta el projecte',openProject:'Obre',editProject:'Edita',renameProject:'Canvia el nom',deleteProject:'Esborra',projectCount:'{n} projectes',untitledProject:'Projecte sense nom',exportTitle:'Què vols exportar?',exportBody:'Tria el format d’exportació.',exportLua:'EXPORTA LUA',exportJson:'EXPORTA JSON',cancel:'Cancel·la'});
+addTranslations('fr',{projectHome:'Accueil des projets',projects:'Projets',newProject:'Nouveau projet',importProject:'Importer le projet',exportProject:'Exporter le projet',openProject:'Ouvrir',editProject:'Modifier',renameProject:'Renommer',deleteProject:'Supprimer',projectCount:'{n} projets',untitledProject:'Projet sans nom',exportTitle:'Que voulez-vous exporter ?',exportBody:'Choisissez le format d’exportation.',exportLua:'EXPORTER LUA',exportJson:'EXPORTER JSON',cancel:'Annuler'});
+addTranslations('de',{projectHome:'Projektübersicht',projects:'Projekte',newProject:'Neues Projekt',importProject:'Projekt importieren',exportProject:'Projekt exportieren',openProject:'Öffnen',editProject:'Bearbeiten',renameProject:'Umbenennen',deleteProject:'Löschen',projectCount:'{n} Projekte',untitledProject:'Projekt ohne Namen',exportTitle:'Was möchtest du exportieren?',exportBody:'Wähle das Exportformat.',exportLua:'LUA EXPORTIEREN',exportJson:'JSON EXPORTIEREN',cancel:'Abbrechen'});
+addTranslations('pt',{projectHome:'Início dos projetos',projects:'Projetos',newProject:'Novo projeto',importProject:'Importar projeto',exportProject:'Exportar projeto',openProject:'Abrir',editProject:'Editar',renameProject:'Renomear',deleteProject:'Excluir',projectCount:'{n} projetos',untitledProject:'Projeto sem título',exportTitle:'O que deseja exportar?',exportBody:'Escolha o formato de exportação.',exportLua:'EXPORTAR LUA',exportJson:'EXPORTAR JSON',cancel:'Cancelar'});
+addTranslations('it',{projectHome:'Pagina dei progetti',projects:'Progetti',newProject:'Nuovo progetto',importProject:'Importa progetto',exportProject:'Esporta progetto',openProject:'Apri',editProject:'Modifica',renameProject:'Rinomina',deleteProject:'Elimina',projectCount:'{n} progetti',untitledProject:'Progetto senza titolo',exportTitle:'Cosa vuoi esportare?',exportBody:'Scegli il formato di esportazione.',exportLua:'ESPORTA LUA',exportJson:'ESPORTA JSON',cancel:'Annulla'});
+addTranslations('zh',{projectHome:'项目主页',projects:'项目',newProject:'新建项目',importProject:'导入项目',exportProject:'导出项目',openProject:'打开',editProject:'编辑',renameProject:'重命名',deleteProject:'删除',projectCount:'{n} 个项目',untitledProject:'未命名项目',exportTitle:'你想导出什么？',exportBody:'选择导出格式。',exportLua:'导出 LUA',exportJson:'导出 JSON',cancel:'取消'});
+addTranslations('ja',{projectHome:'プロジェクトホーム',projects:'プロジェクト',newProject:'新しいプロジェクト',importProject:'プロジェクトを読み込む',exportProject:'プロジェクトをエクスポート',openProject:'開く',editProject:'編集',renameProject:'名前変更',deleteProject:'削除',projectCount:'{n} 件のプロジェクト',untitledProject:'名前なしのプロジェクト',exportTitle:'何をエクスポートしますか？',exportBody:'エクスポート形式を選択してください。',exportLua:'LUAをエクスポート',exportJson:'JSONをエクスポート',cancel:'キャンセル'});
+addTranslations('ko',{projectHome:'프로젝트 홈',projects:'프로젝트',newProject:'새 프로젝트',importProject:'프로젝트 가져오기',exportProject:'프로젝트 내보내기',openProject:'열기',editProject:'편집',renameProject:'이름 바꾸기',deleteProject:'삭제',projectCount:'프로젝트 {n}개',untitledProject:'제목 없는 프로젝트',exportTitle:'무엇을 내보내시겠어요?',exportBody:'내보낼 형식을 선택하세요.',exportLua:'LUA 내보내기',exportJson:'JSON 내보내기',cancel:'취소'});
+addTranslations('ru',{projectHome:'Главная проектов',projects:'Проекты',newProject:'Новый проект',importProject:'Импортировать проект',exportProject:'Экспортировать проект',openProject:'Открыть',editProject:'Изменить',renameProject:'Переименовать',deleteProject:'Удалить',projectCount:'Проектов: {n}',untitledProject:'Проект без названия',exportTitle:'Что вы хотите экспортировать?',exportBody:'Выберите формат экспорта.',exportLua:'ЭКСПОРТ LUA',exportJson:'ЭКСПОРТ JSON',cancel:'Отмена'});
+addTranslations('ar',{projectHome:'الصفحة الرئيسية للمشاريع',projects:'المشاريع',newProject:'مشروع جديد',importProject:'استيراد مشروع',exportProject:'تصدير المشروع',openProject:'فتح',editProject:'تعديل',renameProject:'إعادة تسمية',deleteProject:'حذف',projectCount:'{n} مشاريع',untitledProject:'مشروع بدون عنوان',exportTitle:'ما الذي تريد تصديره؟',exportBody:'اختر صيغة التصدير.',exportLua:'تصدير LUA',exportJson:'تصدير JSON',cancel:'إلغاء'});
+addTranslations('hi',{projectHome:'परियोजना होम',projects:'परियोजनाएँ',newProject:'नई परियोजना',importProject:'परियोजना आयात करें',exportProject:'परियोजना निर्यात करें',openProject:'खोलें',editProject:'संपादित करें',renameProject:'नाम बदलें',deleteProject:'हटाएँ',projectCount:'{n} परियोजनाएँ',untitledProject:'बिना नाम की परियोजना',exportTitle:'आप क्या निर्यात करना चाहते हैं?',exportBody:'निर्यात का प्रारूप चुनें।',exportLua:'LUA निर्यात करें',exportJson:'JSON निर्यात करें',cancel:'रद्द करें'});
+addTranslations('bn',{projectHome:'প্রজেক্ট হোম',projects:'প্রজেক্ট',newProject:'নতুন প্রজেক্ট',importProject:'প্রজেক্ট আমদানি করুন',exportProject:'প্রজেক্ট রপ্তানি করুন',openProject:'খুলুন',editProject:'সম্পাদনা',renameProject:'নাম পরিবর্তন',deleteProject:'মুছুন',projectCount:'{n}টি প্রজেক্ট',untitledProject:'নামহীন প্রজেক্ট',exportTitle:'আপনি কী রপ্তানি করতে চান?',exportBody:'রপ্তানির ধরন বেছে নিন।',exportLua:'LUA রপ্তানি করুন',exportJson:'JSON রপ্তানি করুন',cancel:'বাতিল'});
+addTranslations('ur',{projectHome:'پروجیکٹس ہوم',projects:'پروجیکٹس',newProject:'نیا پروجیکٹ',importProject:'پروجیکٹ درآمد کریں',exportProject:'پروجیکٹ برآمد کریں',openProject:'کھولیں',editProject:'ترمیم',renameProject:'نام بدلیں',deleteProject:'حذف کریں',projectCount:'{n} پروجیکٹس',untitledProject:'بے نام پروجیکٹ',exportTitle:'آپ کیا برآمد کرنا چاہتے ہیں؟',exportBody:'برآمد کی شکل منتخب کریں۔',exportLua:'LUA برآمد کریں',exportJson:'JSON برآمد کریں',cancel:'منسوخ'});
+addTranslations('id',{projectHome:'Beranda proyek',projects:'Proyek',newProject:'Proyek baru',importProject:'Impor proyek',exportProject:'Ekspor proyek',openProject:'Buka',editProject:'Edit',renameProject:'Ganti nama',deleteProject:'Hapus',projectCount:'{n} proyek',untitledProject:'Proyek tanpa judul',exportTitle:'Apa yang ingin diekspor?',exportBody:'Pilih format ekspor.',exportLua:'EKSPOR LUA',exportJson:'EKSPOR JSON',cancel:'Batal'});
+addTranslations('tr',{projectHome:'Proje ana sayfası',projects:'Projeler',newProject:'Yeni proje',importProject:'Projeyi içe aktar',exportProject:'Projeyi dışa aktar',openProject:'Aç',editProject:'Düzenle',renameProject:'Yeniden adlandır',deleteProject:'Sil',projectCount:'{n} proje',untitledProject:'Adsız proje',exportTitle:'Neyi dışa aktarmak istiyorsunuz?',exportBody:'Dışa aktarma biçimini seçin.',exportLua:'LUA DIŞA AKTAR',exportJson:'JSON DIŞA AKTAR',cancel:'İptal'});
+addTranslations('vi',{projectHome:'Trang dự án',projects:'Dự án',newProject:'Dự án mới',importProject:'Nhập dự án',exportProject:'Xuất dự án',openProject:'Mở',editProject:'Chỉnh sửa',renameProject:'Đổi tên',deleteProject:'Xóa',projectCount:'{n} dự án',untitledProject:'Dự án chưa có tên',exportTitle:'Bạn muốn xuất gì?',exportBody:'Chọn định dạng xuất.',exportLua:'XUẤT LUA',exportJson:'XUẤT JSON',cancel:'Hủy'});
+addTranslations('te',{projectHome:'ప్రాజెక్ట్ హోమ్',projects:'ప్రాజెక్టులు',newProject:'కొత్త ప్రాజెక్ట్',importProject:'ప్రాజెక్ట్ దిగుమతి',exportProject:'ప్రాజెక్ట్ ఎగుమతి',openProject:'తెరువు',editProject:'సవరించు',renameProject:'పేరు మార్చు',deleteProject:'తొలగించు',projectCount:'{n} ప్రాజెక్టులు',untitledProject:'పేరు లేని ప్రాజెక్ట్',exportTitle:'ఏది ఎగుమతి చేయాలనుకుంటున్నారు?',exportBody:'ఎగుమతి ఫార్మాట్ను ఎంచుకోండి.',exportLua:'LUA ఎగుమతి',exportJson:'JSON ఎగుమతి',cancel:'రద్దు'});
+addTranslations('mr',{projectHome:'प्रकल्प मुख्यपृष्ठ',projects:'प्रकल्प',newProject:'नवीन प्रकल्प',importProject:'प्रकल्प आयात करा',exportProject:'प्रकल्प निर्यात करा',openProject:'उघडा',editProject:'संपादित करा',renameProject:'नाव बदला',deleteProject:'हटवा',projectCount:'{n} प्रकल्प',untitledProject:'निनावी प्रकल्प',exportTitle:'तुम्हाला काय निर्यात करायचे आहे?',exportBody:'निर्यात स्वरूप निवडा.',exportLua:'LUA निर्यात करा',exportJson:'JSON निर्यात करा',cancel:'रद्द करा'});
+addTranslations('ta',{projectHome:'திட்ட முகப்பு',projects:'திட்டங்கள்',newProject:'புதிய திட்டம்',importProject:'திட்டத்தை இறக்குமதி செய்',exportProject:'திட்டத்தை ஏற்றுமதி செய்',openProject:'திற',editProject:'திருத்து',renameProject:'பெயர் மாற்று',deleteProject:'நீக்கு',projectCount:'{n} திட்டங்கள்',untitledProject:'பெயரில்லாத திட்டம்',exportTitle:'எதை ஏற்றுமதி செய்ய விரும்புகிறீர்கள்?',exportBody:'ஏற்றுமதி வடிவத்தைத் தேர்ந்தெடுக்கவும்.',exportLua:'LUA ஏற்றுமதி',exportJson:'JSON ஏற்றுமதி',cancel:'ரத்துசெய்'});
+addTranslations('pa',{projectHome:'ਪ੍ਰੋਜੈਕਟ ਹੋਮ',projects:'ਪ੍ਰੋਜੈਕਟ',newProject:'ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ',importProject:'ਪ੍ਰੋਜੈਕਟ ਆਯਾਤ ਕਰੋ',exportProject:'ਪ੍ਰੋਜੈਕਟ ਨਿਰਯਾਤ ਕਰੋ',openProject:'ਖੋਲ੍ਹੋ',editProject:'ਸੋਧੋ',renameProject:'ਨਾਮ ਬਦਲੋ',deleteProject:'ਮਿਟਾਓ',projectCount:'{n} ਪ੍ਰੋਜੈਕਟ',untitledProject:'ਬਿਨਾਂ ਨਾਮ ਪ੍ਰੋਜੈਕਟ',exportTitle:'ਤੁਸੀਂ ਕੀ ਨਿਰਯਾਤ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?',exportBody:'ਨਿਰਯਾਤ ਫਾਰਮੈਟ ਚੁਣੋ।',exportLua:'LUA ਨਿਰਯਾਤ ਕਰੋ',exportJson:'JSON ਨਿਰਯਾਤ ਕਰੋ',cancel:'ਰੱਦ ਕਰੋ'});
+addTranslations('sw',{projectHome:'Nyumbani kwa miradi',projects:'Miradi',newProject:'Mradi mpya',importProject:'Ingiza mradi',exportProject:'Hamisha mradi',openProject:'Fungua',editProject:'Hariri',renameProject:'Badilisha jina',deleteProject:'Futa',projectCount:'Miradi {n}',untitledProject:'Mradi usio na jina',exportTitle:'Unataka kuhamisha nini?',exportBody:'Chagua umbizo la uhamishaji.',exportLua:'HAMISHA LUA',exportJson:'HAMISHA JSON',cancel:'Ghairi'});
+addTranslations('ha',{projectHome:'Shafin ayyuka',projects:'Ayyuka',newProject:'Sabon aiki',importProject:'Shigo da aiki',exportProject:'Fitar da aiki',openProject:'Buɗe',editProject:'Gyara',renameProject:'Sake suna',deleteProject:'Goge',projectCount:'Ayyuka {n}',untitledProject:'Aikin da ba suna',exportTitle:'Me kake son fitarwa?',exportBody:'Zaɓi tsarin fitarwa.',exportLua:'FITA LUA',exportJson:'FITA JSON',cancel:'Soke'});
+addTranslations('eu',{projectHome:'Proiektuen hasiera',projects:'Proiektuak',newProject:'Proiektu berria',importProject:'Proiektua inportatu',exportProject:'Proiektua esportatu',openProject:'Ireki',editProject:'Editatu',renameProject:'Izena aldatu',deleteProject:'Ezabatu',projectCount:'{n} proiektu',untitledProject:'Izenik gabeko proiektua',exportTitle:'Zer esportatu nahi duzu?',exportBody:'Hautatu esportazio-formatua.',exportLua:'ESPORTATU LUA',exportJson:'ESPORTATU JSON',cancel:'Utzi'});
 addTranslations('fr',{previewGrow:'Agrandir l’aperçu',previewShrink:'Réduire l’aperçu'});
 addTranslations('de',{previewGrow:'Vorschau vergrößern',previewShrink:'Vorschau verkleinern'});
 addTranslations('pt',{previewGrow:'Ampliar a pré-visualização',previewShrink:'Reduzir a pré-visualização'});
@@ -1442,9 +1486,9 @@ function renderHome(){
       h('button',{class:'btn primary',type:'button',onclick:newProject},tr('newProject')),
       h('button',{class:'btn',type:'button',onclick:function(){var input=$('#projectImport');if(input)input.click();}},tr('importProject')),
       h('button',{class:'btn',type:'button',onclick:showExportMenu},tr('exportProject'))));
-  var cards=projects.map(function(p){
+  var cards=projects.map(function(p,index){
     var date=p.updatedAt?new Date(p.updatedAt).toLocaleString(): '';
-    return h('article',{class:'project-card'},
+    return h('article',{class:'project-card',style:'--project-enter-delay:'+(360+index*70)+'ms'},
       h('h3',null,p.name||tr('untitledProject')),
       h('div',{class:'project-meta'},(p.version==='classic'?'Rayfield':'Rayfield Gen 2')+(date?' · '+date:'')),
       h('div',{class:'acts'},
@@ -1456,10 +1500,14 @@ function renderHome(){
   home.replaceChildren(head,h('div',{class:'project-grid'},cards));
 }
 function openHome(){
-  syncActiveProject();homeOpen=true;$('#homeView').classList.remove('hidden');$('.app').classList.add('hidden');renderHome();
+  syncActiveProject();homeOpen=true;$('#copyTop').hidden=true;$('header.top').classList.remove('project-editor');$('#homeView').classList.remove('hidden');$('.app').classList.add('hidden');window.scrollTo(0,0);renderHome();
 }
-function closeHome(){
-  homeOpen=false;$('#homeView').classList.add('hidden');$('.app').classList.remove('hidden');renderAll();
+function closeHome(animate){
+  homeOpen=false;$('#copyTop').hidden=false;$('#homeView').classList.add('hidden');$('.app').classList.remove('hidden');window.scrollTo(0,0);
+  var top=$('header.top'),app=$('.app');
+  top.classList.remove('project-entering');app.classList.remove('project-entering');
+  renderAll();
+  if(animate){void top.offsetWidth;void app.offsetWidth;top.classList.add('project-entering');app.classList.add('project-entering');}
 }
 function newProject(){
   syncActiveProject();blank();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
@@ -1471,7 +1519,7 @@ function openProject(id){
   activeProjectId=id;try{localStorage.setItem(ACTIVE_PROJECT_KEY,id);}catch(e){}
   S=JSON.parse(JSON.stringify(project.state));S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
   version=project.version==='classic'?'classic':'gen2';try{localStorage.setItem(VKEY,version);}catch(e){}
-  rt={};logs=[];mode='crear';minimized=false;closeHome();persist();
+  rt={};logs=[];mode='crear';minimized=false;closeHome(true);persist();
 }
 function renameProject(id){
   var projects=loadProjects(),project=projects.find(function(p){return p.id===id;});
@@ -1540,13 +1588,13 @@ function showExportMenu(){
     list.appendChild(h('label',{class:'export-project-option'},checkbox,h('span',null,project.name||tr('untitledProject'))));
   });
   if(!projects.length)list.appendChild(h('div',{class:'empty'},tr('untitledProject')));
-  var luaButton=modalButton('EXPORT LUA [0]',function(){exportSelected('lua',Object.keys(selected));},true);
-  var jsonButton=modalButton('EXPORT JSON [0]',function(){exportSelected('json',Object.keys(selected));},true);
+  var luaButton=modalButton(tr('exportLua')+' [0]',function(){exportSelected('lua',Object.keys(selected));},true);
+  var jsonButton=modalButton(tr('exportJson')+' [0]',function(){exportSelected('json',Object.keys(selected));},true);
   luaButton.disabled=true;jsonButton.disabled=true;
   function updateCount(){
     var count=Object.keys(selected).length;
-    luaButton.textContent='EXPORT LUA ['+count+']';
-    jsonButton.textContent='EXPORT JSON ['+count+']';
+    luaButton.textContent=tr('exportLua')+' ['+count+']';
+    jsonButton.textContent=tr('exportJson')+' ['+count+']';
     luaButton.disabled=count===0;jsonButton.disabled=count===0;
   }
   playUiSfx('popup');
@@ -2178,9 +2226,11 @@ function applyStatic(){
 }
 function renderAll(){
   var title='Rayfield Builder Gen 1/2!';
+  $('header.top').classList.toggle('project-editor',!homeOpen);
   document.title=title;$('#appTitle').textContent=title;
   document.documentElement.lang=lang;document.documentElement.dir=(lang==='ar'||lang==='ur')?'rtl':'ltr';
   applyStatic();renderLang();renderTools();renderPreview();renderCon();
+  if(homeOpen)renderHome();
 }
 function setLang(c){
   lang=c;closeMenu();try{localStorage.setItem(LKEY,c);}catch(e){}renderAll();
