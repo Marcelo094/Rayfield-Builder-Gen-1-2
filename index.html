@@ -218,7 +218,7 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .app.project-entering .stage,.app.project-entering .con{animation:project-panel-enter 440ms cubic-bezier(.2,.7,.25,1) both}
 .app.project-entering .stage{animation-delay:80ms}
 .app.project-entering .con{animation-delay:160ms}
-@keyframes project-header-enter{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+@keyframes project-header-enter{from{opacity:0}to{opacity:1}}
 @keyframes project-panel-enter{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
 .project-card h3{margin:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .project-meta{font-size:12px;color:var(--mut)}
@@ -334,6 +334,9 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
   .top.project-editor .options-wrap{grid-column:1;grid-row:1;justify-self:start}
   .top-r{grid-column:1/-1;grid-row:2;justify-self:start;width:100%}
   .top.project-editor .top-r{grid-column:1/-1;grid-row:2;justify-self:start;width:100%}
+  .options-pop{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));top:var(--options-top,calc(env(safe-area-inset-top,0px) + 56px));width:auto;max-height:calc(100vh - var(--options-top,56px) - 12px);max-height:calc(100dvh - var(--options-top,56px) - env(safe-area-inset-bottom,0px) - 12px);overflow-y:auto;overscroll-behavior:contain;transform:none;padding:clamp(14px,4vw,20px)}
+  .options-pop:not([hidden]){animation:options-pop-mobile-in .2s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes options-pop-mobile-in{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
   h1{font-size:20px}
   .top-r{justify-content:flex-start}
   .stage{padding:42px 10px 12px;border-radius:12px}
@@ -2246,6 +2249,16 @@ function openOptionsPanel(){
   renderOptionsMenu();
   var pop=$('#optionsPop'),btn=$('#optionsBtn');
   pop.hidden=false;btn.setAttribute('aria-expanded','true');
+  positionOptionsMenu();
+}
+function positionOptionsMenu(){
+  var pop=$('#optionsPop'),btn=$('#optionsBtn');
+  if(window.matchMedia('(max-width:600px)').matches){
+    var rect=btn.getBoundingClientRect();
+    pop.style.setProperty('--options-top',Math.max(8,rect.bottom+8)+'px');
+  }else{
+    pop.style.removeProperty('--options-top');
+  }
 }
 function cancelVersionConfirmation(){
   var origin=versionConfirmReturn;
@@ -2468,7 +2481,7 @@ document.addEventListener('click',function(e){
 window.addEventListener('pointermove',movePreview);
 window.addEventListener('pointerup',endPreviewDrag);
 window.addEventListener('pointercancel',endPreviewDrag);
-window.addEventListener('resize',renderTools);
+window.addEventListener('resize',function(){renderTools();if(!$('#optionsPop').hidden)positionOptionsMenu();});
 $('#homeBtn').addEventListener('click',openHome);
 $('#projectImport').addEventListener('change',function(e){importProjectFile(e.target.files&&e.target.files[0]);e.target.value='';});
 $('#langBtn').addEventListener('click',function(){
