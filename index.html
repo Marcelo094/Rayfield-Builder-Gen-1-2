@@ -1,8 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Rayfield Builder Gen 1/2!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap">
@@ -215,9 +211,10 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .lua .c{color:#6c7899}.lua .s{color:#9fd38a}.lua .k{color:#c792ea}.lua .n{color:#f2b36f}.lua .b{color:#7fb7ff}.lua .p{color:#e6c07b}
 .codewrap{display:flex;flex-direction:column;gap:10px;flex:1;min-height:0}
 .meta{color:var(--mut);font-size:12px}
+.security-note{border:1px solid rgba(245,176,65,.4);background:rgba(245,176,65,.1);color:var(--text);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5}
 .logs{background:var(--code-bg);border-radius:10px;padding:10px 12px;font:12px/1.65 "JetBrains Mono",ui-monospace,monospace;color:var(--code-fg);overflow:auto;flex:1;min-height:120px}
 .logs .t{color:#5f6a88;margin-right:8px}.logs .cb{color:#9fd38a}.logs .sy{color:#7fb7ff}.logs .kb2{color:#f2b36f}
-#toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--fg);color:var(--bg);padding:8px 15px;border-radius:9px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:calc(100vw - 32px)}
+#toast{position:fixed;z-index:120;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--fg);color:var(--bg);padding:8px 15px;border-radius:9px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:calc(100vw - 32px)}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ---- iconos Lucide ---- */
@@ -239,7 +236,7 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 /* ---- v3: idioma, orientación, notificaciones ---- */
 [hidden]{display:none!important}
 .top-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-self:end}
-.app.hidden,.home.hidden{display:none}
+.app.hidden,.home.hidden,#copyTop.hidden{display:none}
 .home{width:100%;max-width:none;margin:0 auto;min-height:calc(100vh - 100px);border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:22px}
 .home-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:18px;animation:home-enter 420ms cubic-bezier(.2,.7,.25,1) both;direction:ltr}
 .home-head h2{margin:0;font:600 20px/1.2 "Space Grotesk",Inter,sans-serif}
@@ -262,6 +259,7 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .export-project-option:hover{border-color:var(--accent);box-shadow:0 3px 10px rgba(0,0,0,.12)}
 .export-project-option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
 .export-project-option input{width:17px;height:17px;accent-color:var(--accent)}
+.rename-field{margin:2px 0 0}
 .options-wrap{position:relative;justify-self:center;z-index:31;display:flex;align-items:center;gap:6px}
 .options-wrap #optionsBtn{display:inline-flex;align-items:center;gap:8px}
 .options-pop{position:fixed;left:var(--options-left,12px);top:var(--options-top,12px);width:min(330px,calc(100vw - 32px));max-height:var(--options-max-height,calc(100vh - 24px));max-height:var(--options-max-height,calc(100dvh - 24px));overflow-y:auto;overscroll-behavior:contain;padding:20px;background:#282828;color:#f5f5f5;border:1px solid rgba(255,255,255,.1);border-radius:17px;box-shadow:0 18px 54px rgba(0,0,0,.42);transform-origin:top center}
@@ -406,8 +404,6 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}button:not(:disabled):hover,button:not(:disabled):active,.el:hover,.el:active,.bare:hover,.bare:active,.el.slider-row:hover,.el.slider-row:active{transform:none;filter:none}}
 </style>
-</head>
-<body>
 <header class="top">
   <div>
     <h1 id="appTitle">Rayfield Builder Gen 1/2!</h1>
@@ -430,10 +426,10 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
     <button id="copyTop" class="btn primary" type="button" data-i="copy"></button>
   </div>
 </header>
-<section id="homeView" class="home hidden" aria-label="Projects"></section>
-<input id="projectImport" type="file" accept=".json,.rayfield.json,.lua,text/x-lua,application/json" hidden>
+<section id="homeView" class="home hidden" aria-label="Projects" data-ia="projects"></section>
+<input id="projectImport" type="file" accept=".rb12pk,application/zip" hidden>
 <main class="app">
-  <section class="stage" aria-label="Preview">
+  <section class="stage" aria-label="Preview" data-ia="preview">
     <div class="stage-label" data-i="preview"></div>
     <div class="stage-tools" id="stageTools"></div>
     <div id="rf"></div>
@@ -539,7 +535,7 @@ function icon(n){
 /* ---------- dictionaries: en, es ---------- */
 D.en={
 sub:'Design the window on the left, copy the Lua from the console.',
-copy:'Copy Lua',copied:'Lua copied',copyFail:'Could not copy. Open the Lua mode and select the text.',
+copy:'Copy Lua',copied:'Lua copied',copyFail:'Could not copy. Open the Lua mode and select the text.',importRisk:'Safety check: omitted {n} callback block(s) with risky code patterns. This heuristic scan is not antivirus; never run code you do not trust.',
 preview:'Preview',lang:'Language',previewGrow:'Zoom preview in',previewShrink:'Zoom preview out',
 m_create:'Create',m_edit:'Edit',m_notify:'Notify',m_window:'Window',m_lua:'Lua',m_log:'Log',
 g_controls:'Controls',g_display:'Display',g_structure:'Structure',
@@ -557,7 +553,7 @@ exportTitle:'What do you want to export?',exportBody:'Choose the export format.'
 };
 D.es={
 sub:'Diseña la ventana a la izquierda y copia el Lua desde la consola.',
-copy:'Copiar Lua',copied:'Lua copiado',copyFail:'No se pudo copiar. Abre el modo Lua y selecciona el texto.',
+copy:'Copiar Lua',copied:'Lua copiado',copyFail:'No se pudo copiar. Abre el modo Lua y selecciona el texto.',importRisk:'Revisión de seguridad: se omitieron {n} bloques de callback con patrones de riesgo. Este análisis heurístico no es un antivirus; no ejecutes código que no sea de confianza.',
 preview:'Vista previa',lang:'Idioma',previewGrow:'Ampliar el contenido de la vista previa',previewShrink:'Reducir el contenido de la vista previa',
 m_create:'Crear',m_edit:'Editar',m_notify:'Notify',m_window:'Ventana',m_lua:'Lua',m_log:'Log',
 g_controls:'Controles',g_display:'Mostrar',g_structure:'Estructura',
@@ -913,8 +909,8 @@ n_intro:'Le notifiche compaiono al caricamento dello script o quando un elemento
 
 /* ---------- missing dictionary entries ---------- */
 function addTranslations(code,values){for(var key in values)D[code][key]=values[key];}
-addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import project',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the export format.',exportLua:'EXPORT LUA',exportJson:'EXPORT JSON',cancel:'Cancel'});
-addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar proyecto',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige el formato de exportación.',exportLua:'EXPORTAR LUA',exportJson:'EXPORTAR JSON',cancel:'Cancelar'});
+addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import .RB12PK package',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the projects to export as .RB12PK packages. They include your interface and your Lua callbacks.',exportLua:'EXPORT LUA',exportPackage:'EXPORT BUILDER PACKAGE',packageImported:'Package imported.',packageInvalid:'Invalid or unsupported .RB12PK package.',packageExportFailed:'Could not create the package. Check that the project is within supported limits.',cancel:'Cancel'});
+addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar paquete .RB12PK',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige los proyectos que quieres exportar como paquetes .RB12PK. Incluyen tu interfaz y tus callbacks de Lua.',exportLua:'EXPORTAR LUA',exportPackage:'EXPORTAR PAQUETE BUILDER',packageImported:'Paquete importado.',packageInvalid:'Paquete .RB12PK no válido o no compatible.',packageExportFailed:'No se pudo crear el paquete. Comprueba que el proyecto esté dentro de los límites admitidos.',cancel:'Cancelar'});
 addTranslations('ca',{projectHome:'Inici de projectes',projects:'Projectes',newProject:'Nou projecte',importProject:'Importa el projecte',exportProject:'Exporta el projecte',openProject:'Obre',editProject:'Edita',renameProject:'Canvia el nom',deleteProject:'Esborra',projectCount:'{n} projectes',untitledProject:'Projecte sense nom',exportTitle:'Què vols exportar?',exportBody:'Tria el format d’exportació.',exportLua:'EXPORTA LUA',exportJson:'EXPORTA JSON',cancel:'Cancel·la'});
 addTranslations('fr',{projectHome:'Accueil des projets',projects:'Projets',newProject:'Nouveau projet',importProject:'Importer le projet',exportProject:'Exporter le projet',openProject:'Ouvrir',editProject:'Modifier',renameProject:'Renommer',deleteProject:'Supprimer',projectCount:'{n} projets',untitledProject:'Projet sans nom',exportTitle:'Que voulez-vous exporter ?',exportBody:'Choisissez le format d’exportation.',exportLua:'EXPORTER LUA',exportJson:'EXPORTER JSON',cancel:'Annuler'});
 addTranslations('de',{projectHome:'Projektübersicht',projects:'Projekte',newProject:'Neues Projekt',importProject:'Projekt importieren',exportProject:'Projekt exportieren',openProject:'Öffnen',editProject:'Bearbeiten',renameProject:'Umbenennen',deleteProject:'Löschen',projectCount:'{n} Projekte',untitledProject:'Projekt ohne Namen',exportTitle:'Was möchtest du exportieren?',exportBody:'Wähle das Exportformat.',exportLua:'LUA EXPORTIEREN',exportJson:'JSON EXPORTIEREN',cancel:'Abbrechen'});
@@ -1033,6 +1029,364 @@ d_opts:'Zaɓi 1\nZaɓi 2\nZaɓi 3',d_opt0:'Zaɓi 1',d_console:'[00:01] An loda r
 w_vd:'Shafuka a sama, taga siririya',w_hd:'Jeren shafuka a gefe, taga faɗi',w_file:'Sunan fayil ɗin tsari',up:'Matsar sama',down:'Matsar ƙasa',rm:'Cire',minz:'Rage girma',close:'Rufe',closeHint:'A cikin wasa, × yana cire taga.',
 n_intro:'Sanarwa tana bayyana idan an loda rubutun ko wani abu ya gudanar da aikinsa na amsawa.',n_notify:'Sanarwa',n_toast:'Saƙon ɗan lokaci',n_subt:'Ƙaramin take',n_dur:'Tsawon lokaci cikin daƙiƙa (0 = ta atomatik)',n_pos:'Wuri',n_top:'Sama',n_bottom:'Ƙasa',n_when:'Lokacin bayyanawa',n_load:'Lokacin loda rubutun',n_on:'Lokacin gudanar da “{x}”',n_defT:'Sanarwa',n_defC:'Wani abu ya faru.'
 });
+
+/* ---------- projects, import and export translations ---------- */
+addTranslations('en',{exportLuaN:'Export Lua [{n}]',exportJsonN:'Export JSON [{n}]'});
+addTranslations('es',{exportLuaN:'Exportar Lua [{n}]',exportJsonN:'Exportar JSON [{n}]'});
+addTranslations('ca',{projects:'Projectes',newProject:'Projecte nou',importProject:'Importa el projecte',exportProject:'Exporta el projecte',openProject:'Obre',editProject:'Edita',renameProject:'Canvia el nom',deleteProject:'Esborra',projectHome:'Inici dels projectes',projectCount:'{n} projectes',untitledProject:'Projecte sense títol',exportTitle:'Què vols exportar?',exportBody:'Tria el format d’exportació.',exportLua:'Exporta el Lua',exportLuaN:'Exporta Lua [{n}]',exportJsonN:'Exporta JSON [{n}]'});
+addTranslations('fr',{projects:'Projets',newProject:'Nouveau projet',importProject:'Importer un projet',exportProject:'Exporter un projet',openProject:'Ouvrir',editProject:'Modifier',renameProject:'Renommer',deleteProject:'Supprimer',projectHome:'Accueil des projets',projectCount:'{n} projets',untitledProject:'Projet sans titre',exportTitle:'Que voulez-vous exporter ?',exportBody:'Choisissez le format d’exportation.',exportLua:'Exporter le Lua',exportLuaN:'Exporter Lua [{n}]',exportJsonN:'Exporter JSON [{n}]'});
+addTranslations('de',{projects:'Projekte',newProject:'Neues Projekt',importProject:'Projekt importieren',exportProject:'Projekt exportieren',openProject:'Öffnen',editProject:'Bearbeiten',renameProject:'Umbenennen',deleteProject:'Löschen',projectHome:'Projektübersicht',projectCount:'{n} Projekte',untitledProject:'Unbenanntes Projekt',exportTitle:'Was möchtest du exportieren?',exportBody:'Wähle das Exportformat.',exportLua:'Lua exportieren',exportLuaN:'Lua exportieren [{n}]',exportJsonN:'JSON exportieren [{n}]'});
+addTranslations('pt',{projects:'Projetos',newProject:'Novo projeto',importProject:'Importar projeto',exportProject:'Exportar projeto',openProject:'Abrir',editProject:'Editar',renameProject:'Renomear',deleteProject:'Apagar',projectHome:'Início dos projetos',projectCount:'{n} projetos',untitledProject:'Projeto sem título',exportTitle:'O que queres exportar?',exportBody:'Escolhe o formato de exportação.',exportLua:'Exportar Lua',exportLuaN:'Exportar Lua [{n}]',exportJsonN:'Exportar JSON [{n}]'});
+addTranslations('it',{projects:'Progetti',newProject:'Nuovo progetto',importProject:'Importa progetto',exportProject:'Esporta progetto',openProject:'Apri',editProject:'Modifica',renameProject:'Rinomina',deleteProject:'Elimina',projectHome:'Home dei progetti',projectCount:'{n} progetti',untitledProject:'Progetto senza titolo',exportTitle:'Cosa vuoi esportare?',exportBody:'Scegli il formato di esportazione.',exportLua:'Esporta Lua',exportLuaN:'Esporta Lua [{n}]',exportJsonN:'Esporta JSON [{n}]'});
+addTranslations('eu',{projects:'Proiektuak',newProject:'Proiektu berria',importProject:'Inportatu proiektua',exportProject:'Esportatu proiektua',openProject:'Ireki',editProject:'Editatu',renameProject:'Aldatu izena',deleteProject:'Ezabatu',projectHome:'Proiektuen hasiera',projectCount:'{n} proiektu',untitledProject:'Izenik gabeko proiektua',exportTitle:'Zer esportatu nahi duzu?',exportBody:'Aukeratu esportazio-formatua.',exportLua:'Esportatu Lua',exportLuaN:'Esportatu Lua [{n}]',exportJsonN:'Esportatu JSON [{n}]'});
+addTranslations('id',{projects:'Proyek',newProject:'Proyek baru',importProject:'Impor proyek',exportProject:'Ekspor proyek',openProject:'Buka',editProject:'Edit',renameProject:'Ganti nama',deleteProject:'Hapus',projectHome:'Beranda proyek',projectCount:'{n} proyek',untitledProject:'Proyek tanpa judul',exportTitle:'Apa yang ingin Anda ekspor?',exportBody:'Pilih format ekspor.',exportLua:'Ekspor Lua',exportLuaN:'Ekspor Lua [{n}]',exportJsonN:'Ekspor JSON [{n}]'});
+addTranslations('tr',{projects:'Projeler',newProject:'Yeni proje',importProject:'Projeyi içe aktar',exportProject:'Projeyi dışa aktar',openProject:'Aç',editProject:'Düzenle',renameProject:'Yeniden adlandır',deleteProject:'Sil',projectHome:'Proje ana sayfası',projectCount:'{n} proje',untitledProject:'Adsız proje',exportTitle:'Neyi dışa aktarmak istiyorsunuz?',exportBody:'Dışa aktarma biçimini seçin.',exportLua:'Lua’yı dışa aktar',exportLuaN:'Lua’yı dışa aktar [{n}]',exportJsonN:'JSON’u dışa aktar [{n}]'});
+addTranslations('vi',{projects:'Dự án',newProject:'Dự án mới',importProject:'Nhập dự án',exportProject:'Xuất dự án',openProject:'Mở',editProject:'Chỉnh sửa',renameProject:'Đổi tên',deleteProject:'Xóa',projectHome:'Trang chủ dự án',projectCount:'{n} dự án',untitledProject:'Dự án chưa đặt tên',exportTitle:'Bạn muốn xuất gì?',exportBody:'Chọn định dạng xuất.',exportLua:'Xuất Lua',exportLuaN:'Xuất Lua [{n}]',exportJsonN:'Xuất JSON [{n}]'});
+addTranslations('sw',{projects:'Miradi',newProject:'Mradi mpya',importProject:'Leta mradi',exportProject:'Hamisha mradi',openProject:'Fungua',editProject:'Hariri',renameProject:'Badilisha jina',deleteProject:'Futa',projectHome:'Mwanzo wa miradi',projectCount:'Miradi {n}',untitledProject:'Mradi usio na jina',exportTitle:'Unataka kuhamisha nini?',exportBody:'Chagua umbizo la kuhamisha.',exportLua:'Hamisha Lua',exportLuaN:'Hamisha Lua [{n}]',exportJsonN:'Hamisha JSON [{n}]'});
+addTranslations('ha',{projects:'Projects',newProject:'Sabon project',importProject:'Shigo da project',exportProject:'Fitar da project',openProject:'Buɗe',editProject:'Gyara',renameProject:'Sake suna',deleteProject:'Goge',projectHome:'Shafin farko na projects',projectCount:'Project {n}',untitledProject:'Project mara suna',exportTitle:'Me za a fitar?',exportBody:'Zaɓi tsarin fitarwa.',exportLua:'Fitar da Lua',exportLuaN:'Fitar da Lua [{n}]',exportJsonN:'Fitar da JSON [{n}]'});
+addTranslations('ko',{projects:'프로젝트',newProject:'새 프로젝트',importProject:'프로젝트 가져오기',exportProject:'프로젝트 내보내기',openProject:'열기',editProject:'편집',renameProject:'이름 바꾸기',deleteProject:'삭제',projectHome:'프로젝트 홈',projectCount:'프로젝트 {n}개',untitledProject:'제목 없는 프로젝트',exportTitle:'무엇을 내보내시겠어요?',exportBody:'내보내기 형식을 선택하세요.',exportLua:'Lua 내보내기',exportLuaN:'Lua 내보내기 [{n}]',exportJsonN:'JSON 내보내기 [{n}]'});
+addTranslations('ja',{projects:'プロジェクト',newProject:'新規プロジェクト',importProject:'プロジェクトをインポート',exportProject:'プロジェクトをエクスポート',openProject:'開く',editProject:'編集',renameProject:'名前を変更',deleteProject:'削除',projectHome:'プロジェクトホーム',projectCount:'プロジェクト {n} 件',untitledProject:'無題のプロジェクト',exportTitle:'何をエクスポートしますか？',exportBody:'エクスポート形式を選択してください。',exportLua:'Luaをエクスポート',exportLuaN:'Luaをエクスポート [{n}]',exportJsonN:'JSONをエクスポート [{n}]'});
+addTranslations('zh',{projects:'项目',newProject:'新建项目',importProject:'导入项目',exportProject:'导出项目',openProject:'打开',editProject:'编辑',renameProject:'重命名',deleteProject:'删除',projectHome:'项目主页',projectCount:'{n} 个项目',untitledProject:'未命名项目',exportTitle:'你想导出什么？',exportBody:'请选择导出格式。',exportLua:'导出 Lua',exportLuaN:'导出 Lua [{n}]',exportJsonN:'导出 JSON [{n}]'});
+addTranslations('ru',{projects:'Проекты',newProject:'Новый проект',importProject:'Импортировать проект',exportProject:'Экспортировать проект',openProject:'Открыть',editProject:'Изменить',renameProject:'Переименовать',deleteProject:'Удалить',projectHome:'Главная страница проектов',projectCount:'Проектов: {n}',untitledProject:'Проект без названия',exportTitle:'Что вы хотите экспортировать?',exportBody:'Выберите формат экспорта.',exportLua:'Экспортировать Lua',exportLuaN:'Экспорт Lua [{n}]',exportJsonN:'Экспорт JSON [{n}]'});
+addTranslations('ar',{projects:'المشاريع',newProject:'مشروع جديد',importProject:'استيراد مشروع',exportProject:'تصدير مشروع',openProject:'فتح',editProject:'تحرير',renameProject:'إعادة تسمية',deleteProject:'حذف',projectHome:'الصفحة الرئيسية للمشاريع',projectCount:'المشاريع: {n}',untitledProject:'مشروع بلا عنوان',exportTitle:'ماذا تريد أن تصدّر؟',exportBody:'اختر صيغة التصدير.',exportLua:'تصدير Lua',exportLuaN:'تصدير Lua [{n}]',exportJsonN:'تصدير JSON [{n}]'});
+addTranslations('hi',{projects:'प्रोजेक्ट',newProject:'नया प्रोजेक्ट',importProject:'प्रोजेक्ट इम्पोर्ट करें',exportProject:'प्रोजेक्ट एक्सपोर्ट करें',openProject:'खोलें',editProject:'संपादित करें',renameProject:'नाम बदलें',deleteProject:'हटाएँ',projectHome:'प्रोजेक्ट होम',projectCount:'{n} प्रोजेक्ट',untitledProject:'बिना शीर्षक का प्रोजेक्ट',exportTitle:'आप क्या एक्सपोर्ट करना चाहते हैं?',exportBody:'एक्सपोर्ट का फ़ॉर्मैट चुनें।',exportLua:'Lua एक्सपोर्ट करें',exportLuaN:'Lua एक्सपोर्ट करें [{n}]',exportJsonN:'JSON एक्सपोर्ट करें [{n}]'});
+addTranslations('bn',{projects:'প্রজেক্ট',newProject:'নতুন প্রজেক্ট',importProject:'প্রজেক্ট ইম্পোর্ট করুন',exportProject:'প্রজেক্ট এক্সপোর্ট করুন',openProject:'খুলুন',editProject:'সম্পাদনা করুন',renameProject:'নাম পরিবর্তন করুন',deleteProject:'মুছুন',projectHome:'প্রজেক্ট হোম',projectCount:'{n}টি প্রজেক্ট',untitledProject:'শিরোনামহীন প্রজেক্ট',exportTitle:'আপনি কী এক্সপোর্ট করতে চান?',exportBody:'এক্সপোর্টের ফরম্যাট বেছে নিন।',exportLua:'Lua এক্সপোর্ট করুন',exportLuaN:'Lua এক্সপোর্ট করুন [{n}]',exportJsonN:'JSON এক্সপোর্ট করুন [{n}]'});
+addTranslations('ur',{projects:'پروجیکٹس',newProject:'نیا پروجیکٹ',importProject:'پروجیکٹ درآمد کریں',exportProject:'پروجیکٹ برآمد کریں',openProject:'کھولیں',editProject:'ترمیم کریں',renameProject:'نام تبدیل کریں',deleteProject:'حذف کریں',projectHome:'پروجیکٹ ہوم',projectCount:'{n} پروجیکٹس',untitledProject:'بلا عنوان پروجیکٹ',exportTitle:'آپ کیا برآمد کرنا چاہتے ہیں؟',exportBody:'برآمد کی شکل منتخب کریں۔',exportLua:'Lua برآمد کریں',exportLuaN:'Lua برآمد کریں [{n}]',exportJsonN:'JSON برآمد کریں [{n}]'});
+addTranslations('te',{projects:'ప్రాజెక్టులు',newProject:'కొత్త ప్రాజెక్ట్',importProject:'ప్రాజెక్ట్‌ను దిగుమతి చేయి',exportProject:'ప్రాజెక్ట్‌ను ఎగుమతి చేయి',openProject:'తెరువు',editProject:'సవరించు',renameProject:'పేరు మార్చు',deleteProject:'తొలగించు',projectHome:'ప్రాజెక్ట్ హోమ్',projectCount:'{n} ప్రాజెక్టులు',untitledProject:'పేరు లేని ప్రాజెక్ట్',exportTitle:'మీరు ఏమి ఎగుమతి చేయాలనుకుంటున్నారు?',exportBody:'ఎగుమతి ఫార్మాట్‌ను ఎంచుకోండి.',exportLua:'Lua ఎగుమతి చేయి',exportLuaN:'Lua ఎగుమతి చేయి [{n}]',exportJsonN:'JSON ఎగుమతి చేయి [{n}]'});
+addTranslations('mr',{projects:'प्रोजेक्ट्स',newProject:'नवीन प्रोजेक्ट',importProject:'प्रोजेक्ट इम्पोर्ट करा',exportProject:'प्रोजेक्ट एक्सपोर्ट करा',openProject:'उघडा',editProject:'संपादित करा',renameProject:'नाव बदला',deleteProject:'हटवा',projectHome:'प्रोजेक्ट होम',projectCount:'{n} प्रोजेक्ट्स',untitledProject:'शीर्षकहीन प्रोजेक्ट',exportTitle:'तुम्हाला काय एक्सपोर्ट करायचे आहे?',exportBody:'एक्सपोर्टचे स्वरूप निवडा.',exportLua:'Lua एक्सपोर्ट करा',exportLuaN:'Lua एक्सपोर्ट करा [{n}]',exportJsonN:'JSON एक्सपोर्ट करा [{n}]'});
+addTranslations('ta',{projects:'திட்டங்கள்',newProject:'புதிய திட்டம்',importProject:'திட்டத்தை இறக்குமதி செய்',exportProject:'திட்டத்தை ஏற்றுமதி செய்',openProject:'திற',editProject:'திருத்து',renameProject:'பெயர் மாற்று',deleteProject:'நீக்கு',projectHome:'திட்ட முகப்பு',projectCount:'{n} திட்டங்கள்',untitledProject:'தலைப்பில்லாத திட்டம்',exportTitle:'எதை ஏற்றுமதி செய்ய விரும்புகிறீர்கள்?',exportBody:'ஏற்றுமதி வடிவத்தைத் தேர்ந்தெடுக்கவும்.',exportLua:'Lua-வை ஏற்றுமதி செய்',exportLuaN:'Lua-வை ஏற்றுமதி செய் [{n}]',exportJsonN:'JSON-ஐ ஏற்றுமதி செய் [{n}]'});
+addTranslations('pa',{projects:'ਪ੍ਰੋਜੈਕਟ',newProject:'ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ',importProject:'ਪ੍ਰੋਜੈਕਟ ਇੰਪੋਰਟ ਕਰੋ',exportProject:'ਪ੍ਰੋਜੈਕਟ ਐਕਸਪੋਰਟ ਕਰੋ',openProject:'ਖੋਲ੍ਹੋ',editProject:'ਸੋਧੋ',renameProject:'ਨਾਂ ਬਦਲੋ',deleteProject:'ਮਿਟਾਓ',projectHome:'ਪ੍ਰੋਜੈਕਟ ਹੋਮ',projectCount:'{n} ਪ੍ਰੋਜੈਕਟ',untitledProject:'ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲਾ ਪ੍ਰੋਜੈਕਟ',exportTitle:'ਤੁਸੀਂ ਕੀ ਐਕਸਪੋਰਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?',exportBody:'ਐਕਸਪੋਰਟ ਦਾ ਫ਼ਾਰਮੈਟ ਚੁਣੋ।',exportLua:'Lua ਐਕਸਪੋਰਟ ਕਰੋ',exportLuaN:'Lua ਐਕਸਪੋਰਟ ਕਰੋ [{n}]',exportJsonN:'JSON ਐਕਸਪੋਰਟ ਕਰੋ [{n}]'});
+
+/* ---------- rename and export-ready dialogs ---------- */
+addTranslations('en',{saveName:'Save',copyText:'Copy',downloadText:'Download',exportReadyTitle:'Your export is ready',exportReadyBody:'Copy each file or download it.',copiedShort:'Copied',copyManual:'Couldn’t copy automatically. Select the text and copy it.'});
+addTranslations('es',{saveName:'Guardar',copyText:'Copiar',downloadText:'Descargar',exportReadyTitle:'Tu exportación está lista',exportReadyBody:'Copia cada archivo o descárgalo.',copiedShort:'Copiado',copyManual:'No se pudo copiar automáticamente. Selecciona el texto y cópialo.'});
+addTranslations('ca',{saveName:'Desa',copyText:'Copia',downloadText:'Descarrega',exportReadyTitle:'La teva exportació és a punt',exportReadyBody:'Copia cada fitxer o descarrega’l.',copiedShort:'Copiat',copyManual:'No s’ha pogut copiar automàticament. Selecciona el text i copia’l.'});
+addTranslations('fr',{saveName:'Enregistrer',copyText:'Copier',downloadText:'Télécharger',exportReadyTitle:'Votre exportation est prête',exportReadyBody:'Copiez chaque fichier ou téléchargez-le.',copiedShort:'Copié',copyManual:'Impossible de copier automatiquement. Sélectionnez le texte et copiez-le.'});
+addTranslations('de',{saveName:'Speichern',copyText:'Kopieren',downloadText:'Herunterladen',exportReadyTitle:'Dein Export ist fertig',exportReadyBody:'Kopiere jede Datei oder lade sie herunter.',copiedShort:'Kopiert',copyManual:'Automatisches Kopieren nicht möglich. Markiere den Text und kopiere ihn.'});
+addTranslations('pt',{saveName:'Guardar',copyText:'Copiar',downloadText:'Transferir',exportReadyTitle:'A tua exportação está pronta',exportReadyBody:'Copia cada ficheiro ou transfere-o.',copiedShort:'Copiado',copyManual:'Não foi possível copiar automaticamente. Seleciona o texto e copia-o.'});
+addTranslations('it',{saveName:'Salva',copyText:'Copia',downloadText:'Scarica',exportReadyTitle:'L’esportazione è pronta',exportReadyBody:'Copia ogni file oppure scaricalo.',copiedShort:'Copiato',copyManual:'Impossibile copiare in automatico. Seleziona il testo e copialo.'});
+addTranslations('eu',{saveName:'Gorde',copyText:'Kopiatu',downloadText:'Deskargatu',exportReadyTitle:'Zure esportazioa prest dago',exportReadyBody:'Kopiatu fitxategi bakoitza edo deskargatu.',copiedShort:'Kopiatuta',copyManual:'Ezin izan da automatikoki kopiatu. Hautatu testua eta kopiatu.'});
+addTranslations('id',{saveName:'Simpan',copyText:'Salin',downloadText:'Unduh',exportReadyTitle:'Ekspor Anda sudah siap',exportReadyBody:'Salin setiap berkas atau unduh.',copiedShort:'Tersalin',copyManual:'Tidak dapat menyalin otomatis. Pilih teks lalu salin.'});
+addTranslations('tr',{saveName:'Kaydet',copyText:'Kopyala',downloadText:'İndir',exportReadyTitle:'Dışa aktarımınız hazır',exportReadyBody:'Her dosyayı kopyalayın veya indirin.',copiedShort:'Kopyalandı',copyManual:'Otomatik kopyalanamadı. Metni seçip kopyalayın.'});
+addTranslations('vi',{saveName:'Lưu',copyText:'Sao chép',downloadText:'Tải xuống',exportReadyTitle:'Bản xuất của bạn đã sẵn sàng',exportReadyBody:'Sao chép hoặc tải xuống từng tệp.',copiedShort:'Đã sao chép',copyManual:'Không thể sao chép tự động. Hãy chọn văn bản rồi sao chép.'});
+addTranslations('sw',{saveName:'Hifadhi',copyText:'Nakili',downloadText:'Pakua',exportReadyTitle:'Uhamishaji wako uko tayari',exportReadyBody:'Nakili kila faili au uipakue.',copiedShort:'Imenakiliwa',copyManual:'Imeshindwa kunakili kiotomatiki. Chagua maandishi kisha uyanakili.'});
+addTranslations('ha',{saveName:'Ajiye',copyText:'Kwafi',downloadText:'Zazzage',exportReadyTitle:'Fitarwar ta shirya',exportReadyBody:'Kwafi kowane fayil ko a zazzage shi.',copiedShort:'An kwafi',copyManual:'Kwafi ta atomatik ba ta yiwu ba. Zaɓi rubutun a kwafe shi.'});
+addTranslations('ko',{saveName:'저장',copyText:'복사',downloadText:'다운로드',exportReadyTitle:'내보내기가 준비되었습니다',exportReadyBody:'각 파일을 복사하거나 다운로드하세요.',copiedShort:'복사됨',copyManual:'자동으로 복사할 수 없습니다. 텍스트를 선택해 복사하세요.'});
+addTranslations('ja',{saveName:'保存',copyText:'コピー',downloadText:'ダウンロード',exportReadyTitle:'エクスポートの準備ができました',exportReadyBody:'各ファイルをコピーするかダウンロードしてください。',copiedShort:'コピーしました',copyManual:'自動でコピーできませんでした。テキストを選択してコピーしてください。'});
+addTranslations('zh',{saveName:'保存',copyText:'复制',downloadText:'下载',exportReadyTitle:'导出已准备好',exportReadyBody:'复制或下载每个文件。',copiedShort:'已复制',copyManual:'无法自动复制。请选中文本后手动复制。'});
+addTranslations('ru',{saveName:'Сохранить',copyText:'Копировать',downloadText:'Скачать',exportReadyTitle:'Экспорт готов',exportReadyBody:'Скопируйте каждый файл или скачайте его.',copiedShort:'Скопировано',copyManual:'Не удалось скопировать автоматически. Выделите текст и скопируйте его.'});
+addTranslations('ar',{saveName:'حفظ',copyText:'نسخ',downloadText:'تنزيل',exportReadyTitle:'التصدير جاهز',exportReadyBody:'انسخ كل ملف أو نزّله.',copiedShort:'تم النسخ',copyManual:'تعذّر النسخ تلقائيًا. حدّد النص وانسخه.'});
+addTranslations('hi',{saveName:'सहेजें',copyText:'कॉपी करें',downloadText:'डाउनलोड करें',exportReadyTitle:'आपका एक्सपोर्ट तैयार है',exportReadyBody:'हर फ़ाइल कॉपी करें या डाउनलोड करें।',copiedShort:'कॉपी हो गया',copyManual:'अपने-आप कॉपी नहीं हो सका। टेक्स्ट चुनकर कॉपी करें।'});
+addTranslations('bn',{saveName:'সংরক্ষণ করুন',copyText:'কপি করুন',downloadText:'ডাউনলোড করুন',exportReadyTitle:'আপনার এক্সপোর্ট প্রস্তুত',exportReadyBody:'প্রতিটি ফাইল কপি করুন বা ডাউনলোড করুন।',copiedShort:'কপি হয়েছে',copyManual:'স্বয়ংক্রিয়ভাবে কপি করা যায়নি। লেখাটি নির্বাচন করে কপি করুন।'});
+addTranslations('ur',{saveName:'محفوظ کریں',copyText:'نقل کریں',downloadText:'ڈاؤن لوڈ کریں',exportReadyTitle:'آپ کی برآمد تیار ہے',exportReadyBody:'ہر فائل نقل کریں یا ڈاؤن لوڈ کریں۔',copiedShort:'نقل ہو گیا',copyManual:'خودکار طور پر نقل نہیں ہو سکا۔ متن منتخب کر کے نقل کریں۔'});
+addTranslations('te',{saveName:'సేవ్ చేయి',copyText:'కాపీ చేయి',downloadText:'డౌన్‌లోడ్ చేయి',exportReadyTitle:'మీ ఎగుమతి సిద్ధంగా ఉంది',exportReadyBody:'ప్రతి ఫైల్‌ను కాపీ చేయండి లేదా డౌన్‌లోడ్ చేయండి.',copiedShort:'కాపీ అయింది',copyManual:'ఆటోమేటిక్‌గా కాపీ చేయలేకపోయాం. టెక్స్ట్‌ను ఎంచుకుని కాపీ చేయండి.'});
+addTranslations('mr',{saveName:'जतन करा',copyText:'कॉपी करा',downloadText:'डाउनलोड करा',exportReadyTitle:'तुमचा एक्सपोर्ट तयार आहे',exportReadyBody:'प्रत्येक फाइल कॉपी करा किंवा डाउनलोड करा.',copiedShort:'कॉपी झाले',copyManual:'आपोआप कॉपी करता आले नाही. मजकूर निवडून कॉपी करा.'});
+addTranslations('ta',{saveName:'சேமி',copyText:'நகலெடு',downloadText:'பதிவிறக்கு',exportReadyTitle:'உங்கள் ஏற்றுமதி தயார்',exportReadyBody:'ஒவ்வொரு கோப்பையும் நகலெடுக்கவும் அல்லது பதிவிறக்கவும்.',copiedShort:'நகலெடுக்கப்பட்டது',copyManual:'தானாக நகலெடுக்க முடியவில்லை. உரையைத் தேர்ந்தெடுத்து நகலெடுக்கவும்.'});
+addTranslations('pa',{saveName:'ਸੰਭਾਲੋ',copyText:'ਕਾਪੀ ਕਰੋ',downloadText:'ਡਾਊਨਲੋਡ ਕਰੋ',exportReadyTitle:'ਤੁਹਾਡਾ ਐਕਸਪੋਰਟ ਤਿਆਰ ਹੈ',exportReadyBody:'ਹਰ ਫ਼ਾਈਲ ਨੂੰ ਕਾਪੀ ਕਰੋ ਜਾਂ ਡਾਊਨਲੋਡ ਕਰੋ।',copiedShort:'ਕਾਪੀ ਹੋ ਗਿਆ',copyManual:'ਆਪਣੇ-ਆਪ ਕਾਪੀ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਟੈਕਸਟ ਚੁਣ ਕੇ ਕਾਪੀ ਕਰੋ।'});
+
+/* ---------- v6 strings: safety check, tab image, restore, packages, save failure ---------- */
+addTranslations('en',{saveFailed:'Couldn’t save the file.'});
+addTranslations('es',{saveFailed:'No se pudo guardar el archivo.'});
+addTranslations('ca',{
+  importRisk:'Revisió de seguretat: s’han omès {n} blocs de callback amb patrons de codi de risc. Aquesta anàlisi heurística no és un antivirus; no executis mai codi en què no confiïs.',
+  tabImage:'ID d’imatge de Roblox',
+  tabImageHint:'Introdueix un ID de Roblox (o rbxassetid://ID); la pestanya exportada a Rayfield carregarà la imatge.',
+  tabImageInvalid:'Introdueix un ID numèric vàlid d’imatge de Roblox.',
+  tabImageEmpty:'Vista prèvia',
+  restore:'Restaura',
+  exportPackage:'Exporta el paquet Builder',
+  packageInvalid:'Paquet .RB12PK no vàlid o no compatible.',
+  packageExportFailed:'No s’ha pogut crear el paquet. Comprova que el projecte estigui dins dels límits admesos.',
+  packageImported:'Paquet importat.',
+  saveFailed:'No s’ha pogut desar el fitxer.'
+});
+addTranslations('fr',{
+  importRisk:'Contrôle de sécurité : {n} bloc(s) de callback comportant des motifs de code à risque ont été omis. Cette analyse heuristique n’est pas un antivirus ; n’exécutez jamais du code auquel vous ne faites pas confiance.',
+  tabImage:'ID d’image Roblox',
+  tabImageHint:'Saisissez un ID de ressource Roblox (ou rbxassetid://ID) ; l’onglet Rayfield exporté chargera l’image.',
+  tabImageInvalid:'Saisissez un ID numérique valide d’image Roblox.',
+  tabImageEmpty:'Aperçu de l’image',
+  restore:'Restaurer',
+  exportPackage:'Exporter le paquet Builder',
+  packageInvalid:'Paquet .RB12PK invalide ou non pris en charge.',
+  packageExportFailed:'Impossible de créer le paquet. Vérifiez que le projet respecte les limites prises en charge.',
+  packageImported:'Paquet importé.',
+  saveFailed:'Impossible d’enregistrer le fichier.'
+});
+addTranslations('de',{
+  importRisk:'Sicherheitsprüfung: {n} Callback-Block/Blöcke mit riskanten Codemustern wurde(n) ausgelassen. Diese heuristische Prüfung ist kein Virenscanner; führe niemals Code aus, dem du nicht vertraust.',
+  tabImage:'Roblox-Bild-Asset-ID',
+  tabImageHint:'Gib eine Roblox-Asset-ID (oder rbxassetid://ID) ein; der exportierte Rayfield-Tab lädt das Bild.',
+  tabImageInvalid:'Gib eine gültige numerische Roblox-Bild-Asset-ID ein.',
+  tabImageEmpty:'Bildvorschau',
+  restore:'Wiederherstellen',
+  exportPackage:'Builder-Paket exportieren',
+  packageInvalid:'Ungültiges oder nicht unterstütztes .RB12PK-Paket.',
+  packageExportFailed:'Das Paket konnte nicht erstellt werden. Prüfe, ob das Projekt innerhalb der unterstützten Grenzen liegt.',
+  packageImported:'Paket importiert.',
+  saveFailed:'Die Datei konnte nicht gespeichert werden.'
+});
+addTranslations('pt',{
+  importRisk:'Verificação de segurança: foram omitidos {n} bloco(s) de callback com padrões de código de risco. Esta análise heurística não é um antivírus; nunca executes código em que não confies.',
+  tabImage:'ID de imagem do Roblox',
+  tabImageHint:'Introduz um ID de recurso do Roblox (ou rbxassetid://ID); o separador Rayfield exportado carrega a imagem.',
+  tabImageInvalid:'Introduz um ID numérico válido de imagem do Roblox.',
+  tabImageEmpty:'Pré-visualização da imagem',
+  restore:'Restaurar',
+  exportPackage:'Exportar pacote Builder',
+  packageInvalid:'Pacote .RB12PK inválido ou não suportado.',
+  packageExportFailed:'Não foi possível criar o pacote. Verifica se o projeto está dentro dos limites suportados.',
+  packageImported:'Pacote importado.',
+  saveFailed:'Não foi possível guardar o ficheiro.'
+});
+addTranslations('it',{
+  importRisk:'Controllo di sicurezza: sono stati omessi {n} blocchi di callback con schemi di codice rischiosi. Questa analisi euristica non è un antivirus; non eseguire mai codice di cui non ti fidi.',
+  tabImage:'ID immagine Roblox',
+  tabImageHint:'Inserisci un ID risorsa Roblox (o rbxassetid://ID); la scheda Rayfield esportata caricherà l’immagine.',
+  tabImageInvalid:'Inserisci un ID numerico valido di un’immagine Roblox.',
+  tabImageEmpty:'Anteprima immagine',
+  restore:'Ripristina',
+  exportPackage:'Esporta pacchetto Builder',
+  packageInvalid:'Pacchetto .RB12PK non valido o non supportato.',
+  packageExportFailed:'Impossibile creare il pacchetto. Verifica che il progetto rientri nei limiti supportati.',
+  packageImported:'Pacchetto importato.',
+  saveFailed:'Impossibile salvare il file.'
+});
+addTranslations('eu',{
+  importRisk:'Segurtasun-azterketa: arrisku-kode ereduak zituzten {n} callback bloke baztertu dira. Azterketa heuristiko hau ez da antibirusa; ez exekutatu inoiz fidatzen ez zaren koderik.',
+  tabImage:'Roblox irudiaren ID-a',
+  tabImageHint:'Sartu Roblox baliabide baten ID-a (edo rbxassetid://ID); esportatutako Rayfield fitxak irudia kargatuko du.',
+  tabImageInvalid:'Sartu Roblox irudi baten zenbakizko ID baliozko bat.',
+  tabImageEmpty:'Irudiaren aurrebista',
+  restore:'Leheneratu',
+  exportPackage:'Esportatu Builder paketea',
+  packageInvalid:'.RB12PK pakete baliogabea edo bateraezina.',
+  packageExportFailed:'Ezin izan da paketea sortu. Egiaztatu proiektua onartutako mugen barruan dagoela.',
+  packageImported:'Paketea inportatu da.',
+  saveFailed:'Ezin izan da fitxategia gorde.'
+});
+addTranslations('id',{
+  importRisk:'Pemeriksaan keamanan: {n} blok callback dengan pola kode berisiko dilewati. Pemindaian heuristik ini bukan antivirus; jangan pernah menjalankan kode yang tidak Anda percayai.',
+  tabImage:'ID aset gambar Roblox',
+  tabImageHint:'Masukkan ID aset Roblox (atau rbxassetid://ID); tab Rayfield yang diekspor akan memuat gambar tersebut.',
+  tabImageInvalid:'Masukkan ID aset gambar Roblox berupa angka yang valid.',
+  tabImageEmpty:'Pratinjau gambar',
+  restore:'Pulihkan',
+  exportPackage:'Ekspor paket Builder',
+  packageInvalid:'Paket .RB12PK tidak valid atau tidak didukung.',
+  packageExportFailed:'Paket tidak dapat dibuat. Pastikan proyek berada dalam batas yang didukung.',
+  packageImported:'Paket diimpor.',
+  saveFailed:'Tidak dapat menyimpan berkas.'
+});
+addTranslations('tr',{
+  importRisk:'Güvenlik kontrolü: riskli kod desenleri içeren {n} callback bloğu atlandı. Bu sezgisel tarama bir antivirüs değildir; güvenmediğiniz kodu asla çalıştırmayın.',
+  tabImage:'Roblox görsel varlık kimliği',
+  tabImageHint:'Bir Roblox varlık kimliği (veya rbxassetid://ID) girin; dışa aktarılan Rayfield sekmesi görseli yükler.',
+  tabImageInvalid:'Geçerli, sayısal bir Roblox görsel varlık kimliği girin.',
+  tabImageEmpty:'Görsel önizleme',
+  restore:'Geri yükle',
+  exportPackage:'Builder paketini dışa aktar',
+  packageInvalid:'Geçersiz veya desteklenmeyen .RB12PK paketi.',
+  packageExportFailed:'Paket oluşturulamadı. Projenin desteklenen sınırlar içinde olduğunu kontrol edin.',
+  packageImported:'Paket içe aktarıldı.',
+  saveFailed:'Dosya kaydedilemedi.'
+});
+addTranslations('vi',{
+  importRisk:'Kiểm tra bảo mật: đã bỏ qua {n} khối callback có mẫu mã rủi ro. Quét heuristic này không phải là phần mềm diệt vi-rút; đừng bao giờ chạy mã bạn không tin tưởng.',
+  tabImage:'ID tài nguyên hình ảnh Roblox',
+  tabImageHint:'Nhập ID tài nguyên Roblox (hoặc rbxassetid://ID); tab Rayfield được xuất sẽ tải hình ảnh.',
+  tabImageInvalid:'Nhập ID tài nguyên hình ảnh Roblox hợp lệ dạng số.',
+  tabImageEmpty:'Xem trước hình ảnh',
+  restore:'Khôi phục',
+  exportPackage:'Xuất gói Builder',
+  packageInvalid:'Gói .RB12PK không hợp lệ hoặc không được hỗ trợ.',
+  packageExportFailed:'Không thể tạo gói. Hãy kiểm tra dự án nằm trong giới hạn được hỗ trợ.',
+  packageImported:'Đã nhập gói.',
+  saveFailed:'Không thể lưu tệp.'
+});
+addTranslations('sw',{
+  importRisk:'Ukaguzi wa usalama: vizuizi {n} vya callback vyenye mifumo hatarishi ya msimbo vimeachwa. Uchanganuzi huu wa heuristic si antivirus; usiendeshe kamwe msimbo usioamini.',
+  tabImage:'ID ya mali ya picha ya Roblox',
+  tabImageHint:'Weka ID ya mali ya Roblox (au rbxassetid://ID); kichupo cha Rayfield kilichohamishwa kitapakia picha.',
+  tabImageInvalid:'Weka ID halali ya nambari ya mali ya picha ya Roblox.',
+  tabImageEmpty:'Hakiki ya picha',
+  restore:'Rejesha',
+  exportPackage:'Hamisha kifurushi cha Builder',
+  packageInvalid:'Kifurushi cha .RB12PK si halali au hakiungwi mkono.',
+  packageExportFailed:'Imeshindwa kuunda kifurushi. Hakikisha mradi uko ndani ya mipaka inayoungwa mkono.',
+  packageImported:'Kifurushi kimeingizwa.',
+  saveFailed:'Imeshindwa kuhifadhi faili.'
+});
+addTranslations('ha',{
+  importRisk:'Binciken tsaro: an tsallake tubalan callback {n} masu tsarin lambar haɗari. Wannan binciken heuristic ba antivirus ba ne; kada ka taɓa gudanar da lambar da ba ka amince da ita ba.',
+  tabImage:'ID ɗin kadarar hoto ta Roblox',
+  tabImageHint:'Shigar da ID na kadarar Roblox (ko rbxassetid://ID); shafin Rayfield da aka fitar zai ɗora hoton.',
+  tabImageInvalid:'Shigar da ingantaccen ID na lamba na kadarar hoto ta Roblox.',
+  tabImageEmpty:'Samfoti na hoto',
+  restore:'Maido',
+  exportPackage:'Fitar da fakitin Builder',
+  packageInvalid:'Fakitin .RB12PK ba shi da inganci ko ba a goyi bayansa.',
+  packageExportFailed:'Ba a iya ƙirƙirar fakitin ba. Duba cewa aikin yana cikin iyakokin da ake tallafawa.',
+  packageImported:'An shigo da fakitin.',
+  saveFailed:'Ba a iya ajiye fayil ba.'
+});
+addTranslations('ko',{
+  importRisk:'보안 검사: 위험한 코드 패턴이 있는 콜백 블록 {n}개를 제외했습니다. 이 휴리스틱 검사는 백신이 아니므로 신뢰할 수 없는 코드는 절대 실행하지 마세요.',
+  tabImage:'Roblox 이미지 에셋 ID',
+  tabImageHint:'Roblox 에셋 ID(또는 rbxassetid://ID)를 입력하세요. 내보낸 Rayfield 탭이 이미지를 불러옵니다.',
+  tabImageInvalid:'올바른 숫자 형식의 Roblox 이미지 에셋 ID를 입력하세요.',
+  tabImageEmpty:'이미지 미리보기',
+  restore:'복원',
+  exportPackage:'Builder 패키지 내보내기',
+  packageInvalid:'유효하지 않거나 지원되지 않는 .RB12PK 패키지입니다.',
+  packageExportFailed:'패키지를 만들 수 없습니다. 프로젝트가 지원되는 한도 안에 있는지 확인하세요.',
+  packageImported:'패키지를 가져왔습니다.',
+  saveFailed:'파일을 저장할 수 없습니다.'
+});
+addTranslations('ja',{
+  importRisk:'セキュリティチェック：リスクのあるコードパターンを含むコールバックブロック {n} 件を除外しました。このヒューリスティック検査はウイルス対策ではありません。信頼できないコードは絶対に実行しないでください。',
+  tabImage:'Roblox 画像アセット ID',
+  tabImageHint:'Roblox のアセット ID（または rbxassetid://ID）を入力してください。エクスポートした Rayfield のタブが画像を読み込みます。',
+  tabImageInvalid:'有効な数値の Roblox 画像アセット ID を入力してください。',
+  tabImageEmpty:'画像プレビュー',
+  restore:'元に戻す',
+  exportPackage:'Builder パッケージをエクスポート',
+  packageInvalid:'無効、または未対応の .RB12PK パッケージです。',
+  packageExportFailed:'パッケージを作成できませんでした。プロジェクトが対応している上限内か確認してください。',
+  packageImported:'パッケージをインポートしました。',
+  saveFailed:'ファイルを保存できませんでした。'
+});
+addTranslations('zh',{
+  importRisk:'安全检查：已跳过 {n} 个包含风险代码模式的回调代码块。此启发式扫描并非杀毒软件；切勿运行你不信任的代码。',
+  tabImage:'Roblox 图片资源 ID',
+  tabImageHint:'输入 Roblox 资源 ID（或 rbxassetid://ID）；导出的 Rayfield 标签页会加载该图片。',
+  tabImageInvalid:'请输入有效的 Roblox 图片资源数字 ID。',
+  tabImageEmpty:'图片预览',
+  restore:'还原',
+  exportPackage:'导出 Builder 包',
+  packageInvalid:'.RB12PK 包无效或不受支持。',
+  packageExportFailed:'无法创建包。请检查项目是否在支持的限制范围内。',
+  packageImported:'已导入包。',
+  saveFailed:'无法保存文件。'
+});
+addTranslations('ru',{
+  importRisk:'Проверка безопасности: пропущено блоков callback с рискованными шаблонами кода: {n}. Эта эвристическая проверка не является антивирусом; никогда не запускайте код, которому не доверяете.',
+  tabImage:'ID изображения Roblox',
+  tabImageHint:'Введите ID ресурса Roblox (или rbxassetid://ID); экспортированная вкладка Rayfield загрузит изображение.',
+  tabImageInvalid:'Введите корректный числовой ID изображения Roblox.',
+  tabImageEmpty:'Предпросмотр изображения',
+  restore:'Восстановить',
+  exportPackage:'Экспортировать пакет Builder',
+  packageInvalid:'Недопустимый или неподдерживаемый пакет .RB12PK.',
+  packageExportFailed:'Не удалось создать пакет. Проверьте, что проект укладывается в поддерживаемые ограничения.',
+  packageImported:'Пакет импортирован.',
+  saveFailed:'Не удалось сохранить файл.'
+});
+addTranslations('ar',{
+  importRisk:'فحص الأمان: تم تجاهل {n} من كتل callback التي تحتوي على أنماط شيفرة خطرة. هذا الفحص الاستدلالي ليس برنامج مكافحة فيروسات؛ لا تشغّل أبدًا شيفرة لا تثق بها.',
+  tabImage:'معرّف صورة Roblox',
+  tabImageHint:'أدخل معرّف أصل Roblox (أو rbxassetid://ID)؛ ستحمّل علامة تبويب Rayfield المُصدَّرة الصورة.',
+  tabImageInvalid:'أدخل معرّفًا رقميًا صالحًا لصورة Roblox.',
+  tabImageEmpty:'معاينة الصورة',
+  restore:'استعادة',
+  exportPackage:'تصدير حزمة Builder',
+  packageInvalid:'حزمة .RB12PK غير صالحة أو غير مدعومة.',
+  packageExportFailed:'تعذّر إنشاء الحزمة. تأكد من أن المشروع ضمن الحدود المدعومة.',
+  packageImported:'تم استيراد الحزمة.',
+  saveFailed:'تعذّر حفظ الملف.'
+});
+addTranslations('hi',{
+  importRisk:'सुरक्षा जाँच: जोखिम वाले कोड पैटर्न वाले {n} callback ब्लॉक छोड़ दिए गए। यह ह्यूरिस्टिक स्कैन एंटीवायरस नहीं है; ऐसा कोड कभी न चलाएँ जिस पर आपको भरोसा न हो।',
+  tabImage:'Roblox इमेज एसेट ID',
+  tabImageHint:'Roblox एसेट ID (या rbxassetid://ID) दर्ज करें; एक्सपोर्ट किया गया Rayfield टैब इमेज लोड करेगा।',
+  tabImageInvalid:'Roblox इमेज एसेट की मान्य संख्यात्मक ID दर्ज करें।',
+  tabImageEmpty:'इमेज पूर्वावलोकन',
+  restore:'पुनर्स्थापित करें',
+  exportPackage:'Builder पैकेज एक्सपोर्ट करें',
+  packageInvalid:'.RB12PK पैकेज अमान्य या असमर्थित है।',
+  packageExportFailed:'पैकेज नहीं बनाया जा सका। जाँच करें कि प्रोजेक्ट समर्थित सीमाओं के भीतर है।',
+  packageImported:'पैकेज इंपोर्ट हो गया।',
+  saveFailed:'फ़ाइल सहेजी नहीं जा सकी।'
+});
+addTranslations('bn',{
+  importRisk:'নিরাপত্তা পরীক্ষা: ঝুঁকিপূর্ণ কোড প্যাটার্নযুক্ত {n}টি callback ব্লক বাদ দেওয়া হয়েছে। এই হিউরিস্টিক স্ক্যান অ্যান্টিভাইরাস নয়; যে কোডে আপনার আস্থা নেই তা কখনও চালাবেন না।',
+  tabImage:'Roblox ইমেজ অ্যাসেট ID',
+  tabImageHint:'একটি Roblox অ্যাসেট ID (বা rbxassetid://ID) দিন; এক্সপোর্ট করা Rayfield ট্যাব ছবিটি লোড করবে।',
+  tabImageInvalid:'Roblox ইমেজ অ্যাসেটের একটি বৈধ সংখ্যাসূচক ID দিন।',
+  tabImageEmpty:'ছবির প্রিভিউ',
+  restore:'পুনরুদ্ধার করুন',
+  exportPackage:'Builder প্যাকেজ এক্সপোর্ট করুন',
+  packageInvalid:'.RB12PK প্যাকেজটি অবৈধ বা অসমর্থিত।',
+  packageExportFailed:'প্যাকেজ তৈরি করা যায়নি। প্রকল্পটি সমর্থিত সীমার মধ্যে আছে কি না দেখুন।',
+  packageImported:'প্যাকেজ ইমপোর্ট হয়েছে।',
+  saveFailed:'ফাইল সংরক্ষণ করা যায়নি।'
+});
+addTranslations('ur',{
+  importRisk:'سیکیورٹی جانچ: خطرناک کوڈ پیٹرنز والے {n} callback بلاکس چھوڑ دیے گئے۔ یہ ہیوریسٹک اسکین اینٹی وائرس نہیں ہے؛ ایسا کوڈ کبھی نہ چلائیں جس پر آپ کو بھروسا نہ ہو۔',
+  tabImage:'Roblox تصویری اثاثے کی ID',
+  tabImageHint:'Roblox اثاثے کی ID (یا rbxassetid://ID) درج کریں؛ برآمد شدہ Rayfield ٹیب تصویر لوڈ کرے گا۔',
+  tabImageInvalid:'Roblox تصویری اثاثے کی درست عددی ID درج کریں۔',
+  tabImageEmpty:'تصویر کا پیش منظر',
+  restore:'بحال کریں',
+  exportPackage:'Builder پیکیج برآمد کریں',
+  packageInvalid:'.RB12PK پیکیج غلط یا غیر تعاون یافتہ ہے۔',
+  packageExportFailed:'پیکیج نہیں بن سکا۔ چیک کریں کہ پروجیکٹ تعاون یافتہ حدود کے اندر ہے۔',
+  packageImported:'پیکیج درآمد ہو گیا۔',
+  saveFailed:'فائل محفوظ نہیں ہو سکی۔'
+});
+addTranslations('te',{
+  importRisk:'భద్రతా తనిఖీ: ప్రమాదకర కోడ్ నమూనాలు ఉన్న {n} callback బ్లాక్‌లను దాటవేశాం. ఈ హ్యూరిస్టిక్ స్కాన్ యాంటీవైరస్ కాదు; మీరు నమ్మని కోడ్‌ను ఎప్పుడూ రన్ చేయకండి.',
+  tabImage:'Roblox ఇమేజ్ అసెట్ ID',
+  tabImageHint:'Roblox అసెట్ ID (లేదా rbxassetid://ID) నమోదు చేయండి; ఎగుమతి చేసిన Rayfield ట్యాబ్ ఆ చిత్రాన్ని లోడ్ చేస్తుంది.',
+  tabImageInvalid:'Roblox ఇమేజ్ అసెట్ యొక్క చెల్లుబాటు అయ్యే సంఖ్యా ID నమోదు చేయండి.',
+  tabImageEmpty:'చిత్ర ప్రివ్యూ',
+  restore:'పునరుద్ధరించు',
+  exportPackage:'Builder ప్యాకేజీని ఎగుమతి చేయి',
+  packageInvalid:'.RB12PK ప్యాకేజీ చెల్లనిది లేదా మద్దతు లేనిది.',
+  packageExportFailed:'ప్యాకేజీని సృష్టించలేకపోయాం. ప్రాజెక్ట్ మద్దతు ఉన్న పరిమితుల్లో ఉందో లేదో తనిఖీ చేయండి.',
+  packageImported:'ప్యాకేజీ దిగుమతి అయింది.',
+  saveFailed:'ఫైల్‌ను సేవ్ చేయలేకపోయాం.'
+});
+addTranslations('mr',{
+  importRisk:'सुरक्षा तपासणी: जोखमीचे कोड पॅटर्न असलेले {n} callback ब्लॉक वगळले. ही ह्युरिस्टिक स्कॅन म्हणजे अँटीव्हायरस नाही; तुमचा विश्वास नसलेला कोड कधीही चालवू नका.',
+  tabImage:'Roblox इमेज अॅसेट ID',
+  tabImageHint:'Roblox अॅसेट ID (किंवा rbxassetid://ID) टाका; एक्सपोर्ट केलेला Rayfield टॅब ती इमेज लोड करेल.',
+  tabImageInvalid:'Roblox इमेज अॅसेटचा वैध संख्यात्मक ID टाका.',
+  tabImageEmpty:'इमेज पूर्वावलोकन',
+  restore:'पुनर्संचयित करा',
+  exportPackage:'Builder पॅकेज एक्सपोर्ट करा',
+  packageInvalid:'.RB12PK पॅकेज अवैध किंवा असमर्थित आहे.',
+  packageExportFailed:'पॅकेज तयार करता आले नाही. प्रोजेक्ट समर्थित मर्यादेत आहे का ते तपासा.',
+  packageImported:'पॅकेज इम्पोर्ट झाले.',
+  saveFailed:'फाइल जतन करता आली नाही.'
+});
+addTranslations('ta',{
+  importRisk:'பாதுகாப்புச் சோதனை: ஆபத்தான குறியீட்டு முறைகள் கொண்ட {n} callback தொகுதிகள் தவிர்க்கப்பட்டன. இந்த ஹியூரிஸ்டிக் ஸ்கேன் ஆன்டிவைரஸ் அல்ல; நீங்கள் நம்பாத குறியீட்டை ஒருபோதும் இயக்காதீர்கள்.',
+  tabImage:'Roblox பட அசெட் ID',
+  tabImageHint:'Roblox அசெட் ID-ஐ (அல்லது rbxassetid://ID) உள்ளிடவும்; ஏற்றுமதி செய்யப்பட்ட Rayfield தாவல் அந்தப் படத்தை ஏற்றும்.',
+  tabImageInvalid:'Roblox பட அசெட்டின் சரியான எண் ID-ஐ உள்ளிடவும்.',
+  tabImageEmpty:'பட முன்னோட்டம்',
+  restore:'மீட்டமை',
+  exportPackage:'Builder தொகுப்பை ஏற்றுமதி செய்',
+  packageInvalid:'.RB12PK தொகுப்பு தவறானது அல்லது ஆதரிக்கப்படாதது.',
+  packageExportFailed:'தொகுப்பை உருவாக்க முடியவில்லை. திட்டம் ஆதரிக்கப்படும் வரம்புகளுக்குள் உள்ளதா என சரிபார்க்கவும்.',
+  packageImported:'தொகுப்பு இறக்குமதி செய்யப்பட்டது.',
+  saveFailed:'கோப்பை சேமிக்க முடியவில்லை.'
+});
+addTranslations('pa',{
+  importRisk:'ਸੁਰੱਖਿਆ ਜਾਂਚ: ਜੋਖਮ ਵਾਲੇ ਕੋਡ ਪੈਟਰਨਾਂ ਵਾਲੇ {n} callback ਬਲਾਕ ਛੱਡ ਦਿੱਤੇ ਗਏ। ਇਹ ਹਿਊਰਿਸਟਿਕ ਸਕੈਨ ਐਂਟੀਵਾਇਰਸ ਨਹੀਂ ਹੈ; ਜਿਸ ਕੋਡ ’ਤੇ ਤੁਹਾਨੂੰ ਭਰੋਸਾ ਨਹੀਂ, ਉਸਨੂੰ ਕਦੇ ਨਾ ਚਲਾਓ।',
+  tabImage:'Roblox ਚਿੱਤਰ ਐਸੈੱਟ ID',
+  tabImageHint:'Roblox ਐਸੈੱਟ ID (ਜਾਂ rbxassetid://ID) ਦਾਖਲ ਕਰੋ; ਐਕਸਪੋਰਟ ਕੀਤਾ Rayfield ਟੈਬ ਚਿੱਤਰ ਲੋਡ ਕਰੇਗਾ।',
+  tabImageInvalid:'Roblox ਚਿੱਤਰ ਐਸੈੱਟ ਦੀ ਵੈਧ ਅੰਕੀ ID ਦਾਖਲ ਕਰੋ।',
+  tabImageEmpty:'ਚਿੱਤਰ ਪੂਰਵ-ਦਰਸ਼ਨ',
+  restore:'ਬਹਾਲ ਕਰੋ',
+  exportPackage:'Builder ਪੈਕੇਜ ਐਕਸਪੋਰਟ ਕਰੋ',
+  packageInvalid:'.RB12PK ਪੈਕੇਜ ਅਵੈਧ ਜਾਂ ਅਸਮਰਥਿਤ ਹੈ।',
+  packageExportFailed:'ਪੈਕੇਜ ਨਹੀਂ ਬਣ ਸਕਿਆ। ਜਾਂਚ ਕਰੋ ਕਿ ਪ੍ਰੋਜੈਕਟ ਸਮਰਥਿਤ ਸੀਮਾਵਾਂ ਦੇ ਅੰਦਰ ਹੈ।',
+  packageImported:'ਪੈਕੇਜ ਇੰਪੋਰਟ ਹੋ ਗਿਆ।',
+  saveFailed:'ਫ਼ਾਈਲ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ।'
+});
+
 
 /* ---------- element catalog ---------- */
 function F(k,l,ty){return {k:k,l:l,t:ty};}
@@ -1535,7 +1889,7 @@ function renderHome(){
       h('button',{class:'btn',type:'button',onclick:function(){var input=$('#projectImport');if(input)input.click();}},tr('importProject')),
       h('button',{class:'btn',type:'button',onclick:showExportMenu},tr('exportProject'))));
   var cards=projects.map(function(p,index){
-    var date=p.updatedAt?new Date(p.updatedAt).toLocaleString(): '';
+    var date='';if(p.updatedAt){try{date=new Date(p.updatedAt).toLocaleString(lang);}catch(e){date=new Date(p.updatedAt).toLocaleString();}}
     return h('article',{class:'project-card',style:'--project-enter-delay:'+(360+index*70)+'ms'},
       h('h3',null,p.name||tr('untitledProject')),
       h('div',{class:'project-meta'},(p.version==='classic'?'Rayfield':'Rayfield Gen 2')+(date?' · '+date:'')),
@@ -1571,63 +1925,252 @@ function openProject(id){
   version=project.version==='classic'?'classic':'gen2';try{localStorage.setItem(VKEY,version);}catch(e){}
   rt={};logs=[];mode='crear';minimized=false;closeHome(true);persist();
 }
-function renameProject(id){
+function applyProjectName(id,name){
   var projects=loadProjects(),project=projects.find(function(p){return p.id===id;});
   if(!project)return;
-  var name=window.prompt(tr('renameProject'),project.name||tr('untitledProject'));
-  if(name===null)return;
-  name=String(name).trim();
-  if(!name)return;
   project.name=name;
   if(project.state&&project.state.win)project.state.win.name=name;
   saveProjects(projects);
   if(activeProjectId===id&&S&&S.win){S.win.name=name;renderPreview();renderAll();persist();}
   renderHome();
 }
+function renameProject(id){
+  var project=loadProjects().find(function(p){return p.id===id;});
+  if(!project)return;
+  var input=h('input',{class:'in',type:'text',value:project.name||tr('untitledProject'),maxlength:'60','aria-label':tr('renameProject')});
+  function save(){
+    var name=String(input.value).trim();
+    if(!name){input.focus();return;}
+    closeModal();applyProjectName(id,name);
+  }
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();save();}
+    else if(e.key==='Escape'){e.preventDefault();closeModal();}
+  });
+  openModal(tr('renameProject'),'',h('div',{class:'rename-field'},input),[modalButton(tr('cancel'),closeModal),modalButton(tr('saveName'),save,true)]);
+  input.focus();input.select();
+}
 function deleteProject(id){
   var projects=loadProjects().filter(function(p){return p.id!==id;});saveProjects(projects);
   if(activeProjectId===id){activeProjectId=null;try{localStorage.removeItem(ACTIVE_PROJECT_KEY);}catch(e){}syncActiveProject();}
   renderHome();
 }
+var BUILDER_PACKAGE_MANIFEST_V1='Rayfield Builder Package\nformat=rb12pk\nversion=1\nstate=project.dat\ncallbacks=excluded\n';
+var BUILDER_PACKAGE_MANIFEST='Rayfield Builder Package\nformat=rb12pk\nversion=2\nstate=project.dat\ncallbacks=included\n';
+var BUILDER_CRC_TABLE=null;
+function builderCrc32(bytes){
+  if(!BUILDER_CRC_TABLE){
+    BUILDER_CRC_TABLE=[];
+    for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;BUILDER_CRC_TABLE[n]=c>>>0;}
+  }
+  var crc=0xffffffff;
+  for(var i=0;i<bytes.length;i++)crc=BUILDER_CRC_TABLE[(crc^bytes[i])&255]^(crc>>>8);
+  return (crc^0xffffffff)>>>0;
+}
+function builderZipStored(entries){
+  var encoder=new TextEncoder(),locals=[],centrals=[],offset=0;
+  entries.forEach(function(entry){
+    var name=encoder.encode(entry.name),data=encoder.encode(entry.data),crc=builderCrc32(data);
+    if(name.length>255)throw new Error('Package entry name too long');
+    var local=new Uint8Array(30+name.length+data.length),lv=new DataView(local.buffer);
+    lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0,true);lv.setUint16(8,0,true);
+    lv.setUint16(10,0,true);lv.setUint16(12,33,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);
+    lv.setUint16(26,name.length,true);lv.setUint16(28,0,true);local.set(name,30);local.set(data,30+name.length);
+    locals.push(local);
+    var central=new Uint8Array(46+name.length),cv=new DataView(central.buffer);
+    cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0,true);cv.setUint16(10,0,true);
+    cv.setUint16(12,0,true);cv.setUint16(14,33,true);cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);
+    cv.setUint16(28,name.length,true);cv.setUint16(30,0,true);cv.setUint16(32,0,true);cv.setUint16(34,0,true);cv.setUint16(36,0,true);
+    cv.setUint32(38,0,true);cv.setUint32(42,offset,true);central.set(name,46);centrals.push(central);
+    offset+=local.length;
+  });
+  var centralOffset=offset,centralSize=0;
+  centrals.forEach(function(part){centralSize+=part.length;});
+  var end=new Uint8Array(22),ev=new DataView(end.buffer);
+  ev.setUint32(0,0x06054b50,true);ev.setUint16(4,0,true);ev.setUint16(6,0,true);ev.setUint16(8,entries.length,true);ev.setUint16(10,entries.length,true);
+  ev.setUint32(12,centralSize,true);ev.setUint32(16,centralOffset,true);ev.setUint16(20,0,true);
+  var total=centralOffset+centralSize+end.length;
+  var output=new Uint8Array(total),position=0;
+  locals.concat(centrals,[end]).forEach(function(part){output.set(part,position);position+=part.length;});
+  return output;
+}
+function builderZipRead(buffer){
+  var bytes=buffer instanceof Uint8Array?buffer:new Uint8Array(buffer);
+  if(bytes.length<22)throw new Error('Invalid package size');
+  var view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),eocd=-1;
+  for(var i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--)if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}
+  if(eocd<0||view.getUint16(eocd+4,true)!==0||view.getUint16(eocd+6,true)!==0||view.getUint16(eocd+20,true)!==0||eocd+22!==bytes.length)throw new Error('Invalid package directory');
+  var count=view.getUint16(eocd+10,true),centralSize=view.getUint32(eocd+12,true),centralOffset=view.getUint32(eocd+16,true);
+  if(count!==2||view.getUint16(eocd+8,true)!==count||centralOffset+centralSize!==eocd)throw new Error('Invalid package entries');
+  var decoder=new TextDecoder('utf-8',{fatal:true}),entries={},cursor=centralOffset,localCursor=0;
+  for(var j=0;j<count;j++){
+    if(cursor+46>eocd||view.getUint32(cursor,true)!==0x02014b50)throw new Error('Invalid package entry');
+    var flags=view.getUint16(cursor+8,true),method=view.getUint16(cursor+10,true),crc=view.getUint32(cursor+16,true),compressed=view.getUint32(cursor+20,true),size=view.getUint32(cursor+24,true);
+    var nameLength=view.getUint16(cursor+28,true),extraLength=view.getUint16(cursor+30,true),commentLength=view.getUint16(cursor+32,true),disk=view.getUint16(cursor+34,true),localOffset=view.getUint32(cursor+42,true);
+    if(flags!==0||method!==0||compressed!==size||extraLength!==0||commentLength!==0||disk!==0||cursor+46+nameLength>eocd)throw new Error('Unsupported package entry');
+    var name=decoder.decode(bytes.subarray(cursor+46,cursor+46+nameLength));
+    if((name!=='manifest.txt'&&name!=='project.dat')||Object.prototype.hasOwnProperty.call(entries,name)||localOffset!==localCursor)throw new Error('Unexpected package entry');
+    if(localOffset+30>centralOffset||view.getUint32(localOffset,true)!==0x04034b50)throw new Error('Invalid local entry');
+    var localFlags=view.getUint16(localOffset+6,true),localMethod=view.getUint16(localOffset+8,true),localCrc=view.getUint32(localOffset+14,true);
+    var localCompressed=view.getUint32(localOffset+18,true),localSize=view.getUint32(localOffset+22,true),localNameLength=view.getUint16(localOffset+26,true),localExtraLength=view.getUint16(localOffset+28,true);
+    var dataOffset=localOffset+30+localNameLength+localExtraLength,endOffset=dataOffset+size;
+    if(localFlags!==0||localMethod!==0||localCrc!==crc||localCompressed!==compressed||localSize!==size||localNameLength!==nameLength||localExtraLength!==0||endOffset>centralOffset)throw new Error('Mismatched package entry');
+    if(decoder.decode(bytes.subarray(localOffset+30,localOffset+30+localNameLength))!==name)throw new Error('Mismatched package name');
+    var content=bytes.slice(dataOffset,endOffset);
+    if(builderCrc32(content)!==crc)throw new Error('Package checksum failed');
+    entries[name]=decoder.decode(content);localCursor=endOffset;cursor+=46+nameLength;
+  }
+  if(cursor!==eocd||localCursor!==centralOffset||!entries['manifest.txt']||!entries['project.dat'])throw new Error('Incomplete package');
+  return entries;
+}
+function packageOnlyKeys(value,keys){
+  if(!value||typeof value!=='object'||Array.isArray(value))return false;
+  return Object.keys(value).every(function(key){return keys.indexOf(key)>=0;});
+}
+function packageText(value,fallback,maxLength,strict){
+  if(typeof value!=='string'){if(strict)throw new Error('Invalid package text');return fallback;}
+  if(value.length>maxLength){if(strict)throw new Error('Package text too long');return value.slice(0,maxLength);}
+  return value;
+}
+function packageNumber(value,fallback,strict){
+  if(typeof value!=='number'||!isFinite(value)||Math.abs(value)>1000000){if(strict)throw new Error('Invalid package number');return fallback;}
+  return value;
+}
+function packageState(raw,strict,withCallbacks){
+  var stateKeys=['n','tab','win','tabs','notifs'];
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||strict&&!packageOnlyKeys(raw,stateKeys)||!Array.isArray(raw.tabs)||raw.tabs.length<1||!raw.win||typeof raw.win!=='object'||Array.isArray(raw.win)||strict&&!packageOnlyKeys(raw.win,['name','subtitle','theme','orient','save','file']))throw new Error('Invalid package project');
+  if(strict&&(raw.n!==undefined&&(typeof raw.n!=='number'||!isFinite(raw.n)||Math.abs(raw.n)>1000000)||typeof raw.tab!=='number'||!Number.isInteger(raw.tab)||raw.tab<0||raw.tab>=raw.tabs.length))throw new Error('Invalid package state');
+  var win=raw.win,theme=packageText(win.theme,'default',40,strict),orient=packageText(win.orient,'vertical',20,strict);
+  if(THEMES.indexOf(theme)<0||['vertical','horizontal'].indexOf(orient)<0||strict&&typeof win.save!=='boolean')throw new Error('Invalid package window');
+  var out={n:1,tab:0,notifs:[],win:{
+    name:packageText(win.name,'My Hub',120,strict),subtitle:packageText(win.subtitle,'Rayfield',160,strict),theme:theme,orient:orient,
+    save:typeof win.save==='boolean'?win.save:true,file:packageText(win.file,'MyHub',120,strict)
+  },tabs:[]};
+  var idMap=Object.create(null),seenIds=Object.create(null),nextId=1,totalItems=0;
+  raw.tabs.forEach(function(tab){
+    if(!packageOnlyKeys(tab,['name','icon','items'])||!Array.isArray(tab.items))throw new Error('Invalid package tab');
+    var safeTab={name:packageText(tab.name,'Tab',100,strict),icon:tabImageId(packageText(tab.icon,'',64,strict)),items:[]};
+    tab.items.forEach(function(item){
+      totalItems++;
+      if(!item||typeof item!=='object'||Array.isArray(item)||!Object.prototype.hasOwnProperty.call(T,item.type)||!item.props||typeof item.props!=='object'||Array.isArray(item.props))throw new Error('Invalid package control');
+      if(strict&&(!packageOnlyKeys(item,['id','type','props'])||!packageOnlyKeys(item.props,Object.keys(T[item.type].d()).filter(function(key){return withCallbacks||key!=='cb';}))))throw new Error('Package contains unknown control data');
+      if(strict&&(!item.id||typeof item.id!=='string'||!/^i\d{1,8}$/.test(item.id)||item.id.length>64||seenIds[item.id]||!withCallbacks&&Object.prototype.hasOwnProperty.call(item.props,'cb')))throw new Error('Package contains invalid or executable data');
+      var oldId=typeof item.id==='string'?item.id:'';
+      if(oldId&&Object.prototype.hasOwnProperty.call(idMap,oldId)&&strict)throw new Error('Duplicate package control');
+      var id='i'+nextId++;if(oldId)idMap[oldId]=id;seenIds[oldId]=true;
+      var defaults=T[item.type].d(),props={};
+      Object.keys(defaults).forEach(function(key){
+        var fallback=defaults[key],value=item.props[key];
+        if(key==='cb'){
+          if(!withCallbacks)return;
+          props.cb=typeof value==='string'?value:(typeof fallback==='string'?fallback:'');return;
+        }
+        if(typeof fallback==='string')props[key]=packageText(value,fallback,key==='text'?5000:2000,strict);
+        else if(typeof fallback==='number')props[key]=packageNumber(value,fallback,strict);
+        else if(typeof fallback==='boolean'){if(typeof value!=='boolean'&&strict)throw new Error('Invalid package option');props[key]=typeof value==='boolean'?value:fallback;}
+      });
+      if(props.color&&!/^#[0-9a-f]{6}$/i.test(props.color)){if(strict)throw new Error('Invalid package color');props.color=defaults.color;}
+      safeTab.items.push({id:id,type:item.type,props:props});
+    });
+    out.tabs.push(safeTab);
+  });
+  out.n=nextId;out.tab=Math.max(0,Math.min(out.tabs.length-1,Math.floor(packageNumber(raw.tab,0,strict))));
+  if(!Array.isArray(raw.notifs)){if(strict)throw new Error('Invalid package notifications');raw.notifs=[];}
+  raw.notifs.forEach(function(note,index){
+    if(!packageOnlyKeys(note,['id','kind','title','content','duration','position','trigger']))throw new Error('Invalid package notification');
+    if(strict&&(['notify','toast'].indexOf(note.kind)<0||['Top','Bottom'].indexOf(note.position)<0||typeof note.id!=='string'||note.id.length>64))throw new Error('Invalid package notification type');
+    var oldTrigger=packageText(note.trigger,'load',100,strict);
+    if(strict&&oldTrigger!=='load'&&!Object.prototype.hasOwnProperty.call(idMap,oldTrigger))throw new Error('Invalid package trigger');
+    var duration=packageNumber(note.duration,0,strict);
+    if(strict&&(duration<0||duration>60))throw new Error('Invalid package duration');
+    out.notifs.push({
+      id:'n'+(index+1),kind:note.kind==='toast'?'toast':'notify',title:packageText(note.title,'Notice',120,strict),
+      content:packageText(note.content,'',2000,strict),duration:Math.max(0,Math.min(60,duration)),
+      position:note.position==='Bottom'?'Bottom':'Top',trigger:oldTrigger==='load'?'load':(idMap[oldTrigger]||'load')
+    });
+  });
+  return out;
+}
+function createBuilderPackage(source,rayfieldVersion){
+  var safeState=packageState(source,false,true),payload=JSON.stringify({format:'rayfield-builder-package',packageVersion:2,rayfieldVersion:rayfieldVersion==='classic'?'classic':'gen2',state:safeState});
+  return builderZipStored([{name:'manifest.txt',data:BUILDER_PACKAGE_MANIFEST},{name:'project.dat',data:payload}]);
+}
+function readBuilderPackage(buffer){
+  var entries=builderZipRead(buffer);
+  var payload=JSON.parse(entries['project.dat']);
+  var state=packageState(payload.state||payload,false,true);
+  if(!payload.rayfieldVersion)payload.rayfieldVersion='gen2';
+  if(payload.rayfieldVersion!=='classic'&&payload.rayfieldVersion!=='gen2')payload.rayfieldVersion='gen2';
+  return {state:state,version:payload.rayfieldVersion};
+}
 function exportProject(){
   syncActiveProject();
-  var data=JSON.stringify({format:'rayfield-builder-project',version:version,state:S},null,2);
-  var blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  var name=(S.win&&S.win.file||projectName()).replace(/[^A-Za-z0-9_-]+/g,'-')+'.rayfield.json';
-  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},500);
-}
-function exportLua(){
-  var code=genLua();
-  var blob=new Blob([code],{type:'text/x-lua;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  var name=(S.win&&S.win.file||projectName()).replace(/[^A-Za-z0-9_-]+/g,'-')+'.lua';
-  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},500);
+  try{
+    var bytes=createBuilderPackage(S,version),blob=new Blob([bytes],{type:'application/zip'}),name=(S.win&&S.win.file||projectName()).replace(/[^A-Za-z0-9_-]+/g,'-')+'.RB12PK';
+    downloadExport(blob,name);
+  }catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));}
 }
 function downloadExport(blob,name){
-  var url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},500);
+  function viaLink(){
+    var url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},500);
+    return Promise.resolve();
+  }
+  /* Inside the claude.ai artifact viewer pages cannot start downloads themselves: the viewer's own save flow is used instead.
+     It only accepts a fixed list of extensions and .RB12PK is not on it, so the package (a real zip file) is offered as .RB12PK.zip;
+     importing accepts both names. Anywhere else a normal download link is used. The promise resolves when the attempt is over. */
+  if(window.claude&&typeof window.claude.use==='function'){
+    return window.claude.use('downloads').then(function(dl){
+      if(!dl)return viaLink();
+      return dl.save({filename:/\.rb12pk$/i.test(name)?name+'.zip':name,data:blob}).then(function(){},function(err){
+        if(err&&err.code==='declined')return;
+        toast(tr('saveFailed'));
+      });
+    },function(){return viaLink();});
+  }
+  return viaLink();
 }
 function exportSelected(format,ids){
-  if(!ids.length)return;
-  var projects=loadProjects().filter(function(p){return ids.indexOf(p.id)>=0;});
+  if((format!=='package'&&format!=='lua')||!ids.length)return;
+  var projects=loadProjects().filter(function(p){return ids.indexOf(p.id)>=0;}),used={},chain=Promise.resolve();
   closeModal();
-  projects.forEach(function(project,index){
-    setTimeout(function(){
-      var name=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-')||'project';
-      if(format==='json'){
-        var data=JSON.stringify({format:'rayfield-builder-project',version:project.version||'gen2',state:project.state},null,2);
-        downloadExport(new Blob([data],{type:'application/json'}),name+'.rayfield.json');
-      }else{
-        if(project.state&&project.state.importedLua){
-          downloadExport(new Blob([project.state.importedLua],{type:'text/x-lua;charset=utf-8'}),name+'.lua');
-          return;
-        }
-        var oldS=S,oldV=version;
+  if(format==='lua'){
+    if(projects.length===1){
+      var only=projects[0],onlyName=String(only.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+      var oldS=S,oldV=version;
+      try{
+        S=JSON.parse(JSON.stringify(only.state));version=only.version==='classic'?'classic':'gen2';
+        var text=genLua();
+        downloadExport(new Blob([text],{type:'text/plain;charset=utf-8'}),onlyName+'.txt');
+      }catch(error){console.warn('Lua export failed:',error);toast(tr('packageExportFailed')); }
+      finally{S=oldS;version=oldV;}
+      return;
+    }
+    var entries=[];
+    projects.forEach(function(project){
+      var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project',name=base,n=2;
+      while(entries.some(function(entry){return entry.name.toLowerCase()===name+'.txt'.toLowerCase();}))name=base+'-'+(n++);
+      var oldS=S,oldV=version;
+      try{
         S=JSON.parse(JSON.stringify(project.state));version=project.version==='classic'?'classic':'gen2';
-        var code=genLua();
-        S=oldS;version=oldV;
-        downloadExport(new Blob([code],{type:'text/x-lua;charset=utf-8'}),name+'.lua');
-      }
-    },index*250);
+        entries.push({name:name+'.txt',data:genLua()});
+      }catch(error){console.warn('Lua export failed:',error);toast(tr('packageExportFailed'));}
+      finally{S=oldS;version=oldV;}
+    });
+    if(entries.length)downloadExport(new Blob([builderZipStored(entries)],{type:'application/zip'}),'Rayfield-Builder-Lua.zip');
+    return;
+  }
+  projects.forEach(function(project){
+    var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project',name=base,n=2;
+    while(used[name])name=base+'-'+(n++);
+    used[name]=1;
+    /* One file at a time: the viewer only shows one save prompt at once. */
+    chain=chain.then(function(){
+      var blob;
+      try{blob=new Blob([createBuilderPackage(project.state,project.version)],{type:'application/zip'});}
+      catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));return;}
+      return downloadExport(blob,name+'.RB12PK').then(function(){return new Promise(function(done){setTimeout(done,250);});});
+    });
   });
 }
 function showExportMenu(){
@@ -1638,17 +2181,19 @@ function showExportMenu(){
     list.appendChild(h('label',{class:'export-project-option'},checkbox,h('span',null,project.name||tr('untitledProject'))));
   });
   if(!projects.length)list.appendChild(h('div',{class:'empty'},tr('untitledProject')));
-  var luaButton=modalButton(tr('exportLua')+' [0]',function(){exportSelected('lua',Object.keys(selected));},true);
-  var jsonButton=modalButton(tr('exportJson')+' [0]',function(){exportSelected('json',Object.keys(selected));},true);
-  luaButton.disabled=true;jsonButton.disabled=true;
+  function luaLabel(n){var s=tr('exportLua')+' ['+n+']';try{return s.toLocaleUpperCase(lang);}catch(e){return s.toUpperCase();}}
+  function packageLabel(n){var s=tr('exportPackage')+' ['+n+']';try{return s.toLocaleUpperCase(lang);}catch(e){return s.toUpperCase();}}
+  var luaButton=modalButton(luaLabel(0),function(){exportSelected('lua',Object.keys(selected));},true);
+  var packageButton=modalButton(packageLabel(0),function(){exportSelected('package',Object.keys(selected));},true);
+  luaButton.disabled=true;packageButton.disabled=true;
   function updateCount(){
     var count=Object.keys(selected).length;
-    luaButton.textContent=tr('exportLua')+' ['+count+']';
-    jsonButton.textContent=tr('exportJson')+' ['+count+']';
-    luaButton.disabled=count===0;jsonButton.disabled=count===0;
+    luaButton.textContent=luaLabel(count);
+    packageButton.textContent=packageLabel(count);
+    luaButton.disabled=count===0;packageButton.disabled=count===0;
   }
   playUiSfx('popup');
-  openModal(tr('exportTitle'),tr('exportBody'),list,[modalButton(tr('cancel'),closeModal),luaButton,jsonButton]);
+  openModal(tr('exportTitle'),tr('exportBody'),list,[modalButton(tr('cancel'),closeModal),luaButton,packageButton]);
 }
 function parseLuaStringLiteral(text){
   var s=String(text||'').trim();
@@ -1727,7 +2272,7 @@ function parseLuaProject(text,fileName){
   blank();
   var versionValue=classic?'classic':'gen2';
   var base=fileName.replace(/\.[^.]+$/,'')||tr('untitledProject');
-  S.win.name=base;S.win.file=base;S.importedLua=text;S.importedLuaFile=fileName;
+  S.win.name=base;S.win.file=base;
   var calls=findLuaCalls(text),tabs=[],tabVars={},tab;
   calls.forEach(function(call){
     if(call.method==='CreateTab'){
@@ -1785,28 +2330,24 @@ function parseLuaProject(text,fileName){
       if(fileNameValue!==undefined)S.win.file=fileNameValue;
     }
   });
-  S.importedLua=text;S.importedLuaFile=fileName;
   return versionValue;
 }
 function importProjectFile(file){
-  if(!file)return;var reader=new FileReader();
+  if(!file)return;
+  var reader=new FileReader();
   reader.onload=function(){
     try{
-      var text=String(reader.result||''),isLua=/\.lua$/i.test(file.name);
+      var imported=readBuilderPackage(reader.result);
       cancelPreviewMinimize();
       syncActiveProject();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
-      if(isLua){
-        version=parseLuaProject(text,file.name);
-        try{localStorage.setItem(VKEY,version);}catch(e){}
-      }else{
-        var data=JSON.parse(text),state=data.state||data;
-        if(!state||!Array.isArray(state.tabs)||!state.win)throw new Error('Invalid project');
-        S=state;S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
-        version=data.version==='classic'?'classic':'gen2';try{localStorage.setItem(VKEY,version);}catch(e){}
-      }
+      S=imported.state;S.sel=null;
+      version=imported.version;try{localStorage.setItem(VKEY,version);}catch(e){}
       rt={};logs=[];mode='crear';minimized=false;closeHome();persist();
-    }catch(e){toast(tr('copyFail'));renderHome();}
-  };reader.readAsText(file);
+      toast(tr('packageImported'));
+    }catch(e){console.warn('Builder package import rejected:',e);toast(tr('packageInvalid'));renderHome();}
+  };
+  reader.onerror=function(){toast(tr('packageInvalid'));};
+  reader.readAsArrayBuffer(file);
 }
 function find(id){for(var i=0;i<S.tabs.length;i++){var it=S.tabs[i].items,j;for(j=0;j<it.length;j++)if(it[j].id===id)return {item:it[j],tab:S.tabs[i],ti:i,idx:j};}return null;}
 function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('show');},1900);}
@@ -2177,7 +2718,7 @@ function dupItem(id){
   f.tab.items.splice(f.idx+1,0,c);S.sel=c.id;renderPreview();renderCon();persist();
 }
 function copyLua(){
-  var s=S.importedLua||genLua();
+  var s=genLua();
   function fb(){var ta=h('textarea',{style:'position:fixed;opacity:0;top:0;left:0'});ta.value=s;document.body.append(ta);ta.select();
     var ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();toast(ok?tr('copied'):tr('copyFail'));}
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(s).then(function(){toast(tr('copied'));},fb);else fb();
@@ -2353,7 +2894,7 @@ function panelVentana(){
     h('p',{class:'meta',style:'margin:0'},version==='gen2'?tr('w_note'):tr('w_note').replace(/Rayfield Gen2/g,'Rayfield'))].filter(Boolean);
 }
 function panelLua(){
-  var src=S.importedLua||genLua(),pre=h('pre',{class:'lua'});pre.innerHTML=hl(src);
+  var src=genLua(),pre=h('pre',{class:'lua'});pre.innerHTML=hl(src);
   return h('div',{class:'codewrap'},h('div',{class:'frow',style:'margin:0;justify-content:space-between;align-items:center'},
     h('span',{class:'meta'},tr('lines',{n:src.split('\n').length-1}).replace('Rayfield Gen2',versionName())),h('button',{class:'btn sm primary',type:'button',onclick:copyLua},tr('copy'))),pre);
 }
@@ -2657,5 +3198,5 @@ openHome();
 if(!restored&&!welcomeSeen)showWelcome();
 })();
 </script>
-</body>
-</html>
+
+</body></html>
