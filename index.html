@@ -294,6 +294,26 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .modal-actions{direction:ltr}
 [dir="rtl"] .modal-card{text-align:right}
 [dir="rtl"] .modal-choice,[dir="rtl"] .modal-languages button{text-align:right}
+.project-create-form{display:flex;flex-direction:column;gap:12px;padding:4px 0 2px}
+.project-create-field{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;align-items:center!important;gap:12px!important;margin:0!important}
+.project-create-field .lbl{margin:0!important;text-align:right!important}
+.project-create-field .in{height:46px;font-size:14px;padding:0 13px;border-radius:11px}
+.project-version{position:relative;min-width:0}
+.project-version-btn{width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 13px;border:1px solid var(--line);border-radius:11px;background:var(--field);font-size:14px;font-weight:600;text-align:left}
+.project-version-btn:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.project-version-btn[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-color:var(--accent)}
+.project-version-btn [data-ic="chevron-down"]{transition:transform .2s ease}
+.project-version-btn[aria-expanded="true"] [data-ic="chevron-down"]{transform:rotate(180deg)}
+.project-version-menu{position:absolute;left:0;right:0;top:100%;z-index:40;margin:0;padding:5px;list-style:none;background:var(--panel);border:1px solid var(--accent);border-top:0;border-radius:0 0 11px 11px;box-shadow:0 14px 30px rgba(0,0,0,.28);transform-origin:top}
+.project-version-menu:not([hidden]){animation:lang-menu-in .2s ease-out both}
+.project-version-menu li{animation:lang-item-in .22s ease-out both}
+.project-version-menu button{width:100%;height:42px;padding:0 11px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--fg);text-align:left;font-size:14px;font-weight:600}
+.project-version-menu button:hover,.project-version-menu button[aria-selected="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-fg)}
+@media (max-width:600px){
+  .project-create-field{grid-template-columns:1fr!important;gap:6px!important}
+  .project-create-field .lbl{text-align:left!important}
+  .project-create-field .in,.project-version-btn{height:48px}
+}
 .tutorial-code{direction:ltr;text-align:left;max-height:42vh;overflow:auto;margin:14px 0 0;padding:13px;border:1px solid var(--line);border-radius:10px;background:var(--code-bg);color:var(--code-fg);font:11.5px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre}
 .tutorial-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:4px 0 14px;padding:4px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)}
 .tutorial-tab{min-height:40px;padding:8px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--mut);font-weight:650}
@@ -427,7 +447,7 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
   </div>
 </header>
 <section id="homeView" class="home hidden" aria-label="Projects" data-ia="projects"></section>
-<input id="projectImport" type="file" accept=".rb12pk,application/zip" hidden>
+<input id="projectImport" type="file" hidden>
 <main class="app">
   <section class="stage" aria-label="Preview" data-ia="preview">
     <div class="stage-label" data-i="preview"></div>
@@ -909,8 +929,8 @@ n_intro:'Le notifiche compaiono al caricamento dello script o quando un elemento
 
 /* ---------- missing dictionary entries ---------- */
 function addTranslations(code,values){for(var key in values)D[code][key]=values[key];}
-addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import .RB12PK package',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the projects to export as .RB12PK packages. They include your interface and your Lua callbacks.',exportLua:'EXPORT LUA',exportPackage:'EXPORT BUILDER PACKAGE',packageImported:'Package imported.',packageInvalid:'Invalid or unsupported .RB12PK package.',packageExportFailed:'Could not create the package. Check that the project is within supported limits.',cancel:'Cancel'});
-addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar paquete .RB12PK',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige los proyectos que quieres exportar como paquetes .RB12PK. Incluyen tu interfaz y tus callbacks de Lua.',exportLua:'EXPORTAR LUA',exportPackage:'EXPORTAR PAQUETE BUILDER',packageImported:'Paquete importado.',packageInvalid:'Paquete .RB12PK no válido o no compatible.',packageExportFailed:'No se pudo crear el paquete. Comprueba que el proyecto esté dentro de los límites admitidos.',cancel:'Cancelar'});
+addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import .RB12PK package',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the projects to export as .RB12PK packages. They include your interface and your Lua callbacks.',exportLua:'EXPORT LUA',exportPackage:'EXPORT BUILDER PACKAGE',packageImported:'Package imported.',packageInvalid:'Invalid or unsupported .RB12PK package.',packageExportFailed:'Could not create the package. Check that the project is within supported limits.',cancel:'Cancel',newProjectTitle:'Create project',newProjectBody:'Configure the window and Rayfield version.',newProjectName:'Window title',newProjectSubtitle:'Description',newProjectVersion:'Rayfield version',newProjectCreate:'CREATE PROJECT',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar paquete .RB12PK',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige los proyectos que quieres exportar como paquetes .RB12PK. Incluyen tu interfaz y tus callbacks de Lua.',exportLua:'EXPORTAR LUA',exportPackage:'EXPORTAR PAQUETE BUILDER',packageImported:'Paquete importado.',packageInvalid:'Paquete .RB12PK no válido o no compatible.',packageExportFailed:'No se pudo crear el paquete. Comprueba que el proyecto esté dentro de los límites admitidos.',cancel:'Cancelar',newProjectTitle:'Crear proyecto',newProjectBody:'Configura la ventana y la versión de Rayfield.',newProjectName:'Título de la ventana',newProjectSubtitle:'Descripción',newProjectVersion:'Versión de Rayfield',newProjectCreate:'CREAR PROYECTO',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
 addTranslations('ca',{projectHome:'Inici de projectes',projects:'Projectes',newProject:'Nou projecte',importProject:'Importa el projecte',exportProject:'Exporta el projecte',openProject:'Obre',editProject:'Edita',renameProject:'Canvia el nom',deleteProject:'Esborra',projectCount:'{n} projectes',untitledProject:'Projecte sense nom',exportTitle:'Què vols exportar?',exportBody:'Tria el format d’exportació.',exportLua:'EXPORTA LUA',exportJson:'EXPORTA JSON',cancel:'Cancel·la'});
 addTranslations('fr',{projectHome:'Accueil des projets',projects:'Projets',newProject:'Nouveau projet',importProject:'Importer le projet',exportProject:'Exporter le projet',openProject:'Ouvrir',editProject:'Modifier',renameProject:'Renommer',deleteProject:'Supprimer',projectCount:'{n} projets',untitledProject:'Projet sans nom',exportTitle:'Que voulez-vous exporter ?',exportBody:'Choisissez le format d’exportation.',exportLua:'EXPORTER LUA',exportJson:'EXPORTER JSON',cancel:'Annuler'});
 addTranslations('de',{projectHome:'Projektübersicht',projects:'Projekte',newProject:'Neues Projekt',importProject:'Projekt importieren',exportProject:'Projekt exportieren',openProject:'Öffnen',editProject:'Bearbeiten',renameProject:'Umbenennen',deleteProject:'Löschen',projectCount:'{n} Projekte',untitledProject:'Projekt ohne Namen',exportTitle:'Was möchtest du exportieren?',exportBody:'Wähle das Exportformat.',exportLua:'LUA EXPORTIEREN',exportJson:'JSON EXPORTIEREN',cancel:'Abbrechen'});
@@ -1913,8 +1933,46 @@ function closeHome(animate){
 }
 function newProject(){
   cancelPreviewMinimize();
-  syncActiveProject();blank();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
-  logs=[];rt={};mode='crear';minimized=false;closeHome();persist();
+  syncActiveProject();
+  var nameInput=h('input',{class:'in',type:'text',value:'My Hub',maxlength:'120',placeholder:tr('newProjectName')});
+  var subtitleInput=h('input',{class:'in',type:'text',value:versionName(),maxlength:'160',placeholder:tr('newProjectSubtitle')});
+  var selectedVersion=version==='classic'?'classic':'gen2';
+  var versionNameNode=h('span',null,selectedVersion==='classic'?tr('newProjectClassic'):tr('newProjectGen2'));
+  var versionMenu=h('ul',{class:'project-version-menu',role:'listbox',hidden:true});
+  var versionButton=h('button',{class:'project-version-btn',type:'button','aria-haspopup':'listbox','aria-expanded':'false'},versionNameNode,h('span',{'data-ic':'chevron-down'},icon('chevron-down')));
+  var versionWrap=h('div',{class:'project-version'},versionButton,versionMenu);
+  function closeVersionMenu(){
+    versionMenu.hidden=true;
+    versionButton.setAttribute('aria-expanded','false');
+  }
+  [['gen2',tr('newProjectGen2')],['classic',tr('newProjectClassic')]].forEach(function(option,index){
+    var item=h('li',{role:'presentation',style:'animation-delay:'+((index+1)*35)+'ms'},
+      h('button',{type:'button',role:'option','aria-selected':String(selectedVersion===option[0]),onclick:function(){
+        selectedVersion=option[0];versionNameNode.textContent=option[1];
+        Array.from(versionMenu.querySelectorAll('button')).forEach(function(button){button.setAttribute('aria-selected','false');});
+        this.setAttribute('aria-selected','true');closeVersionMenu();
+      }},option[1]));
+    versionMenu.appendChild(item);
+  });
+  versionButton.addEventListener('click',function(){
+    var open=versionMenu.hidden;
+    versionMenu.hidden=!open;
+    versionButton.setAttribute('aria-expanded',String(open));
+  });
+  var content=h('div',{class:'project-create-form'},
+    h('label',{class:'fr project-create-field'},h('span',{class:'lbl'},tr('newProjectName')),nameInput),
+    h('label',{class:'fr project-create-field'},h('span',{class:'lbl'},tr('newProjectSubtitle')),subtitleInput),
+    h('div',{class:'fr project-create-field'},h('span',{class:'lbl'},tr('newProjectVersion')),versionWrap));
+  var createButton=modalButton(tr('newProjectCreate'),function(){
+    var title=String(nameInput.value||'').trim()||tr('untitledProject');
+    var subtitle=String(subtitleInput.value||'').trim();
+    closeModal();
+    version=selectedVersion;try{localStorage.setItem(VKEY,version);}catch(e){}
+    blank();S.win.name=title;S.win.subtitle=subtitle||versionName();S.win.file=title.replace(/[^A-Za-z0-9_-]+/g,'').slice(0,120)||'MyHub';
+    activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
+    logs=[];rt={};mode='crear';minimized=false;closeHome();persist();
+  },true);
+  openModal(tr('newProjectTitle'),tr('newProjectBody'),content,[modalButton(tr('cancel'),closeModal),createButton]);
 }
 function openProject(id){
   syncActiveProject();var project=loadProjects().find(function(p){return p.id===id;});
@@ -1971,7 +2029,6 @@ function builderZipStored(entries){
   var encoder=new TextEncoder(),locals=[],centrals=[],offset=0;
   entries.forEach(function(entry){
     var name=encoder.encode(entry.name),data=encoder.encode(entry.data),crc=builderCrc32(data);
-    if(name.length>255)throw new Error('Package entry name too long');
     var local=new Uint8Array(30+name.length+data.length),lv=new DataView(local.buffer);
     lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0,true);lv.setUint16(8,0,true);
     lv.setUint16(10,0,true);lv.setUint16(12,33,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);
@@ -2001,7 +2058,7 @@ function builderZipRead(buffer){
   for(var i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--)if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}
   if(eocd<0||view.getUint16(eocd+4,true)!==0||view.getUint16(eocd+6,true)!==0||view.getUint16(eocd+20,true)!==0||eocd+22!==bytes.length)throw new Error('Invalid package directory');
   var count=view.getUint16(eocd+10,true),centralSize=view.getUint32(eocd+12,true),centralOffset=view.getUint32(eocd+16,true);
-  if(count!==2||view.getUint16(eocd+8,true)!==count||centralOffset+centralSize!==eocd)throw new Error('Invalid package entries');
+  if(view.getUint16(eocd+8,true)!==count||count<1||centralOffset+centralSize!==eocd)throw new Error('Invalid package entries');
   var decoder=new TextDecoder('utf-8',{fatal:true}),entries={},cursor=centralOffset,localCursor=0;
   for(var j=0;j<count;j++){
     if(cursor+46>eocd||view.getUint32(cursor,true)!==0x02014b50)throw new Error('Invalid package entry');
@@ -2009,7 +2066,7 @@ function builderZipRead(buffer){
     var nameLength=view.getUint16(cursor+28,true),extraLength=view.getUint16(cursor+30,true),commentLength=view.getUint16(cursor+32,true),disk=view.getUint16(cursor+34,true),localOffset=view.getUint32(cursor+42,true);
     if(flags!==0||method!==0||compressed!==size||extraLength!==0||commentLength!==0||disk!==0||cursor+46+nameLength>eocd)throw new Error('Unsupported package entry');
     var name=decoder.decode(bytes.subarray(cursor+46,cursor+46+nameLength));
-    if((name!=='manifest.txt'&&name!=='project.dat')||Object.prototype.hasOwnProperty.call(entries,name)||localOffset!==localCursor)throw new Error('Unexpected package entry');
+    if(Object.prototype.hasOwnProperty.call(entries,name)||localOffset!==localCursor)throw new Error('Unexpected package entry');
     if(localOffset+30>centralOffset||view.getUint32(localOffset,true)!==0x04034b50)throw new Error('Invalid local entry');
     var localFlags=view.getUint16(localOffset+6,true),localMethod=view.getUint16(localOffset+8,true),localCrc=view.getUint32(localOffset+14,true);
     var localCompressed=view.getUint32(localOffset+18,true),localSize=view.getUint32(localOffset+22,true),localNameLength=view.getUint16(localOffset+26,true),localExtraLength=view.getUint16(localOffset+28,true);
@@ -2020,7 +2077,7 @@ function builderZipRead(buffer){
     if(builderCrc32(content)!==crc)throw new Error('Package checksum failed');
     entries[name]=decoder.decode(content);localCursor=endOffset;cursor+=46+nameLength;
   }
-  if(cursor!==eocd||localCursor!==centralOffset||!entries['manifest.txt']||!entries['project.dat'])throw new Error('Incomplete package');
+  if(cursor!==eocd||localCursor!==centralOffset||!entries['project.dat'])throw new Error('Incomplete package');
   return entries;
 }
 function packageOnlyKeys(value,keys){
@@ -2233,10 +2290,9 @@ function getLuaNumberArray(body,key){
   return (m[1].match(/[-+]?\d+(?:\.\d+)?/g)||[]).map(Number);
 }
 function tabImageId(value){
-  var match=/^(?:rbxassetid:\/\/)?(\d+)$/i.exec(String(value==null?'':value).trim());
-  if(!match||match[1].length>15)return '';
-  var id=Number(match[1]);
-  return id>0&&isFinite(id)?String(id):'';
+  var text=String(value==null?'':value).trim();
+  if(!text)return '';
+  return text.replace(/^rbxassetid:\/\//i,'');
 }
 function getClassicTabImage(body){
   var match=/^\s*(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')\s*,\s*(\d+)/.exec(body);
@@ -2492,7 +2548,7 @@ function hl(src){
 
 /* ---------- log + preview notifications ---------- */
 function addLog(kind,msg){
-  logs.push({t:new Date(),kind:kind,msg:msg});if(logs.length>200)logs.shift();
+  logs.push({t:new Date(),kind:kind,msg:msg});
   if(mode==='log')renderCon();else{unseen++;updateModes();}
 }
 function logCb(it,msg){addLog('cb',it.props.name+' → '+msg);}
@@ -2554,7 +2610,6 @@ B.dropdown=function(it){
 };
 B.input=function(it){
   var p=it.props,inp=h('input',{class:'fld',type:'text',placeholder:p.placeholder,value:rt[it.id]!==undefined?rt[it.id]:p.value,inputmode:p.numeric?'decimal':null,'aria-label':p.name});
-  if(p.numeric)inp.addEventListener('input',function(){inp.value=inp.value.replace(/[^0-9.\-]/g,'');});
   if(p.clearOnFocus)inp.addEventListener('focus',function(){inp.value='';});
   inp.addEventListener('change',function(){rt[it.id]=inp.value;logCb(it,'callback('+q(inp.value)+')');});
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
