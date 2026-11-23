@@ -1440,8 +1440,8 @@ var T={
 };
 var ONBOARDING_KEYS=['welcomeTitle','welcomeBody','welcomeTutorial','welcomeLanguage','welcomeVersion','welcomeContinue','options','switchTitle','switchBody','cancel','switchYes','recommendTitle','recommendBody','tutorialBody'];
 var ONBOARDING_TEXT={
- en:['Welcome to Rayfield Builder Gen 1/2!','What would you like to do before you start?','View tutorial','Change language','Choose version','Continue','Options','ARE YOU SURE YOU WANT TO SWITCH TO RAYFIELD?','All buttons and information here will be reset, and you will have to start over.','Cancel',"Yes, I'm sure.",'Version changed','Would you like to see the tutorial for this version?','First, use Create to add a Slider (10–100), Input, Toggle, and Button to one tab; do not create them in Lua. Select each control and paste its callback body into its Callback field. Add the shared demoState declaration once in the generated Lua, after CreateTab and before the controls. The Fly demo only prints values; it does not move a player.'],
- es:['¡Bienvenido a Rayfield Builder Gen 1/2!','¿Qué quieres hacer antes de empezar?','Ver tutorial','Cambiar idioma','Elegir versión','Continuar','Opciones','¿SEGURO QUE QUIERES CAMBIAR A RAYFIELD?','Se restablecerán todos los botones y la información; tendrás que empezar de nuevo.','Cancelar','Sí, estoy seguro.','Versión cambiada','¿Quieres ver el tutorial de esta versión?','Primero, en Crear, añade en una misma pestaña un Slider (10–100), un Input, un Toggle y un Button; no los crees con Lua. Selecciona cada control y pega el cuerpo de su callback en el campo Callback. Añade una sola vez la declaración de demoState en el Lua generado, después de CreateTab y antes de los controles. El ejemplo Fly solo imprime valores; no mueve a ningún jugador.'],
+ en:['Welcome to Rayfield Builder Gen 1/2!','What would you like to do before you start?','View tutorial','Change language','Choose version','Continue','Options','CHANGE RAYFIELD PREVIEW VERSION?','Only the Builder preview will change. Project data and the saved Rayfield version of each project will stay unchanged.','Cancel',"Yes, change preview.",'Version changed','Would you like to see the tutorial for this version?','First, use Create to add a Slider (10–100), Input, Toggle, and Button to one tab; do not create them in Lua. Select each control and paste its callback body into its Callback field. Add the shared demoState declaration once in the generated Lua, after CreateTab and before the controls. The Fly demo only prints values; it does not move a player.'],
+ es:['¡Bienvenido a Rayfield Builder Gen 1/2!','¿Qué quieres hacer antes de empezar?','Ver tutorial','Cambiar idioma','Elegir versión','Continuar','Opciones','¿CAMBIAR LA VERSIÓN DE LA VISTA PREVIA?','Solo cambiará la vista previa del Builder. Los datos y la versión guardada de cada proyecto permanecerán sin cambios.','Cancelar','Sí, cambiar vista.','Versión cambiada','¿Quieres ver el tutorial de esta versión?','Primero, en Crear, añade en una misma pestaña un Slider (10–100), un Input, un Toggle y un Button; no los crees con Lua. Selecciona cada control y pega el cuerpo de su callback en el campo Callback. Añade una sola vez la declaración de demoState en el Lua generado, después de CreateTab y antes de los controles. El ejemplo Fly solo imprime valores; no mueve a ningún jugador.'],
  ca:['Benvingut a Rayfield Builder Gen 1/2!','Què vols fer abans de començar?','Veure el tutorial','Canviar l’idioma','Triar la versió','Continuar','Opcions','SEGUR QUE VOLS CANVIAR A RAYFIELD?','Es restabliran tots els botons i la informació; hauràs de començar de nou.','Cancel·lar','Sí, n’estic segur.','Versió canviada','Vols veure el tutorial d’aquesta versió?','Primer, a Crear, afegeix en una mateixa pestanya un Slider (10–100), un Input, un Toggle i un Button; no els creïs amb Lua. Selecciona cada control i enganxa el cos del callback al camp corresponent. Afegeix una sola vegada demoState al Lua generat, després de CreateTab i abans dels controls. L’exemple Fly només imprimeix valors; no mou cap jugador.'],
  fr:['Bienvenue dans Rayfield Builder Gen 1/2 !','Que voulez-vous faire avant de commencer ?','Voir le tutoriel','Changer de langue','Choisir une version','Continuer','Options','VOULEZ-VOUS VRAIMENT PASSER À RAYFIELD ?','Tous les boutons et toutes les informations seront réinitialisés ; vous devrez recommencer.','Annuler','Oui, je confirme.','Version modifiée','Voulez-vous consulter le tutoriel de cette version ?','Dans Créer, ajoutez d’abord dans un même onglet un Slider (10–100), un Input, un Toggle et un Button ; ne les créez pas en Lua. Sélectionnez chaque contrôle et collez le corps du callback dans son champ Callback. Ajoutez une seule fois demoState dans le Lua généré, après CreateTab et avant les contrôles. L’exemple Fly affiche seulement des valeurs ; il ne déplace aucun joueur.'],
  de:['Willkommen bei Rayfield Builder Gen 1/2!','Was möchtest du vor dem Start tun?','Tutorial ansehen','Sprache ändern','Version auswählen','Weiter','Optionen','MÖCHTEST DU WIRKLICH ZU RAYFIELD WECHSELN?','Alle Schaltflächen und Informationen werden zurückgesetzt; du musst von vorn beginnen.','Abbrechen','Ja, ich bin sicher.','Version geändert','Möchtest du das Tutorial für diese Version ansehen?','Füge zuerst unter „Erstellen“ im selben Tab einen Slider (10–100), Input, Toggle und Button hinzu; erstelle sie nicht in Lua. Wähle jedes Steuerelement aus und füge den Callback-Inhalt in sein Callback-Feld ein. Ergänze demoState einmal im generierten Lua-Code nach CreateTab und vor den Steuerelementen. Das Fly-Beispiel gibt nur Werte aus und bewegt keinen Spieler.'],
@@ -1894,7 +1894,8 @@ function syncActiveProject(){
   var projects=loadProjects();
   if(!activeProjectId){activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}}
   var i=projects.findIndex(function(p){return p.id===activeProjectId;});
-  var project={id:activeProjectId,name:projectName(),updatedAt:Date.now(),version:version,state:JSON.parse(JSON.stringify(S))};
+  var projectVersion=i>=0?(projects[i].version==='classic'?'classic':'gen2'):version;
+  var project={id:activeProjectId,name:projectName(),updatedAt:Date.now(),version:projectVersion,state:JSON.parse(JSON.stringify(S))};
   if(i>=0)projects[i]=project;else projects.unshift(project);
   saveProjects(projects);
 }
@@ -2080,73 +2081,9 @@ function builderZipRead(buffer){
   if(cursor!==eocd||localCursor!==centralOffset||!entries['project.dat'])throw new Error('Incomplete package');
   return entries;
 }
-function packageOnlyKeys(value,keys){
-  if(!value||typeof value!=='object'||Array.isArray(value))return false;
-  return Object.keys(value).every(function(key){return keys.indexOf(key)>=0;});
-}
-function packageText(value,fallback,maxLength,strict){
-  if(typeof value!=='string'){if(strict)throw new Error('Invalid package text');return fallback;}
-  if(value.length>maxLength){if(strict)throw new Error('Package text too long');return value.slice(0,maxLength);}
-  return value;
-}
-function packageNumber(value,fallback,strict){
-  if(typeof value!=='number'||!isFinite(value)||Math.abs(value)>1000000){if(strict)throw new Error('Invalid package number');return fallback;}
-  return value;
-}
 function packageState(raw,strict,withCallbacks){
-  var stateKeys=['n','tab','win','tabs','notifs'];
-  if(!raw||typeof raw!=='object'||Array.isArray(raw)||strict&&!packageOnlyKeys(raw,stateKeys)||!Array.isArray(raw.tabs)||raw.tabs.length<1||!raw.win||typeof raw.win!=='object'||Array.isArray(raw.win)||strict&&!packageOnlyKeys(raw.win,['name','subtitle','theme','orient','save','file']))throw new Error('Invalid package project');
-  if(strict&&(raw.n!==undefined&&(typeof raw.n!=='number'||!isFinite(raw.n)||Math.abs(raw.n)>1000000)||typeof raw.tab!=='number'||!Number.isInteger(raw.tab)||raw.tab<0||raw.tab>=raw.tabs.length))throw new Error('Invalid package state');
-  var win=raw.win,theme=packageText(win.theme,'default',40,strict),orient=packageText(win.orient,'vertical',20,strict);
-  if(THEMES.indexOf(theme)<0||['vertical','horizontal'].indexOf(orient)<0||strict&&typeof win.save!=='boolean')throw new Error('Invalid package window');
-  var out={n:1,tab:0,notifs:[],win:{
-    name:packageText(win.name,'My Hub',120,strict),subtitle:packageText(win.subtitle,'Rayfield',160,strict),theme:theme,orient:orient,
-    save:typeof win.save==='boolean'?win.save:true,file:packageText(win.file,'MyHub',120,strict)
-  },tabs:[]};
-  var idMap=Object.create(null),seenIds=Object.create(null),nextId=1,totalItems=0;
-  raw.tabs.forEach(function(tab){
-    if(!packageOnlyKeys(tab,['name','icon','items'])||!Array.isArray(tab.items))throw new Error('Invalid package tab');
-    var safeTab={name:packageText(tab.name,'Tab',100,strict),icon:tabImageId(packageText(tab.icon,'',64,strict)),items:[]};
-    tab.items.forEach(function(item){
-      totalItems++;
-      if(!item||typeof item!=='object'||Array.isArray(item)||!Object.prototype.hasOwnProperty.call(T,item.type)||!item.props||typeof item.props!=='object'||Array.isArray(item.props))throw new Error('Invalid package control');
-      if(strict&&(!packageOnlyKeys(item,['id','type','props'])||!packageOnlyKeys(item.props,Object.keys(T[item.type].d()).filter(function(key){return withCallbacks||key!=='cb';}))))throw new Error('Package contains unknown control data');
-      if(strict&&(!item.id||typeof item.id!=='string'||!/^i\d{1,8}$/.test(item.id)||item.id.length>64||seenIds[item.id]||!withCallbacks&&Object.prototype.hasOwnProperty.call(item.props,'cb')))throw new Error('Package contains invalid or executable data');
-      var oldId=typeof item.id==='string'?item.id:'';
-      if(oldId&&Object.prototype.hasOwnProperty.call(idMap,oldId)&&strict)throw new Error('Duplicate package control');
-      var id='i'+nextId++;if(oldId)idMap[oldId]=id;seenIds[oldId]=true;
-      var defaults=T[item.type].d(),props={};
-      Object.keys(defaults).forEach(function(key){
-        var fallback=defaults[key],value=item.props[key];
-        if(key==='cb'){
-          if(!withCallbacks)return;
-          props.cb=typeof value==='string'?value:(typeof fallback==='string'?fallback:'');return;
-        }
-        if(typeof fallback==='string')props[key]=packageText(value,fallback,key==='text'?5000:2000,strict);
-        else if(typeof fallback==='number')props[key]=packageNumber(value,fallback,strict);
-        else if(typeof fallback==='boolean'){if(typeof value!=='boolean'&&strict)throw new Error('Invalid package option');props[key]=typeof value==='boolean'?value:fallback;}
-      });
-      if(props.color&&!/^#[0-9a-f]{6}$/i.test(props.color)){if(strict)throw new Error('Invalid package color');props.color=defaults.color;}
-      safeTab.items.push({id:id,type:item.type,props:props});
-    });
-    out.tabs.push(safeTab);
-  });
-  out.n=nextId;out.tab=Math.max(0,Math.min(out.tabs.length-1,Math.floor(packageNumber(raw.tab,0,strict))));
-  if(!Array.isArray(raw.notifs)){if(strict)throw new Error('Invalid package notifications');raw.notifs=[];}
-  raw.notifs.forEach(function(note,index){
-    if(!packageOnlyKeys(note,['id','kind','title','content','duration','position','trigger']))throw new Error('Invalid package notification');
-    if(strict&&(['notify','toast'].indexOf(note.kind)<0||['Top','Bottom'].indexOf(note.position)<0||typeof note.id!=='string'||note.id.length>64))throw new Error('Invalid package notification type');
-    var oldTrigger=packageText(note.trigger,'load',100,strict);
-    if(strict&&oldTrigger!=='load'&&!Object.prototype.hasOwnProperty.call(idMap,oldTrigger))throw new Error('Invalid package trigger');
-    var duration=packageNumber(note.duration,0,strict);
-    if(strict&&(duration<0||duration>60))throw new Error('Invalid package duration');
-    out.notifs.push({
-      id:'n'+(index+1),kind:note.kind==='toast'?'toast':'notify',title:packageText(note.title,'Notice',120,strict),
-      content:packageText(note.content,'',2000,strict),duration:Math.max(0,Math.min(60,duration)),
-      position:note.position==='Bottom'?'Bottom':'Top',trigger:oldTrigger==='load'?'load':(idMap[oldTrigger]||'load')
-    });
-  });
-  return out;
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return {};
+  try{return JSON.parse(JSON.stringify(raw));}catch(e){return raw;}
 }
 function createBuilderPackage(source,rayfieldVersion){
   var safeState=packageState(source,false,true),payload=JSON.stringify({format:'rayfield-builder-package',packageVersion:2,rayfieldVersion:rayfieldVersion==='classic'?'classic':'gen2',state:safeState});
@@ -3138,12 +3075,7 @@ function applyVersion(next,reset){
   versionConfirmReturn=null;hideOptions();
   version=next;
   try{localStorage.setItem(VKEY,version);}catch(e){}
-  if(reset){
-    blank();logs=[];unseen=0;mode='crear';minimized=false;previewScale=1;previewOffsetX=0;previewOffsetY=0;capture=null;
-    $('#notes').replaceChildren();$('#tcTop').replaceChildren();$('#tcBot').replaceChildren();
-  }else{
-    S.win.subtitle=versionName();
-  }
+  /* Switching the builder preview never replaces, rewrites, or restates the active project. */
   dismissWelcome();closeModal();renderAll();persist();showRecommendation();
 }
 function renderOptionsMenu(){
