@@ -1935,8 +1935,8 @@ function closeHome(animate){
 function newProject(){
   cancelPreviewMinimize();
   syncActiveProject();
-  var nameInput=h('input',{class:'in',type:'text',value:'My Hub',maxlength:'120',placeholder:tr('newProjectName')});
-  var subtitleInput=h('input',{class:'in',type:'text',value:versionName(),maxlength:'160',placeholder:tr('newProjectSubtitle')});
+  var nameInput=h('input',{class:'in',type:'text',value:'My Hub',placeholder:tr('newProjectName')});
+  var subtitleInput=h('input',{class:'in',type:'text',value:versionName(),placeholder:tr('newProjectSubtitle')});
   var selectedVersion=version==='classic'?'classic':'gen2';
   var versionNameNode=h('span',null,selectedVersion==='classic'?tr('newProjectClassic'):tr('newProjectGen2'));
   var versionMenu=h('ul',{class:'project-version-menu',role:'listbox',hidden:true});
@@ -1969,7 +1969,7 @@ function newProject(){
     var subtitle=String(subtitleInput.value||'').trim();
     closeModal();
     version=selectedVersion;try{localStorage.setItem(VKEY,version);}catch(e){}
-    blank();S.win.name=title;S.win.subtitle=subtitle||versionName();S.win.file=title.replace(/[^A-Za-z0-9_-]+/g,'').slice(0,120)||'MyHub';
+    blank();S.win.name=title;S.win.subtitle=subtitle||(selectedVersion==='classic'?'Rayfield':'Rayfield Gen2');S.win.file=title.replace(/[^A-Za-z0-9_-]+/g,'')||'MyHub';
     activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
     logs=[];rt={};mode='crear';minimized=false;closeHome();persist();
   },true);
@@ -1996,7 +1996,7 @@ function applyProjectName(id,name){
 function renameProject(id){
   var project=loadProjects().find(function(p){return p.id===id;});
   if(!project)return;
-  var input=h('input',{class:'in',type:'text',value:project.name||tr('untitledProject'),maxlength:'60','aria-label':tr('renameProject')});
+  var input=h('input',{class:'in',type:'text',value:project.name||tr('untitledProject'),'aria-label':tr('renameProject')});
   function save(){
     var name=String(input.value).trim();
     if(!name){input.focus();return;}
@@ -2054,31 +2054,24 @@ function builderZipStored(entries){
 }
 function builderZipRead(buffer){
   var bytes=buffer instanceof Uint8Array?buffer:new Uint8Array(buffer);
-  if(bytes.length<22)throw new Error('Invalid package size');
   var view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),eocd=-1;
-  for(var i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--)if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}
-  if(eocd<0||view.getUint16(eocd+4,true)!==0||view.getUint16(eocd+6,true)!==0||view.getUint16(eocd+20,true)!==0||eocd+22!==bytes.length)throw new Error('Invalid package directory');
-  var count=view.getUint16(eocd+10,true),centralSize=view.getUint32(eocd+12,true),centralOffset=view.getUint32(eocd+16,true);
-  if(view.getUint16(eocd+8,true)!==count||count<1||centralOffset+centralSize!==eocd)throw new Error('Invalid package entries');
-  var decoder=new TextDecoder('utf-8',{fatal:true}),entries={},cursor=centralOffset,localCursor=0;
+  for(var i=bytes.length-22;i>=0;i--)if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}
+  if(eocd<0)return {};
+  var count=view.getUint16(eocd+10,true),centralOffset=view.getUint32(eocd+16,true);
+  var decoder=new TextDecoder('utf-8',{fatal:false}),entries={},cursor=centralOffset;
   for(var j=0;j<count;j++){
-    if(cursor+46>eocd||view.getUint32(cursor,true)!==0x02014b50)throw new Error('Invalid package entry');
-    var flags=view.getUint16(cursor+8,true),method=view.getUint16(cursor+10,true),crc=view.getUint32(cursor+16,true),compressed=view.getUint32(cursor+20,true),size=view.getUint32(cursor+24,true);
-    var nameLength=view.getUint16(cursor+28,true),extraLength=view.getUint16(cursor+30,true),commentLength=view.getUint16(cursor+32,true),disk=view.getUint16(cursor+34,true),localOffset=view.getUint32(cursor+42,true);
-    if(flags!==0||method!==0||compressed!==size||extraLength!==0||commentLength!==0||disk!==0||cursor+46+nameLength>eocd)throw new Error('Unsupported package entry');
+    if(cursor+46>eocd||view.getUint32(cursor,true)!==0x02014b50)break;
+    var method=view.getUint16(cursor+10,true),compressed=view.getUint32(cursor+20,true),size=view.getUint32(cursor+24,true);
+    var nameLength=view.getUint16(cursor+28,true),extraLength=view.getUint16(cursor+30,true),commentLength=view.getUint16(cursor+32,true),localOffset=view.getUint32(cursor+42,true);
     var name=decoder.decode(bytes.subarray(cursor+46,cursor+46+nameLength));
-    if(Object.prototype.hasOwnProperty.call(entries,name)||localOffset!==localCursor)throw new Error('Unexpected package entry');
-    if(localOffset+30>centralOffset||view.getUint32(localOffset,true)!==0x04034b50)throw new Error('Invalid local entry');
-    var localFlags=view.getUint16(localOffset+6,true),localMethod=view.getUint16(localOffset+8,true),localCrc=view.getUint32(localOffset+14,true);
-    var localCompressed=view.getUint32(localOffset+18,true),localSize=view.getUint32(localOffset+22,true),localNameLength=view.getUint16(localOffset+26,true),localExtraLength=view.getUint16(localOffset+28,true);
-    var dataOffset=localOffset+30+localNameLength+localExtraLength,endOffset=dataOffset+size;
-    if(localFlags!==0||localMethod!==0||localCrc!==crc||localCompressed!==compressed||localSize!==size||localNameLength!==nameLength||localExtraLength!==0||endOffset>centralOffset)throw new Error('Mismatched package entry');
-    if(decoder.decode(bytes.subarray(localOffset+30,localOffset+30+localNameLength))!==name)throw new Error('Mismatched package name');
-    var content=bytes.slice(dataOffset,endOffset);
-    if(builderCrc32(content)!==crc)throw new Error('Package checksum failed');
-    entries[name]=decoder.decode(content);localCursor=endOffset;cursor+=46+nameLength;
+    if(localOffset+30<=bytes.length&&view.getUint32(localOffset,true)===0x04034b50){
+      var localNameLength=view.getUint16(localOffset+26,true),localExtraLength=view.getUint16(localOffset+28,true);
+      var dataOffset=localOffset+30+localNameLength+localExtraLength;
+      var endOffset=dataOffset+size;
+      if(endOffset<=bytes.length)entries[name]=decoder.decode(bytes.subarray(dataOffset,endOffset));
+    }
+    cursor+=46+nameLength+extraLength+commentLength;
   }
-  if(cursor!==eocd||localCursor!==centralOffset)throw new Error('Incomplete package');
   return entries;
 }
 function packageState(raw,strict,withCallbacks){
