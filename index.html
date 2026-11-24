@@ -2029,7 +2029,7 @@ function builderCrc32(bytes){
 function builderZipStored(entries){
   var encoder=new TextEncoder(),locals=[],centrals=[],offset=0;
   entries.forEach(function(entry){
-    var name=encoder.encode(entry.name),data=encoder.encode(entry.data),crc=builderCrc32(data);
+    var name=encoder.encode(entry.name),data=typeof entry.data==='string'?encoder.encode(entry.data):new Uint8Array(entry.data),crc=builderCrc32(data);
     var local=new Uint8Array(30+name.length+data.length),lv=new DataView(local.buffer);
     lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0,true);lv.setUint16(8,0,true);
     lv.setUint16(10,0,true);lv.setUint16(12,33,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);
@@ -2078,7 +2078,7 @@ function builderZipRead(buffer){
     if(builderCrc32(content)!==crc)throw new Error('Package checksum failed');
     entries[name]=decoder.decode(content);localCursor=endOffset;cursor+=46+nameLength;
   }
-  if(cursor!==eocd||localCursor!==centralOffset||!entries['project.dat'])throw new Error('Incomplete package');
+  if(cursor!==eocd||localCursor!==centralOffset)throw new Error('Incomplete package');
   return entries;
 }
 function packageState(raw,strict,withCallbacks){
@@ -2090,12 +2090,19 @@ function createBuilderPackage(source,rayfieldVersion){
   return builderZipStored([{name:'manifest.txt',data:BUILDER_PACKAGE_MANIFEST},{name:'project.dat',data:payload}]);
 }
 function readBuilderPackage(buffer){
-  var entries=builderZipRead(buffer);
-  var payload=JSON.parse(entries['project.dat']);
-  var state=packageState(payload.state||payload,false,true);
-  if(!payload.rayfieldVersion)payload.rayfieldVersion='gen2';
-  if(payload.rayfieldVersion!=='classic'&&payload.rayfieldVersion!=='gen2')payload.rayfieldVersion='gen2';
-  return {state:state,version:payload.rayfieldVersion};
+  var entries=builderZipRead(buffer),raw='',payload=null;
+  if(entries['project.dat']!=null)raw=entries['project.dat'];
+  else{
+    var keys=Object.keys(entries);
+    for(var i=0;i<keys.length;i++){
+      if(keys[i].toLowerCase().slice(-5)==='.json'||keys[i].toLowerCase().slice(-4)==='.dat'||keys[i]==='project.dat')raw=entries[keys[i]];
+    }
+  }
+  try{payload=raw?JSON.parse(raw):null;}catch(e){payload=null;}
+  var savedVersion=payload&&payload.rayfieldVersion==='classic'?'classic':'gen2';
+  if(payload&&payload.state)payload=payload.state;
+  var state=packageState(payload||{},false,true);
+  return {state:state,version:savedVersion};
 }
 function exportProject(){
   syncActiveProject();
@@ -2126,8 +2133,15 @@ function downloadExport(blob,name){
 }
 function exportSelected(format,ids){
   if((format!=='package'&&format!=='lua')||!ids.length)return;
-  var projects=loadProjects().filter(function(p){return ids.indexOf(p.id)>=0;}),used={},chain=Promise.resolve();
+  var projects=loadProjects().filter(function(p){return ids.indexOf(p.id)>=0;});
   closeModal();
+  function uniqueExportName(project,index,usedNames){
+    var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+    var name=base,n=2;
+    while(usedNames[name.toLowerCase()])name=base+'-'+(n++);
+    usedNames[name.toLowerCase()]=true;
+    return name;
+  }
   if(format==='lua'){
     if(projects.length===1){
       var only=projects[0],onlyName=String(only.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
@@ -2140,10 +2154,9 @@ function exportSelected(format,ids){
       finally{S=oldS;version=oldV;}
       return;
     }
-    var entries=[];
-    projects.forEach(function(project){
-      var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project',name=base,n=2;
-      while(entries.some(function(entry){return entry.name.toLowerCase()===name+'.txt'.toLowerCase();}))name=base+'-'+(n++);
+    var entries=[],usedNames={};
+    projects.forEach(function(project,index){
+      var name=uniqueExportName(project,index,usedNames);
       var oldS=S,oldV=version;
       try{
         S=JSON.parse(JSON.stringify(project.state));version=project.version==='classic'?'classic':'gen2';
@@ -2154,18 +2167,21 @@ function exportSelected(format,ids){
     if(entries.length)downloadExport(new Blob([builderZipStored(entries)],{type:'application/zip'}),'Rayfield-Builder-Lua.zip');
     return;
   }
-  projects.forEach(function(project){
-    var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project',name=base,n=2;
-    while(used[name])name=base+'-'+(n++);
-    used[name]=1;
-    /* One file at a time: the viewer only shows one save prompt at once. */
-    chain=chain.then(function(){
-      var blob;
-      try{blob=new Blob([createBuilderPackage(project.state,project.version)],{type:'application/zip'});}
-      catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));return;}
-      return downloadExport(blob,name+'.RB12PK').then(function(){return new Promise(function(done){setTimeout(done,250);});});
-    });
+  if(projects.length===1){
+    var only=projects[0],onlyName=String(only.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+    try{downloadExport(new Blob([createBuilderPackage(only.state,only.version)],{type:'application/zip'}),onlyName+'.RB12PK');}
+    catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));}
+    return;
+  }
+  var entries=[],usedNames={};
+  projects.forEach(function(project,index){
+    var name=uniqueExportName(project,index,usedNames);
+    try{
+      var bytes=createBuilderPackage(project.state,project.version);
+      entries.push({name:name+'.RB12PK',data:bytes});
+    }catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed')); }
   });
+  if(entries.length)downloadExport(new Blob([builderZipStored(entries)],{type:'application/zip'}),'Rayfield-Builder-Projects.zip');
 }
 function showExportMenu(){
   var projects=loadProjects(),selected={};
@@ -2227,9 +2243,7 @@ function getLuaNumberArray(body,key){
   return (m[1].match(/[-+]?\d+(?:\.\d+)?/g)||[]).map(Number);
 }
 function tabImageId(value){
-  var text=String(value==null?'':value).trim();
-  if(!text)return '';
-  return text.replace(/^rbxassetid:\/\//i,'');
+  return String(value==null?'':value).trim();
 }
 function getClassicTabImage(body){
   var match=/^\s*(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')\s*,\s*(\d+)/.exec(body);
@@ -2766,13 +2780,11 @@ function panelCrear(){
     return children;
   }
   function updateTabImageUi(){
-    var id=tabImageId(cur.icon),invalid=!!String(cur.icon||'').trim()&&!id;
-    tabImageIn.setAttribute('aria-invalid',invalid?'true':'false');
-    tabImageError.hidden=!invalid;
+    var id=tabImageId(cur.icon);
     tabImagePreview.replaceChildren();
     if(id){
       tabImagePreview.append(h('div',{class:'tab-image-id-preview',title:tr('tabImage')+': '+id},icon('image'),h('span',null,id)));
-    }else tabImagePreview.append(h('span',null,tr(invalid?'tabImageInvalid':'tabImageEmpty')));
+    }else tabImagePreview.append(h('span',null,tr('tabImageEmpty')));
     var chip=chips.children[S.tab];
     if(chip){
       chip.classList.toggle('has-image',!!id);
