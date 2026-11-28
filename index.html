@@ -295,8 +295,9 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 [dir="rtl"] .modal-card{text-align:right}
 [dir="rtl"] .modal-choice,[dir="rtl"] .modal-languages button{text-align:right}
 .project-create-form{display:flex;flex-direction:column;gap:12px;padding:4px 0 2px}
-.project-create-field{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;align-items:center!important;gap:12px!important;margin:0!important}
-.project-create-field .lbl{margin:0!important;text-align:right!important}
+.risk-list{margin:0 0 14px;padding-inline-start:22px;max-height:176px;overflow:auto;font-size:13px;line-height:1.7;text-align:start}
+.project-create-field{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;align-items:start!important;gap:12px!important;margin:0!important}
+.project-create-field .lbl{margin:0!important;text-align:end!important;min-height:46px;display:flex!important;align-items:center;justify-content:flex-end}
 .project-create-field .in{height:46px;font-size:14px;padding:0 13px;border-radius:11px}
 .project-version{position:relative;min-width:0}
 .project-version-btn{width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 13px;border:1px solid var(--line);border-radius:11px;background:var(--field);font-size:14px;font-weight:600;text-align:left}
@@ -304,14 +305,14 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 .project-version-btn[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-color:var(--accent)}
 .project-version-btn [data-ic="chevron-down"]{transition:transform .2s ease}
 .project-version-btn[aria-expanded="true"] [data-ic="chevron-down"]{transform:rotate(180deg)}
-.project-version-menu{position:absolute;left:0;right:0;top:100%;z-index:40;margin:0;padding:5px;list-style:none;background:var(--panel);border:1px solid var(--accent);border-top:0;border-radius:0 0 11px 11px;box-shadow:0 14px 30px rgba(0,0,0,.28);transform-origin:top}
+.project-version-menu{position:static;margin:0;padding:5px;list-style:none;background:var(--panel);border:1px solid var(--accent);border-top:0;border-radius:0 0 11px 11px;box-shadow:0 14px 30px rgba(0,0,0,.28);transform-origin:top}
 .project-version-menu:not([hidden]){animation:lang-menu-in .2s ease-out both}
 .project-version-menu li{animation:lang-item-in .22s ease-out both}
-.project-version-menu button{width:100%;height:42px;padding:0 11px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--fg);text-align:left;font-size:14px;font-weight:600}
+.project-version-menu button{width:100%;height:42px;padding:0 11px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--fg);text-align:start;font-size:14px;font-weight:600}
 .project-version-menu button:hover,.project-version-menu button[aria-selected="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-fg)}
 @media (max-width:600px){
   .project-create-field{grid-template-columns:1fr!important;gap:6px!important}
-  .project-create-field .lbl{text-align:left!important}
+  .project-create-field .lbl{text-align:start!important;min-height:0;justify-content:flex-start}
   .project-create-field .in,.project-version-btn{height:48px}
 }
 .tutorial-code{direction:ltr;text-align:left;max-height:42vh;overflow:auto;margin:14px 0 0;padding:13px;border:1px solid var(--line);border-radius:10px;background:var(--code-bg);color:var(--code-fg);font:11.5px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre}
@@ -457,7 +458,7 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
     <div class="tc bot" id="tcBot" aria-live="polite"></div>
     <div class="notes" id="notes" aria-live="polite"></div>
   </section>
-  <aside class="con" aria-label="Builder console">
+  <aside class="con" aria-label="Builder console" data-ia="builderConsole">
     <div class="con-bar"><i></i><span>builder.console</span></div>
     <div class="modes" id="modes" role="tablist"></div>
     <div class="con-body" id="conBody"></div>
@@ -530,7 +531,9 @@ var LANGS=[
 var D={},lang='en';
 function tr(k,a){var s=D[lang]&&D[lang][k];if(s==null)s=D.en[k];if(s==null)s=k;if(a)for(var x in a)s=s.split('{'+x+'}').join(a[x]);return s;}
 var langNameCache={};
-function displayLang(c,fallback){if(langNameCache[c])return langNameCache[c];try{if(typeof Intl!=='undefined'&&Intl.DisplayNames){var n=new Intl.DisplayNames([c],{type:'language'}).of(c);if(n&&n!==c)return langNameCache[c]=n;}}catch(e){}return langNameCache[c]=fallback;}
+/* Native language names: fixed table first (Intl.DisplayNames returns the English name, e.g. "Basque", when a browser lacks that locale's data). */
+var LANG_NATIVE={en:'English',es:'español',zh:'中文',hi:'हिन्दी',ar:'العربية',fr:'français',bn:'বাংলা',ru:'русский',pt:'português',ur:'اردو',id:'Indonesia',de:'Deutsch',ja:'日本語',tr:'Türkçe',vi:'Tiếng Việt',te:'తెలుగు',mr:'मराठी',ta:'தமிழ்',pa:'ਪੰਜਾਬੀ',ko:'한국어',ca:'català',it:'italiano',eu:'euskara',sw:'Kiswahili',ha:'Hausa'};
+function displayLang(c,fallback){if(langNameCache[c])return langNameCache[c];if(LANG_NATIVE[c])return langNameCache[c]=LANG_NATIVE[c];try{if(typeof Intl!=='undefined'&&Intl.DisplayNames){var n=new Intl.DisplayNames([c],{type:'language'}).of(c);if(n&&n!==c)return langNameCache[c]=n;}}catch(e){}return langNameCache[c]=fallback;}
 
 /* ---------- icons: Lucide (https://lucide.dev, ISC license), inlined ---------- */
 var ICONS={
@@ -555,7 +558,7 @@ function icon(n){
 /* ---------- dictionaries: en, es ---------- */
 D.en={
 sub:'Design the window on the left, copy the Lua from the console.',
-copy:'Copy Lua',copied:'Lua copied',copyFail:'Could not copy. Open the Lua mode and select the text.',importRisk:'Safety check: omitted {n} callback block(s) with risky code patterns. This heuristic scan is not antivirus; never run code you do not trust.',
+copy:'Copy Lua',copied:'Lua copied',copyFail:'Could not copy. Open the Lua mode and select the text.',
 preview:'Preview',lang:'Language',previewGrow:'Zoom preview in',previewShrink:'Zoom preview out',
 m_create:'Create',m_edit:'Edit',m_notify:'Notify',m_window:'Window',m_lua:'Lua',m_log:'Log',
 g_controls:'Controls',g_display:'Display',g_structure:'Structure',
@@ -573,7 +576,7 @@ exportTitle:'What do you want to export?',exportBody:'Choose the export format.'
 };
 D.es={
 sub:'Diseña la ventana a la izquierda y copia el Lua desde la consola.',
-copy:'Copiar Lua',copied:'Lua copiado',copyFail:'No se pudo copiar. Abre el modo Lua y selecciona el texto.',importRisk:'Revisión de seguridad: se omitieron {n} bloques de callback con patrones de riesgo. Este análisis heurístico no es un antivirus; no ejecutes código que no sea de confianza.',
+copy:'Copiar Lua',copied:'Lua copiado',copyFail:'No se pudo copiar. Abre el modo Lua y selecciona el texto.',
 preview:'Vista previa',lang:'Idioma',previewGrow:'Ampliar el contenido de la vista previa',previewShrink:'Reducir el contenido de la vista previa',
 m_create:'Crear',m_edit:'Editar',m_notify:'Notify',m_window:'Ventana',m_lua:'Lua',m_log:'Log',
 g_controls:'Controles',g_display:'Mostrar',g_structure:'Estructura',
@@ -929,8 +932,8 @@ n_intro:'Le notifiche compaiono al caricamento dello script o quando un elemento
 
 /* ---------- missing dictionary entries ---------- */
 function addTranslations(code,values){for(var key in values)D[code][key]=values[key];}
-addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import .RB12PK package',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the projects to export as .RB12PK packages. They include your interface and your Lua callbacks.',exportLua:'EXPORT LUA',exportPackage:'EXPORT BUILDER PACKAGE',packageImported:'Package imported.',packageInvalid:'Invalid or unsupported .RB12PK package.',packageExportFailed:'Could not create the package. Check that the project is within supported limits.',cancel:'Cancel',newProjectTitle:'Create project',newProjectBody:'Configure the window and Rayfield version.',newProjectName:'Window title',newProjectSubtitle:'Description',newProjectVersion:'Rayfield version',newProjectCreate:'CREATE PROJECT',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
-addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar paquete .RB12PK',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige los proyectos que quieres exportar como paquetes .RB12PK. Incluyen tu interfaz y tus callbacks de Lua.',exportLua:'EXPORTAR LUA',exportPackage:'EXPORTAR PAQUETE BUILDER',packageImported:'Paquete importado.',packageInvalid:'Paquete .RB12PK no válido o no compatible.',packageExportFailed:'No se pudo crear el paquete. Comprueba que el proyecto esté dentro de los límites admitidos.',cancel:'Cancelar',newProjectTitle:'Crear proyecto',newProjectBody:'Configura la ventana y la versión de Rayfield.',newProjectName:'Título de la ventana',newProjectSubtitle:'Descripción',newProjectVersion:'Versión de Rayfield',newProjectCreate:'CREAR PROYECTO',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('en',{projectHome:'Project home',projects:'Projects',newProject:'New project',importProject:'Import .RB12PK package',exportProject:'Export project',openProject:'Open',editProject:'Edit',renameProject:'Rename',deleteProject:'Delete',projectCount:'{n} projects',untitledProject:'Untitled project',exportTitle:'What do you want to export?',exportBody:'Choose the projects and a format. Lua downloads a .txt (or one .zip if you pick several); Builder packages (.RB12PK) keep your interface and Lua callbacks.',exportLua:'EXPORT LUA',exportPackage:'EXPORT BUILDER PACKAGE',packageImported:'Package imported.',packageInvalid:'Invalid or unsupported .RB12PK package.',packageExportFailed:'Could not create the package. Check that the project is within supported limits.',cancel:'Cancel',newProjectTitle:'Create project',newProjectBody:'Configure the window and Rayfield version.',newProjectName:'Window title',newProjectSubtitle:'Description',newProjectVersion:'Rayfield version',newProjectCreate:'CREATE PROJECT',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('es',{projectHome:'Inicio de proyectos',projects:'Proyectos',newProject:'Nuevo proyecto',importProject:'Importar paquete .RB12PK',exportProject:'Exportar proyecto',openProject:'Abrir',editProject:'Editar',renameProject:'Renombrar',deleteProject:'Eliminar',projectCount:'{n} proyectos',untitledProject:'Proyecto sin título',exportTitle:'¿Qué quieres exportar?',exportBody:'Elige los proyectos y un formato. Lua descarga un .txt (o un .zip si eliges varios); los paquetes Builder (.RB12PK) guardan tu interfaz y tus callbacks de Lua.',exportLua:'EXPORTAR LUA',exportPackage:'EXPORTAR PAQUETE BUILDER',packageImported:'Paquete importado.',packageInvalid:'Paquete .RB12PK no válido o no compatible.',packageExportFailed:'No se pudo crear el paquete. Comprueba que el proyecto esté dentro de los límites admitidos.',cancel:'Cancelar',newProjectTitle:'Crear proyecto',newProjectBody:'Configura la ventana y la versión de Rayfield.',newProjectName:'Título de la ventana',newProjectSubtitle:'Descripción',newProjectVersion:'Versión de Rayfield',newProjectCreate:'CREAR PROYECTO',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
 addTranslations('ca',{projectHome:'Inici de projectes',projects:'Projectes',newProject:'Nou projecte',importProject:'Importa el projecte',exportProject:'Exporta el projecte',openProject:'Obre',editProject:'Edita',renameProject:'Canvia el nom',deleteProject:'Esborra',projectCount:'{n} projectes',untitledProject:'Projecte sense nom',exportTitle:'Què vols exportar?',exportBody:'Tria el format d’exportació.',exportLua:'EXPORTA LUA',exportJson:'EXPORTA JSON',cancel:'Cancel·la'});
 addTranslations('fr',{projectHome:'Accueil des projets',projects:'Projets',newProject:'Nouveau projet',importProject:'Importer le projet',exportProject:'Exporter le projet',openProject:'Ouvrir',editProject:'Modifier',renameProject:'Renommer',deleteProject:'Supprimer',projectCount:'{n} projets',untitledProject:'Projet sans nom',exportTitle:'Que voulez-vous exporter ?',exportBody:'Choisissez le format d’exportation.',exportLua:'EXPORTER LUA',exportJson:'EXPORTER JSON',cancel:'Annuler'});
 addTranslations('de',{projectHome:'Projektübersicht',projects:'Projekte',newProject:'Neues Projekt',importProject:'Projekt importieren',exportProject:'Projekt exportieren',openProject:'Öffnen',editProject:'Bearbeiten',renameProject:'Umbenennen',deleteProject:'Löschen',projectCount:'{n} Projekte',untitledProject:'Projekt ohne Namen',exportTitle:'Was möchtest du exportieren?',exportBody:'Wähle das Exportformat.',exportLua:'LUA EXPORTIEREN',exportJson:'JSON EXPORTIEREN',cancel:'Abbrechen'});
@@ -1108,7 +1111,7 @@ addTranslations('pa',{saveName:'ਸੰਭਾਲੋ',copyText:'ਕਾਪੀ ਕ�
 addTranslations('en',{saveFailed:'Couldn’t save the file.'});
 addTranslations('es',{saveFailed:'No se pudo guardar el archivo.'});
 addTranslations('ca',{
-  importRisk:'Revisió de seguretat: s’han omès {n} blocs de callback amb patrons de codi de risc. Aquesta anàlisi heurística no és un antivirus; no executis mai codi en què no confiïs.',
+  
   tabImage:'ID d’imatge de Roblox',
   tabImageHint:'Introdueix un ID de Roblox (o rbxassetid://ID); la pestanya exportada a Rayfield carregarà la imatge.',
   tabImageInvalid:'Introdueix un ID numèric vàlid d’imatge de Roblox.',
@@ -1121,7 +1124,7 @@ addTranslations('ca',{
   saveFailed:'No s’ha pogut desar el fitxer.'
 });
 addTranslations('fr',{
-  importRisk:'Contrôle de sécurité : {n} bloc(s) de callback comportant des motifs de code à risque ont été omis. Cette analyse heuristique n’est pas un antivirus ; n’exécutez jamais du code auquel vous ne faites pas confiance.',
+  
   tabImage:'ID d’image Roblox',
   tabImageHint:'Saisissez un ID de ressource Roblox (ou rbxassetid://ID) ; l’onglet Rayfield exporté chargera l’image.',
   tabImageInvalid:'Saisissez un ID numérique valide d’image Roblox.',
@@ -1134,7 +1137,7 @@ addTranslations('fr',{
   saveFailed:'Impossible d’enregistrer le fichier.'
 });
 addTranslations('de',{
-  importRisk:'Sicherheitsprüfung: {n} Callback-Block/Blöcke mit riskanten Codemustern wurde(n) ausgelassen. Diese heuristische Prüfung ist kein Virenscanner; führe niemals Code aus, dem du nicht vertraust.',
+  
   tabImage:'Roblox-Bild-Asset-ID',
   tabImageHint:'Gib eine Roblox-Asset-ID (oder rbxassetid://ID) ein; der exportierte Rayfield-Tab lädt das Bild.',
   tabImageInvalid:'Gib eine gültige numerische Roblox-Bild-Asset-ID ein.',
@@ -1147,7 +1150,7 @@ addTranslations('de',{
   saveFailed:'Die Datei konnte nicht gespeichert werden.'
 });
 addTranslations('pt',{
-  importRisk:'Verificação de segurança: foram omitidos {n} bloco(s) de callback com padrões de código de risco. Esta análise heurística não é um antivírus; nunca executes código em que não confies.',
+  
   tabImage:'ID de imagem do Roblox',
   tabImageHint:'Introduz um ID de recurso do Roblox (ou rbxassetid://ID); o separador Rayfield exportado carrega a imagem.',
   tabImageInvalid:'Introduz um ID numérico válido de imagem do Roblox.',
@@ -1160,7 +1163,7 @@ addTranslations('pt',{
   saveFailed:'Não foi possível guardar o ficheiro.'
 });
 addTranslations('it',{
-  importRisk:'Controllo di sicurezza: sono stati omessi {n} blocchi di callback con schemi di codice rischiosi. Questa analisi euristica non è un antivirus; non eseguire mai codice di cui non ti fidi.',
+  
   tabImage:'ID immagine Roblox',
   tabImageHint:'Inserisci un ID risorsa Roblox (o rbxassetid://ID); la scheda Rayfield esportata caricherà l’immagine.',
   tabImageInvalid:'Inserisci un ID numerico valido di un’immagine Roblox.',
@@ -1173,7 +1176,7 @@ addTranslations('it',{
   saveFailed:'Impossibile salvare il file.'
 });
 addTranslations('eu',{
-  importRisk:'Segurtasun-azterketa: arrisku-kode ereduak zituzten {n} callback bloke baztertu dira. Azterketa heuristiko hau ez da antibirusa; ez exekutatu inoiz fidatzen ez zaren koderik.',
+  
   tabImage:'Roblox irudiaren ID-a',
   tabImageHint:'Sartu Roblox baliabide baten ID-a (edo rbxassetid://ID); esportatutako Rayfield fitxak irudia kargatuko du.',
   tabImageInvalid:'Sartu Roblox irudi baten zenbakizko ID baliozko bat.',
@@ -1186,7 +1189,7 @@ addTranslations('eu',{
   saveFailed:'Ezin izan da fitxategia gorde.'
 });
 addTranslations('id',{
-  importRisk:'Pemeriksaan keamanan: {n} blok callback dengan pola kode berisiko dilewati. Pemindaian heuristik ini bukan antivirus; jangan pernah menjalankan kode yang tidak Anda percayai.',
+  
   tabImage:'ID aset gambar Roblox',
   tabImageHint:'Masukkan ID aset Roblox (atau rbxassetid://ID); tab Rayfield yang diekspor akan memuat gambar tersebut.',
   tabImageInvalid:'Masukkan ID aset gambar Roblox berupa angka yang valid.',
@@ -1199,7 +1202,7 @@ addTranslations('id',{
   saveFailed:'Tidak dapat menyimpan berkas.'
 });
 addTranslations('tr',{
-  importRisk:'Güvenlik kontrolü: riskli kod desenleri içeren {n} callback bloğu atlandı. Bu sezgisel tarama bir antivirüs değildir; güvenmediğiniz kodu asla çalıştırmayın.',
+  
   tabImage:'Roblox görsel varlık kimliği',
   tabImageHint:'Bir Roblox varlık kimliği (veya rbxassetid://ID) girin; dışa aktarılan Rayfield sekmesi görseli yükler.',
   tabImageInvalid:'Geçerli, sayısal bir Roblox görsel varlık kimliği girin.',
@@ -1212,7 +1215,7 @@ addTranslations('tr',{
   saveFailed:'Dosya kaydedilemedi.'
 });
 addTranslations('vi',{
-  importRisk:'Kiểm tra bảo mật: đã bỏ qua {n} khối callback có mẫu mã rủi ro. Quét heuristic này không phải là phần mềm diệt vi-rút; đừng bao giờ chạy mã bạn không tin tưởng.',
+  
   tabImage:'ID tài nguyên hình ảnh Roblox',
   tabImageHint:'Nhập ID tài nguyên Roblox (hoặc rbxassetid://ID); tab Rayfield được xuất sẽ tải hình ảnh.',
   tabImageInvalid:'Nhập ID tài nguyên hình ảnh Roblox hợp lệ dạng số.',
@@ -1225,7 +1228,7 @@ addTranslations('vi',{
   saveFailed:'Không thể lưu tệp.'
 });
 addTranslations('sw',{
-  importRisk:'Ukaguzi wa usalama: vizuizi {n} vya callback vyenye mifumo hatarishi ya msimbo vimeachwa. Uchanganuzi huu wa heuristic si antivirus; usiendeshe kamwe msimbo usioamini.',
+  
   tabImage:'ID ya mali ya picha ya Roblox',
   tabImageHint:'Weka ID ya mali ya Roblox (au rbxassetid://ID); kichupo cha Rayfield kilichohamishwa kitapakia picha.',
   tabImageInvalid:'Weka ID halali ya nambari ya mali ya picha ya Roblox.',
@@ -1238,7 +1241,7 @@ addTranslations('sw',{
   saveFailed:'Imeshindwa kuhifadhi faili.'
 });
 addTranslations('ha',{
-  importRisk:'Binciken tsaro: an tsallake tubalan callback {n} masu tsarin lambar haɗari. Wannan binciken heuristic ba antivirus ba ne; kada ka taɓa gudanar da lambar da ba ka amince da ita ba.',
+  
   tabImage:'ID ɗin kadarar hoto ta Roblox',
   tabImageHint:'Shigar da ID na kadarar Roblox (ko rbxassetid://ID); shafin Rayfield da aka fitar zai ɗora hoton.',
   tabImageInvalid:'Shigar da ingantaccen ID na lamba na kadarar hoto ta Roblox.',
@@ -1251,7 +1254,7 @@ addTranslations('ha',{
   saveFailed:'Ba a iya ajiye fayil ba.'
 });
 addTranslations('ko',{
-  importRisk:'보안 검사: 위험한 코드 패턴이 있는 콜백 블록 {n}개를 제외했습니다. 이 휴리스틱 검사는 백신이 아니므로 신뢰할 수 없는 코드는 절대 실행하지 마세요.',
+  
   tabImage:'Roblox 이미지 에셋 ID',
   tabImageHint:'Roblox 에셋 ID(또는 rbxassetid://ID)를 입력하세요. 내보낸 Rayfield 탭이 이미지를 불러옵니다.',
   tabImageInvalid:'올바른 숫자 형식의 Roblox 이미지 에셋 ID를 입력하세요.',
@@ -1264,7 +1267,7 @@ addTranslations('ko',{
   saveFailed:'파일을 저장할 수 없습니다.'
 });
 addTranslations('ja',{
-  importRisk:'セキュリティチェック：リスクのあるコードパターンを含むコールバックブロック {n} 件を除外しました。このヒューリスティック検査はウイルス対策ではありません。信頼できないコードは絶対に実行しないでください。',
+  
   tabImage:'Roblox 画像アセット ID',
   tabImageHint:'Roblox のアセット ID（または rbxassetid://ID）を入力してください。エクスポートした Rayfield のタブが画像を読み込みます。',
   tabImageInvalid:'有効な数値の Roblox 画像アセット ID を入力してください。',
@@ -1277,7 +1280,7 @@ addTranslations('ja',{
   saveFailed:'ファイルを保存できませんでした。'
 });
 addTranslations('zh',{
-  importRisk:'安全检查：已跳过 {n} 个包含风险代码模式的回调代码块。此启发式扫描并非杀毒软件；切勿运行你不信任的代码。',
+  
   tabImage:'Roblox 图片资源 ID',
   tabImageHint:'输入 Roblox 资源 ID（或 rbxassetid://ID）；导出的 Rayfield 标签页会加载该图片。',
   tabImageInvalid:'请输入有效的 Roblox 图片资源数字 ID。',
@@ -1290,7 +1293,7 @@ addTranslations('zh',{
   saveFailed:'无法保存文件。'
 });
 addTranslations('ru',{
-  importRisk:'Проверка безопасности: пропущено блоков callback с рискованными шаблонами кода: {n}. Эта эвристическая проверка не является антивирусом; никогда не запускайте код, которому не доверяете.',
+  
   tabImage:'ID изображения Roblox',
   tabImageHint:'Введите ID ресурса Roblox (или rbxassetid://ID); экспортированная вкладка Rayfield загрузит изображение.',
   tabImageInvalid:'Введите корректный числовой ID изображения Roblox.',
@@ -1303,7 +1306,7 @@ addTranslations('ru',{
   saveFailed:'Не удалось сохранить файл.'
 });
 addTranslations('ar',{
-  importRisk:'فحص الأمان: تم تجاهل {n} من كتل callback التي تحتوي على أنماط شيفرة خطرة. هذا الفحص الاستدلالي ليس برنامج مكافحة فيروسات؛ لا تشغّل أبدًا شيفرة لا تثق بها.',
+  
   tabImage:'معرّف صورة Roblox',
   tabImageHint:'أدخل معرّف أصل Roblox (أو rbxassetid://ID)؛ ستحمّل علامة تبويب Rayfield المُصدَّرة الصورة.',
   tabImageInvalid:'أدخل معرّفًا رقميًا صالحًا لصورة Roblox.',
@@ -1316,7 +1319,7 @@ addTranslations('ar',{
   saveFailed:'تعذّر حفظ الملف.'
 });
 addTranslations('hi',{
-  importRisk:'सुरक्षा जाँच: जोखिम वाले कोड पैटर्न वाले {n} callback ब्लॉक छोड़ दिए गए। यह ह्यूरिस्टिक स्कैन एंटीवायरस नहीं है; ऐसा कोड कभी न चलाएँ जिस पर आपको भरोसा न हो।',
+  
   tabImage:'Roblox इमेज एसेट ID',
   tabImageHint:'Roblox एसेट ID (या rbxassetid://ID) दर्ज करें; एक्सपोर्ट किया गया Rayfield टैब इमेज लोड करेगा।',
   tabImageInvalid:'Roblox इमेज एसेट की मान्य संख्यात्मक ID दर्ज करें।',
@@ -1329,7 +1332,7 @@ addTranslations('hi',{
   saveFailed:'फ़ाइल सहेजी नहीं जा सकी।'
 });
 addTranslations('bn',{
-  importRisk:'নিরাপত্তা পরীক্ষা: ঝুঁকিপূর্ণ কোড প্যাটার্নযুক্ত {n}টি callback ব্লক বাদ দেওয়া হয়েছে। এই হিউরিস্টিক স্ক্যান অ্যান্টিভাইরাস নয়; যে কোডে আপনার আস্থা নেই তা কখনও চালাবেন না।',
+  
   tabImage:'Roblox ইমেজ অ্যাসেট ID',
   tabImageHint:'একটি Roblox অ্যাসেট ID (বা rbxassetid://ID) দিন; এক্সপোর্ট করা Rayfield ট্যাব ছবিটি লোড করবে।',
   tabImageInvalid:'Roblox ইমেজ অ্যাসেটের একটি বৈধ সংখ্যাসূচক ID দিন।',
@@ -1342,7 +1345,7 @@ addTranslations('bn',{
   saveFailed:'ফাইল সংরক্ষণ করা যায়নি।'
 });
 addTranslations('ur',{
-  importRisk:'سیکیورٹی جانچ: خطرناک کوڈ پیٹرنز والے {n} callback بلاکس چھوڑ دیے گئے۔ یہ ہیوریسٹک اسکین اینٹی وائرس نہیں ہے؛ ایسا کوڈ کبھی نہ چلائیں جس پر آپ کو بھروسا نہ ہو۔',
+  
   tabImage:'Roblox تصویری اثاثے کی ID',
   tabImageHint:'Roblox اثاثے کی ID (یا rbxassetid://ID) درج کریں؛ برآمد شدہ Rayfield ٹیب تصویر لوڈ کرے گا۔',
   tabImageInvalid:'Roblox تصویری اثاثے کی درست عددی ID درج کریں۔',
@@ -1355,7 +1358,7 @@ addTranslations('ur',{
   saveFailed:'فائل محفوظ نہیں ہو سکی۔'
 });
 addTranslations('te',{
-  importRisk:'భద్రతా తనిఖీ: ప్రమాదకర కోడ్ నమూనాలు ఉన్న {n} callback బ్లాక్‌లను దాటవేశాం. ఈ హ్యూరిస్టిక్ స్కాన్ యాంటీవైరస్ కాదు; మీరు నమ్మని కోడ్‌ను ఎప్పుడూ రన్ చేయకండి.',
+  
   tabImage:'Roblox ఇమేజ్ అసెట్ ID',
   tabImageHint:'Roblox అసెట్ ID (లేదా rbxassetid://ID) నమోదు చేయండి; ఎగుమతి చేసిన Rayfield ట్యాబ్ ఆ చిత్రాన్ని లోడ్ చేస్తుంది.',
   tabImageInvalid:'Roblox ఇమేజ్ అసెట్ యొక్క చెల్లుబాటు అయ్యే సంఖ్యా ID నమోదు చేయండి.',
@@ -1368,7 +1371,7 @@ addTranslations('te',{
   saveFailed:'ఫైల్‌ను సేవ్ చేయలేకపోయాం.'
 });
 addTranslations('mr',{
-  importRisk:'सुरक्षा तपासणी: जोखमीचे कोड पॅटर्न असलेले {n} callback ब्लॉक वगळले. ही ह्युरिस्टिक स्कॅन म्हणजे अँटीव्हायरस नाही; तुमचा विश्वास नसलेला कोड कधीही चालवू नका.',
+  
   tabImage:'Roblox इमेज अॅसेट ID',
   tabImageHint:'Roblox अॅसेट ID (किंवा rbxassetid://ID) टाका; एक्सपोर्ट केलेला Rayfield टॅब ती इमेज लोड करेल.',
   tabImageInvalid:'Roblox इमेज अॅसेटचा वैध संख्यात्मक ID टाका.',
@@ -1381,7 +1384,7 @@ addTranslations('mr',{
   saveFailed:'फाइल जतन करता आली नाही.'
 });
 addTranslations('ta',{
-  importRisk:'பாதுகாப்புச் சோதனை: ஆபத்தான குறியீட்டு முறைகள் கொண்ட {n} callback தொகுதிகள் தவிர்க்கப்பட்டன. இந்த ஹியூரிஸ்டிக் ஸ்கேன் ஆன்டிவைரஸ் அல்ல; நீங்கள் நம்பாத குறியீட்டை ஒருபோதும் இயக்காதீர்கள்.',
+  
   tabImage:'Roblox பட அசெட் ID',
   tabImageHint:'Roblox அசெட் ID-ஐ (அல்லது rbxassetid://ID) உள்ளிடவும்; ஏற்றுமதி செய்யப்பட்ட Rayfield தாவல் அந்தப் படத்தை ஏற்றும்.',
   tabImageInvalid:'Roblox பட அசெட்டின் சரியான எண் ID-ஐ உள்ளிடவும்.',
@@ -1394,7 +1397,7 @@ addTranslations('ta',{
   saveFailed:'கோப்பை சேமிக்க முடியவில்லை.'
 });
 addTranslations('pa',{
-  importRisk:'ਸੁਰੱਖਿਆ ਜਾਂਚ: ਜੋਖਮ ਵਾਲੇ ਕੋਡ ਪੈਟਰਨਾਂ ਵਾਲੇ {n} callback ਬਲਾਕ ਛੱਡ ਦਿੱਤੇ ਗਏ। ਇਹ ਹਿਊਰਿਸਟਿਕ ਸਕੈਨ ਐਂਟੀਵਾਇਰਸ ਨਹੀਂ ਹੈ; ਜਿਸ ਕੋਡ ’ਤੇ ਤੁਹਾਨੂੰ ਭਰੋਸਾ ਨਹੀਂ, ਉਸਨੂੰ ਕਦੇ ਨਾ ਚਲਾਓ।',
+  
   tabImage:'Roblox ਚਿੱਤਰ ਐਸੈੱਟ ID',
   tabImageHint:'Roblox ਐਸੈੱਟ ID (ਜਾਂ rbxassetid://ID) ਦਾਖਲ ਕਰੋ; ਐਕਸਪੋਰਟ ਕੀਤਾ Rayfield ਟੈਬ ਚਿੱਤਰ ਲੋਡ ਕਰੇਗਾ।',
   tabImageInvalid:'Roblox ਚਿੱਤਰ ਐਸੈੱਟ ਦੀ ਵੈਧ ਅੰਕੀ ID ਦਾਖਲ ਕਰੋ।',
@@ -1408,6 +1411,84 @@ addTranslations('pa',{
 });
 
 
+/* ---------- v7 strings: create-project dialog (23 languages) ---------- */
+addTranslations('ca',{newProjectTitle:'Crear projecte',newProjectBody:'Configura la finestra i la versió de Rayfield.',newProjectName:'Títol de la finestra',newProjectSubtitle:'Descripció',newProjectVersion:'Versió de Rayfield',newProjectCreate:'CREAR PROJECTE',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('fr',{newProjectTitle:'Créer un projet',newProjectBody:'Configurez la fenêtre et la version de Rayfield.',newProjectName:'Titre de la fenêtre',newProjectSubtitle:'Description',newProjectVersion:'Version de Rayfield',newProjectCreate:'CRÉER LE PROJET',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('de',{newProjectTitle:'Projekt erstellen',newProjectBody:'Konfiguriere das Fenster und die Rayfield-Version.',newProjectName:'Fenstertitel',newProjectSubtitle:'Beschreibung',newProjectVersion:'Rayfield-Version',newProjectCreate:'PROJEKT ERSTELLEN',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('pt',{newProjectTitle:'Criar projeto',newProjectBody:'Configura a janela e a versão do Rayfield.',newProjectName:'Título da janela',newProjectSubtitle:'Descrição',newProjectVersion:'Versão do Rayfield',newProjectCreate:'CRIAR PROJETO',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('it',{newProjectTitle:'Crea progetto',newProjectBody:'Configura la finestra e la versione di Rayfield.',newProjectName:'Titolo della finestra',newProjectSubtitle:'Descrizione',newProjectVersion:'Versione di Rayfield',newProjectCreate:'CREA PROGETTO',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('eu',{newProjectTitle:'Sortu proiektua',newProjectBody:'Konfiguratu leihoa eta Rayfield bertsioa.',newProjectName:'Leihoaren izenburua',newProjectSubtitle:'Deskribapena',newProjectVersion:'Rayfield bertsioa',newProjectCreate:'SORTU PROIEKTUA',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('id',{newProjectTitle:'Buat proyek',newProjectBody:'Atur jendela dan versi Rayfield.',newProjectName:'Judul jendela',newProjectSubtitle:'Deskripsi',newProjectVersion:'Versi Rayfield',newProjectCreate:'BUAT PROYEK',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('tr',{newProjectTitle:'Proje oluştur',newProjectBody:'Pencereyi ve Rayfield sürümünü yapılandırın.',newProjectName:'Pencere başlığı',newProjectSubtitle:'Açıklama',newProjectVersion:'Rayfield sürümü',newProjectCreate:'PROJE OLUŞTUR',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('vi',{newProjectTitle:'Tạo dự án',newProjectBody:'Cấu hình cửa sổ và phiên bản Rayfield.',newProjectName:'Tiêu đề cửa sổ',newProjectSubtitle:'Mô tả',newProjectVersion:'Phiên bản Rayfield',newProjectCreate:'TẠO DỰ ÁN',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('sw',{newProjectTitle:'Unda mradi',newProjectBody:'Sanidi dirisha na toleo la Rayfield.',newProjectName:'Kichwa cha dirisha',newProjectSubtitle:'Maelezo',newProjectVersion:'Toleo la Rayfield',newProjectCreate:'UNDA MRADI',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('ha',{newProjectTitle:'Ƙirƙiri project',newProjectBody:'Saita taga da sigar Rayfield.',newProjectName:'Taken taga',newProjectSubtitle:'Bayani',newProjectVersion:'Sigar Rayfield',newProjectCreate:'ƘIRƘIRI PROJECT',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2',packageExportFailed:'Ba a iya ƙirƙirar fakitin ba. Duba cewa project ɗin yana cikin iyakokin da ake tallafawa.'});
+addTranslations('ko',{newProjectTitle:'프로젝트 만들기',newProjectBody:'창과 Rayfield 버전을 설정하세요.',newProjectName:'창 제목',newProjectSubtitle:'설명',newProjectVersion:'Rayfield 버전',newProjectCreate:'프로젝트 만들기',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('ja',{newProjectTitle:'プロジェクトを作成',newProjectBody:'ウィンドウと Rayfield のバージョンを設定します。',newProjectName:'ウィンドウのタイトル',newProjectSubtitle:'説明',newProjectVersion:'Rayfield のバージョン',newProjectCreate:'プロジェクトを作成',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('zh',{newProjectTitle:'创建项目',newProjectBody:'配置窗口和 Rayfield 版本。',newProjectName:'窗口标题',newProjectSubtitle:'描述',newProjectVersion:'Rayfield 版本',newProjectCreate:'创建项目',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('ru',{newProjectTitle:'Создать проект',newProjectBody:'Настройте окно и версию Rayfield.',newProjectName:'Заголовок окна',newProjectSubtitle:'Описание',newProjectVersion:'Версия Rayfield',newProjectCreate:'СОЗДАТЬ ПРОЕКТ',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('ar',{newProjectTitle:'إنشاء مشروع',newProjectBody:'اضبط النافذة وإصدار Rayfield.',newProjectName:'عنوان النافذة',newProjectSubtitle:'الوصف',newProjectVersion:'إصدار Rayfield',newProjectCreate:'إنشاء المشروع',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('hi',{newProjectTitle:'प्रोजेक्ट बनाएँ',newProjectBody:'विंडो और Rayfield संस्करण कॉन्फ़िगर करें।',newProjectName:'विंडो का शीर्षक',newProjectSubtitle:'विवरण',newProjectVersion:'Rayfield संस्करण',newProjectCreate:'प्रोजेक्ट बनाएँ',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('bn',{newProjectTitle:'প্রজেক্ট তৈরি করুন',newProjectBody:'উইন্ডো এবং Rayfield সংস্করণ কনফিগার করুন।',newProjectName:'উইন্ডোর শিরোনাম',newProjectSubtitle:'বিবরণ',newProjectVersion:'Rayfield সংস্করণ',newProjectCreate:'প্রজেক্ট তৈরি করুন',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2',packageExportFailed:'প্যাকেজ তৈরি করা যায়নি। প্রজেক্টটি সমর্থিত সীমার মধ্যে আছে কি না দেখুন।'});
+addTranslations('ur',{newProjectTitle:'پروجیکٹ بنائیں',newProjectBody:'ونڈو اور Rayfield ورژن ترتیب دیں۔',newProjectName:'ونڈو کا عنوان',newProjectSubtitle:'تفصیل',newProjectVersion:'Rayfield ورژن',newProjectCreate:'پروجیکٹ بنائیں',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('te',{newProjectTitle:'ప్రాజెక్ట్ సృష్టించు',newProjectBody:'విండో మరియు Rayfield వెర్షన్‌ను కాన్ఫిగర్ చేయండి.',newProjectName:'విండో శీర్షిక',newProjectSubtitle:'వివరణ',newProjectVersion:'Rayfield వెర్షన్',newProjectCreate:'ప్రాజెక్ట్ సృష్టించు',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('mr',{newProjectTitle:'प्रोजेक्ट तयार करा',newProjectBody:'विंडो आणि Rayfield आवृत्ती कॉन्फिगर करा.',newProjectName:'विंडोचे शीर्षक',newProjectSubtitle:'वर्णन',newProjectVersion:'Rayfield आवृत्ती',newProjectCreate:'प्रोजेक्ट तयार करा',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('ta',{newProjectTitle:'திட்டத்தை உருவாக்கு',newProjectBody:'சாளரத்தையும் Rayfield பதிப்பையும் அமைக்கவும்.',newProjectName:'சாளரத் தலைப்பு',newProjectSubtitle:'விளக்கம்',newProjectVersion:'Rayfield பதிப்பு',newProjectCreate:'திட்டத்தை உருவாக்கு',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+addTranslations('pa',{newProjectTitle:'ਪ੍ਰੋਜੈਕਟ ਬਣਾਓ',newProjectBody:'ਵਿੰਡੋ ਅਤੇ Rayfield ਸੰਸਕਰਣ ਸੈੱਟ ਕਰੋ।',newProjectName:'ਵਿੰਡੋ ਦਾ ਸਿਰਲੇਖ',newProjectSubtitle:'ਵੇਰਵਾ',newProjectVersion:'Rayfield ਸੰਸਕਰਣ',newProjectCreate:'ਪ੍ਰੋਜੈਕਟ ਬਣਾਓ',newProjectClassic:'Rayfield Classic',newProjectGen2:'Rayfield Gen 2'});
+
+/* ---------- v7 strings: console label, tab image placeholder ---------- */
+addTranslations('en',{builderConsole:'Builder console',tabImagePlaceholder:'e.g. 1234567890'});
+addTranslations('es',{builderConsole:'Consola del Builder',tabImagePlaceholder:'p. ej. 1234567890'});
+addTranslations('ca',{builderConsole:'Consola del Builder',tabImagePlaceholder:'p. ex. 1234567890'});
+addTranslations('fr',{builderConsole:'Console du Builder',tabImagePlaceholder:'ex. : 1234567890'});
+addTranslations('de',{builderConsole:'Builder-Konsole',tabImagePlaceholder:'z. B. 1234567890'});
+addTranslations('pt',{builderConsole:'Consola do Builder',tabImagePlaceholder:'ex.: 1234567890'});
+addTranslations('it',{builderConsole:'Console del Builder',tabImagePlaceholder:'es. 1234567890'});
+addTranslations('eu',{builderConsole:'Builder kontsola',tabImagePlaceholder:'adib. 1234567890'});
+addTranslations('id',{builderConsole:'Konsol Builder',tabImagePlaceholder:'mis. 1234567890'});
+addTranslations('tr',{builderConsole:'Builder konsolu',tabImagePlaceholder:'örn. 1234567890'});
+addTranslations('vi',{builderConsole:'Bảng điều khiển Builder',tabImagePlaceholder:'VD: 1234567890'});
+addTranslations('sw',{builderConsole:'Kiweko cha Builder',tabImagePlaceholder:'mfano: 1234567890'});
+addTranslations('ha',{builderConsole:'Console ɗin Builder',tabImagePlaceholder:'misali: 1234567890'});
+addTranslations('ko',{builderConsole:'Builder 콘솔',tabImagePlaceholder:'예: 1234567890'});
+addTranslations('ja',{builderConsole:'Builder コンソール',tabImagePlaceholder:'例: 1234567890'});
+addTranslations('zh',{builderConsole:'Builder 控制台',tabImagePlaceholder:'例如：1234567890'});
+addTranslations('ru',{builderConsole:'Консоль Builder',tabImagePlaceholder:'напр., 1234567890'});
+addTranslations('ar',{builderConsole:'وحدة تحكم Builder',tabImagePlaceholder:'مثال: 1234567890'});
+addTranslations('hi',{builderConsole:'Builder कंसोल',tabImagePlaceholder:'उदा. 1234567890'});
+addTranslations('bn',{builderConsole:'Builder কনসোল',tabImagePlaceholder:'যেমন: 1234567890'});
+addTranslations('ur',{builderConsole:'Builder کنسول',tabImagePlaceholder:'مثال: 1234567890'});
+addTranslations('te',{builderConsole:'Builder కన్సోల్',tabImagePlaceholder:'ఉదా: 1234567890'});
+addTranslations('mr',{builderConsole:'Builder कन्सोल',tabImagePlaceholder:'उदा. 1234567890'});
+addTranslations('ta',{builderConsole:'Builder கன்சோல்',tabImagePlaceholder:'எ.கா: 1234567890'});
+addTranslations('pa',{builderConsole:'Builder ਕੰਸੋਲ',tabImagePlaceholder:'ਜਿਵੇਂ: 1234567890'});
+
+/* ---------- v8 strings: warn-only import notice ---------- */
+addTranslations('en',{importRiskTitle:'Review the imported code',importRisk:'Callbacks that use risky Lua functions (executor APIs, loadstring, files or network requests): {n}. Nothing was removed or changed. Read them before you run the exported script. This quick scan is not an antivirus; never run code you don’t trust.'});
+addTranslations('es',{importRiskTitle:'Revisa el código importado',importRisk:'Callbacks que usan funciones de Lua de riesgo (APIs de executor, loadstring, archivos o peticiones de red): {n}. No se ha quitado ni cambiado nada. Léelos antes de ejecutar el script exportado. Este análisis rápido no es un antivirus; no ejecutes nunca código en el que no confíes.'});
+addTranslations('ca',{importRiskTitle:'Revisa el codi importat',importRisk:'Callbacks que fan servir funcions de Lua de risc (APIs d’executor, loadstring, fitxers o peticions de xarxa): {n}. No s’ha tret ni canviat res. Llegeix-los abans d’executar l’script exportat. Aquesta anàlisi ràpida no és un antivirus; no executis mai codi en què no confiïs.'});
+addTranslations('fr',{importRiskTitle:'Vérifiez le code importé',importRisk:'Callbacks utilisant des fonctions Lua à risque (API d’executor, loadstring, fichiers ou requêtes réseau) : {n}. Rien n’a été supprimé ni modifié. Lisez-les avant d’exécuter le script exporté. Cette analyse rapide n’est pas un antivirus ; n’exécutez jamais du code auquel vous ne faites pas confiance.'});
+addTranslations('de',{importRiskTitle:'Importierten Code prüfen',importRisk:'Callbacks mit riskanten Lua-Funktionen (Executor-APIs, loadstring, Dateien oder Netzwerkanfragen): {n}. Es wurde nichts entfernt oder geändert. Lies sie, bevor du das exportierte Skript ausführst. Diese Schnellprüfung ist kein Virenscanner; führe niemals Code aus, dem du nicht vertraust.'});
+addTranslations('pt',{importRiskTitle:'Revê o código importado',importRisk:'Callbacks que usam funções Lua de risco (APIs de executor, loadstring, ficheiros ou pedidos de rede): {n}. Nada foi removido nem alterado. Lê-os antes de executares o script exportado. Esta análise rápida não é um antivírus; nunca executes código em que não confies.'});
+addTranslations('it',{importRiskTitle:'Controlla il codice importato',importRisk:'Callback che usano funzioni Lua rischiose (API di executor, loadstring, file o richieste di rete): {n}. Non è stato rimosso né modificato nulla. Leggili prima di eseguire lo script esportato. Questa analisi rapida non è un antivirus; non eseguire mai codice di cui non ti fidi.'});
+addTranslations('eu',{importRiskTitle:'Berrikusi inportatutako kodea',importRisk:'Lua funtzio arriskutsuak erabiltzen dituzten callback-ak (executor API-ak, loadstring, fitxategiak edo sare-eskaerak): {n}. Ez da ezer kendu edo aldatu. Irakurri itzazu esportatutako scripta exekutatu aurretik. Azterketa azkar hau ez da antibirusa; ez exekutatu inoiz fidatzen ez zaren koderik.'});
+addTranslations('id',{importRiskTitle:'Tinjau kode yang diimpor',importRisk:'Callback yang memakai fungsi Lua berisiko (API executor, loadstring, berkas atau permintaan jaringan): {n}. Tidak ada yang dihapus atau diubah. Bacalah sebelum menjalankan skrip hasil ekspor. Pemindaian cepat ini bukan antivirus; jangan pernah menjalankan kode yang tidak Anda percayai.'});
+addTranslations('tr',{importRiskTitle:'İçe aktarılan kodu inceleyin',importRisk:'Riskli Lua işlevleri kullanan callback’ler (executor API’leri, loadstring, dosyalar veya ağ istekleri): {n}. Hiçbir şey kaldırılmadı veya değiştirilmedi. Dışa aktarılan betiği çalıştırmadan önce okuyun. Bu hızlı tarama bir antivirüs değildir; güvenmediğiniz kodu asla çalıştırmayın.'});
+addTranslations('vi',{importRiskTitle:'Xem lại mã đã nhập',importRisk:'Các callback dùng hàm Lua rủi ro (API executor, loadstring, tệp hoặc yêu cầu mạng): {n}. Không có gì bị xóa hay thay đổi. Hãy đọc chúng trước khi chạy tập lệnh đã xuất. Quét nhanh này không phải là phần mềm diệt vi-rút; đừng bao giờ chạy mã bạn không tin tưởng.'});
+addTranslations('sw',{importRiskTitle:'Kagua msimbo ulioingizwa',importRisk:'Callback zinazotumia kazi hatarishi za Lua (API za executor, loadstring, faili au maombi ya mtandao): {n}. Hakuna kilichoondolewa wala kubadilishwa. Zisome kabla ya kuendesha hati iliyohamishwa. Uchanganuzi huu wa haraka si antivirus; usiendeshe kamwe msimbo usioamini.'});
+addTranslations('ha',{importRiskTitle:'Duba lambar da aka shigo da ita',importRisk:'Callback masu amfani da ayyukan Lua masu haɗari (executor API, loadstring, fayiloli ko buƙatun hanyar sadarwa): {n}. Ba a cire ko canza komai ba. Karanta su kafin ka gudanar da rubutun da aka fitar. Wannan bincike mai sauri ba antivirus ba ne; kada ka taɓa gudanar da lambar da ba ka amince da ita ba.'});
+addTranslations('ko',{importRiskTitle:'가져온 코드 검토',importRisk:'위험한 Lua 함수(익스큐터 API, loadstring, 파일 또는 네트워크 요청)를 사용하는 콜백: {n}개. 삭제되거나 변경된 것은 없습니다. 내보낸 스크립트를 실행하기 전에 꼭 읽어 보세요. 이 간단한 검사는 백신이 아니므로 신뢰할 수 없는 코드는 절대 실행하지 마세요.'});
+addTranslations('ja',{importRiskTitle:'インポートしたコードを確認',importRisk:'リスクのある Lua 関数（エグゼキューター API、loadstring、ファイル、ネットワークリクエスト）を使うコールバック：{n} 件。削除や変更は一切していません。エクスポートしたスクリプトを実行する前に内容を確認してください。この簡易スキャンはウイルス対策ではありません。信頼できないコードは絶対に実行しないでください。'});
+addTranslations('zh',{importRiskTitle:'请检查导入的代码',importRisk:'使用高风险 Lua 函数（执行器 API、loadstring、文件或网络请求）的回调：{n} 个。未删除或修改任何内容。运行导出的脚本之前请先阅读这些代码。此快速扫描并非杀毒软件；切勿运行你不信任的代码。'});
+addTranslations('ru',{importRiskTitle:'Проверьте импортированный код',importRisk:'Callback с рискованными функциями Lua (API executor, loadstring, файлы или сетевые запросы): {n}. Ничего не удалено и не изменено. Прочитайте их, прежде чем запускать экспортированный скрипт. Эта быстрая проверка не является антивирусом; никогда не запускайте код, которому не доверяете.'});
+addTranslations('ar',{importRiskTitle:'راجع الشيفرة المستوردة',importRisk:'عدد callback التي تستخدم دوال Lua خطرة (واجهات executor، أو loadstring، أو الملفات، أو طلبات الشبكة): {n}. لم يتم حذف أو تغيير أي شيء. اقرأها قبل تشغيل السكربت المُصدَّر. هذا الفحص السريع ليس برنامج مكافحة فيروسات؛ لا تشغّل أبدًا شيفرة لا تثق بها.'});
+addTranslations('hi',{importRiskTitle:'इंपोर्ट किए गए कोड की जाँच करें',importRisk:'जोखिम वाले Lua फ़ंक्शन (executor API, loadstring, फ़ाइलें या नेटवर्क अनुरोध) इस्तेमाल करने वाले callback: {n}। कुछ भी हटाया या बदला नहीं गया है। एक्सपोर्ट की गई स्क्रिप्ट चलाने से पहले इन्हें पढ़ लें। यह तेज़ स्कैन एंटीवायरस नहीं है; ऐसा कोड कभी न चलाएँ जिस पर आपको भरोसा न हो।'});
+addTranslations('bn',{importRiskTitle:'ইমপোর্ট করা কোড পরীক্ষা করুন',importRisk:'ঝুঁকিপূর্ণ Lua ফাংশন (executor API, loadstring, ফাইল বা নেটওয়ার্ক অনুরোধ) ব্যবহার করে এমন callback: {n}টি। কিছুই সরানো বা বদলানো হয়নি। এক্সপোর্ট করা স্ক্রিপ্ট চালানোর আগে এগুলো পড়ে নিন। এই দ্রুত স্ক্যান অ্যান্টিভাইরাস নয়; যে কোডে আপনার আস্থা নেই তা কখনও চালাবেন না।'});
+addTranslations('ur',{importRiskTitle:'درآمد شدہ کوڈ کا جائزہ لیں',importRisk:'خطرناک Lua فنکشنز (executor API، loadstring، فائلیں یا نیٹ ورک درخواستیں) استعمال کرنے والے callback: {n}۔ کچھ بھی ہٹایا یا تبدیل نہیں کیا گیا۔ برآمد شدہ اسکرپٹ چلانے سے پہلے انہیں پڑھ لیں۔ یہ تیز اسکین اینٹی وائرس نہیں ہے؛ ایسا کوڈ کبھی نہ چلائیں جس پر آپ کو بھروسا نہ ہو۔'});
+addTranslations('te',{importRiskTitle:'దిగుమతి చేసిన కోడ్‌ను పరిశీలించండి',importRisk:'ప్రమాదకర Lua ఫంక్షన్లను (executor API, loadstring, ఫైళ్లు లేదా నెట్‌వర్క్ అభ్యర్థనలు) ఉపయోగించే callback: {n}. ఏదీ తొలగించలేదు, మార్చలేదు. ఎగుమతి చేసిన స్క్రిప్ట్‌ను రన్ చేసే ముందు వీటిని చదవండి. ఈ త్వరిత స్కాన్ యాంటీవైరస్ కాదు; మీరు నమ్మని కోడ్‌ను ఎప్పుడూ రన్ చేయకండి.'});
+addTranslations('mr',{importRiskTitle:'इम्पोर्ट केलेला कोड तपासा',importRisk:'जोखमीची Lua फंक्शन्स (executor API, loadstring, फाइल्स किंवा नेटवर्क विनंत्या) वापरणारे callback: {n}. काहीही काढले किंवा बदलले नाही. एक्सपोर्ट केलेली स्क्रिप्ट चालवण्यापूर्वी ते वाचा. ही जलद तपासणी अँटीव्हायरस नाही; तुमचा विश्वास नसलेला कोड कधीही चालवू नका.'});
+addTranslations('ta',{importRiskTitle:'இறக்குமதி செய்த குறியீட்டைச் சரிபார்க்கவும்',importRisk:'ஆபத்தான Lua செயல்பாடுகளை (executor API, loadstring, கோப்புகள் அல்லது நெட்வொர்க் கோரிக்கைகள்) பயன்படுத்தும் callback: {n}. எதுவும் நீக்கப்படவில்லை, மாற்றப்படவில்லை. ஏற்றுமதி செய்த ஸ்கிரிப்டை இயக்கும் முன் அவற்றைப் படியுங்கள். இந்த விரைவு ஸ்கேன் ஆன்டிவைரஸ் அல்ல; நீங்கள் நம்பாத குறியீட்டை ஒருபோதும் இயக்காதீர்கள்.'});
+addTranslations('pa',{importRiskTitle:'ਇੰਪੋਰਟ ਕੀਤੇ ਕੋਡ ਦੀ ਜਾਂਚ ਕਰੋ',importRisk:'ਜੋਖਮ ਵਾਲੇ Lua ਫੰਕਸ਼ਨ (executor API, loadstring, ਫ਼ਾਈਲਾਂ ਜਾਂ ਨੈੱਟਵਰਕ ਬੇਨਤੀਆਂ) ਵਰਤਣ ਵਾਲੇ callback: {n}। ਕੁਝ ਵੀ ਹਟਾਇਆ ਜਾਂ ਬਦਲਿਆ ਨਹੀਂ ਗਿਆ। ਐਕਸਪੋਰਟ ਕੀਤੀ ਸਕ੍ਰਿਪਟ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਇਨ੍ਹਾਂ ਨੂੰ ਪੜ੍ਹ ਲਓ। ਇਹ ਤੇਜ਼ ਸਕੈਨ ਐਂਟੀਵਾਇਰਸ ਨਹੀਂ ਹੈ; ਜਿਸ ਕੋਡ ’ਤੇ ਤੁਹਾਨੂੰ ਭਰੋਸਾ ਨਹੀਂ, ਉਸਨੂੰ ਕਦੇ ਨਾ ਚਲਾਓ।'});
 /* ---------- element catalog ---------- */
 function F(k,l,ty){return {k:k,l:l,t:ty};}
 var NM=F('name','f_name','text'),DS=F('description','f_desc','text'),CB=F('cb','f_cb','code');
@@ -1442,29 +1523,29 @@ var ONBOARDING_KEYS=['welcomeTitle','welcomeBody','welcomeTutorial','welcomeLang
 var ONBOARDING_TEXT={
  en:['Welcome to Rayfield Builder Gen 1/2!','What would you like to do before you start?','View tutorial','Change language','Choose version','Continue','Options','CHANGE RAYFIELD PREVIEW VERSION?','Only the Builder preview will change. Project data and the saved Rayfield version of each project will stay unchanged.','Cancel',"Yes, change preview.",'Version changed','Would you like to see the tutorial for this version?','First, use Create to add a Slider (10–100), Input, Toggle, and Button to one tab; do not create them in Lua. Select each control and paste its callback body into its Callback field. Add the shared demoState declaration once in the generated Lua, after CreateTab and before the controls. The Fly demo only prints values; it does not move a player.'],
  es:['¡Bienvenido a Rayfield Builder Gen 1/2!','¿Qué quieres hacer antes de empezar?','Ver tutorial','Cambiar idioma','Elegir versión','Continuar','Opciones','¿CAMBIAR LA VERSIÓN DE LA VISTA PREVIA?','Solo cambiará la vista previa del Builder. Los datos y la versión guardada de cada proyecto permanecerán sin cambios.','Cancelar','Sí, cambiar vista.','Versión cambiada','¿Quieres ver el tutorial de esta versión?','Primero, en Crear, añade en una misma pestaña un Slider (10–100), un Input, un Toggle y un Button; no los crees con Lua. Selecciona cada control y pega el cuerpo de su callback en el campo Callback. Añade una sola vez la declaración de demoState en el Lua generado, después de CreateTab y antes de los controles. El ejemplo Fly solo imprime valores; no mueve a ningún jugador.'],
- ca:['Benvingut a Rayfield Builder Gen 1/2!','Què vols fer abans de començar?','Veure el tutorial','Canviar l’idioma','Triar la versió','Continuar','Opcions','SEGUR QUE VOLS CANVIAR A RAYFIELD?','Es restabliran tots els botons i la informació; hauràs de començar de nou.','Cancel·lar','Sí, n’estic segur.','Versió canviada','Vols veure el tutorial d’aquesta versió?','Primer, a Crear, afegeix en una mateixa pestanya un Slider (10–100), un Input, un Toggle i un Button; no els creïs amb Lua. Selecciona cada control i enganxa el cos del callback al camp corresponent. Afegeix una sola vegada demoState al Lua generat, després de CreateTab i abans dels controls. L’exemple Fly només imprimeix valors; no mou cap jugador.'],
- fr:['Bienvenue dans Rayfield Builder Gen 1/2 !','Que voulez-vous faire avant de commencer ?','Voir le tutoriel','Changer de langue','Choisir une version','Continuer','Options','VOULEZ-VOUS VRAIMENT PASSER À RAYFIELD ?','Tous les boutons et toutes les informations seront réinitialisés ; vous devrez recommencer.','Annuler','Oui, je confirme.','Version modifiée','Voulez-vous consulter le tutoriel de cette version ?','Dans Créer, ajoutez d’abord dans un même onglet un Slider (10–100), un Input, un Toggle et un Button ; ne les créez pas en Lua. Sélectionnez chaque contrôle et collez le corps du callback dans son champ Callback. Ajoutez une seule fois demoState dans le Lua généré, après CreateTab et avant les contrôles. L’exemple Fly affiche seulement des valeurs ; il ne déplace aucun joueur.'],
- de:['Willkommen bei Rayfield Builder Gen 1/2!','Was möchtest du vor dem Start tun?','Tutorial ansehen','Sprache ändern','Version auswählen','Weiter','Optionen','MÖCHTEST DU WIRKLICH ZU RAYFIELD WECHSELN?','Alle Schaltflächen und Informationen werden zurückgesetzt; du musst von vorn beginnen.','Abbrechen','Ja, ich bin sicher.','Version geändert','Möchtest du das Tutorial für diese Version ansehen?','Füge zuerst unter „Erstellen“ im selben Tab einen Slider (10–100), Input, Toggle und Button hinzu; erstelle sie nicht in Lua. Wähle jedes Steuerelement aus und füge den Callback-Inhalt in sein Callback-Feld ein. Ergänze demoState einmal im generierten Lua-Code nach CreateTab und vor den Steuerelementen. Das Fly-Beispiel gibt nur Werte aus und bewegt keinen Spieler.'],
- pt:['Bem-vindo ao Rayfield Builder Gen 1/2!','O que queres fazer antes de começar?','Ver tutorial','Alterar idioma','Escolher versão','Continuar','Opções','TEM A CERTEZA DE QUE QUER MUDAR PARA RAYFIELD?','Todos os botões e informações serão repostos; terá de começar de novo.','Cancelar','Sim, tenho a certeza.','Versão alterada','Quer ver o tutorial desta versão?','Em Criar, adiciona primeiro ao mesmo separador um Slider (10–100), um Input, um Toggle e um Button; não os cries em Lua. Seleciona cada controlo e cola o corpo do callback no respetivo campo Callback. Adiciona demoState uma só vez no Lua gerado, após CreateTab e antes dos controlos. O exemplo Fly apenas imprime valores; não move nenhum jogador.'],
- it:['Benvenuto in Rayfield Builder Gen 1/2!','Cosa vuoi fare prima di iniziare?','Visualizza il tutorial','Cambia lingua','Scegli versione','Continua','Opzioni','VUOI DAVVERO PASSARE A RAYFIELD?','Tutti i pulsanti e le informazioni verranno reimpostati; dovrai ricominciare.','Annulla','Sì, sono sicuro.','Versione modificata','Vuoi vedere il tutorial di questa versione?','In Crea, aggiungi prima nella stessa scheda uno Slider (10–100), un Input, un Toggle e un Button; non crearli in Lua. Seleziona ogni controllo e incolla il corpo del callback nel relativo campo Callback. Aggiungi demoState una sola volta nel Lua generato, dopo CreateTab e prima dei controlli. L’esempio Fly stampa solo valori; non sposta alcun giocatore.'],
- zh:['欢迎使用 Rayfield Builder Gen 1/2！','开始之前，你想做什么？','查看教程','更改语言','选择版本','继续','选项','确定要切换到 Rayfield 吗？','所有按钮和信息都会被重置，你需要从头开始。','取消','是的，我确定。','版本已更改','要查看此版本的教程吗？','先在“创建”中为同一个标签页添加 Slider（10–100）、Input、Toggle 和 Button；不要用 Lua 创建它们。选择每个控件，把对应的 callback 内容粘贴到 Callback 字段。然后在生成的 Lua 中、CreateTab 之后和控件之前，只添加一次 demoState 声明。Fly 示例只会打印数值，不会移动玩家。'],
- ja:['Rayfield Builder Gen 1/2へようこそ！','開始する前に何をしますか？','チュートリアルを見る','言語を変更','バージョンを選択','続行','オプション','Rayfieldに切り替えてもよろしいですか？','ボタンと情報はすべてリセットされ、最初からやり直しになります。','キャンセル','はい、切り替えます。','バージョンを変更しました','このバージョンのチュートリアルを見ますか？','まず「作成」で同じタブに Slider（10～100）、Input、Toggle、Button を追加します。Luaで作成する必要はありません。各コントロールを選び、対応するcallback本文をCallback欄に貼り付けます。生成されたLuaではCreateTabの後、コントロールの前にdemoStateを一度だけ追加します。Flyの例は値を表示するだけで、プレイヤーを動かしません。'],
- ko:['Rayfield Builder Gen 1/2에 오신 것을 환영합니다!','시작하기 전에 무엇을 하시겠어요?','튜토리얼 보기','언어 변경','버전 선택','계속','옵션','Rayfield로 전환하시겠습니까?','모든 버튼과 정보가 초기화되어 처음부터 다시 시작해야 합니다.','취소','네, 전환하겠습니다.','버전 변경됨','이 버전의 튜토리얼을 보시겠어요?','먼저 만들기에서 같은 탭에 Slider(10–100), Input, Toggle, Button을 추가하세요. Lua로 만들지 않습니다. 각 컨트롤을 선택해 해당 callback 본문을 Callback 필드에 붙여 넣으세요. 생성된 Lua에서 CreateTab 뒤, 컨트롤 앞에 demoState 선언을 한 번 추가하세요. Fly 예시는 값만 출력하며 플레이어를 움직이지 않습니다.'],
- ru:['Добро пожаловать в Rayfield Builder Gen 1/2!','Что вы хотите сделать перед началом?','Открыть руководство','Изменить язык','Выбрать версию','Продолжить','Параметры','ВЫ ДЕЙСТВИТЕЛЬНО ХОТИТЕ ПЕРЕЙТИ НА RAYFIELD?','Все кнопки и данные будут сброшены — придётся начать заново.','Отмена','Да, уверен.','Версия изменена','Хотите посмотреть руководство для этой версии?','Сначала в разделе «Создать» добавьте в одну вкладку Slider (10–100), Input, Toggle и Button; не создавайте их в Lua. Выберите каждый элемент и вставьте тело callback в поле Callback. В сгенерированном Lua добавьте demoState один раз после CreateTab и перед элементами. Пример Fly только выводит значения и не перемещает игрока.'],
- ar:['مرحبًا بك في Rayfield Builder Gen 1/2!','ماذا تريد أن تفعل قبل البدء؟','عرض البرنامج التعليمي','تغيير اللغة','اختيار الإصدار','متابعة','الخيارات','هل أنت متأكد من التبديل إلى Rayfield؟','ستتم إعادة ضبط جميع الأزرار والمعلومات، وسيتعين عليك البدء من جديد.','إلغاء','نعم، أنا متأكد.','تم تغيير الإصدار','هل تريد مشاهدة البرنامج التعليمي لهذا الإصدار؟','أولًا، أضف من «إنشاء» إلى علامة تبويب واحدة Slider (10–100) وInput وToggle وButton؛ لا تنشئها باستخدام Lua. اختر كل عنصر والصق محتوى callback في حقل Callback الخاص به. أضف demoState مرة واحدة في Lua المُنشأ، بعد CreateTab وقبل العناصر. مثال Fly يطبع القيم فقط ولا يحرّك أي لاعب.'],
- hi:['Rayfield Builder Gen 1/2 में आपका स्वागत है!','शुरू करने से पहले आप क्या करना चाहेंगे?','ट्यूटोरियल देखें','भाषा बदलें','संस्करण चुनें','जारी रखें','विकल्प','क्या आप वाकई Rayfield पर स्विच करना चाहते हैं?','सभी बटन और जानकारी रीसेट हो जाएंगे; आपको फिर से शुरू करना होगा।','रद्द करें','हाँ, मुझे यकीन है।','संस्करण बदल गया','क्या आप इस संस्करण का ट्यूटोरियल देखना चाहेंगे?','पहले बनाएँ में एक ही टैब पर Slider (10–100), Input, Toggle और Button जोड़ें; इन्हें Lua से न बनाएँ। हर कंट्रोल चुनकर उसका callback body Callback फ़ील्ड में चिपकाएँ। जनरेट किए गए Lua में CreateTab के बाद और कंट्रोल्स से पहले demoState को एक बार जोड़ें। Fly उदाहरण केवल मान प्रिंट करता है; खिलाड़ी को नहीं चलाता।'],
- bn:['Rayfield Builder Gen 1/2-এ স্বাগতম!','শুরু করার আগে আপনি কী করতে চান?','টিউটোরিয়াল দেখুন','ভাষা বদলান','সংস্করণ বেছে নিন','চালিয়ে যান','বিকল্প','আপনি কি সত্যিই Rayfield-এ যেতে চান?','সব বোতাম ও তথ্য মুছে যাবে; আপনাকে আবার শুরু করতে হবে।','বাতিল','হ্যাঁ, আমি নিশ্চিত।','সংস্করণ বদলেছে','এই সংস্করণের টিউটোরিয়াল দেখতে চান?','প্রথমে তৈরি অংশে একই ট্যাবে Slider (10–100), Input, Toggle এবং Button যোগ করুন; Lua দিয়ে এগুলো তৈরি করবেন না। প্রতিটি কন্ট্রোল বেছে নিয়ে তার callback-এর অংশ Callback ঘরে পেস্ট করুন। তৈরি Lua-তে CreateTab-এর পরে এবং কন্ট্রোলের আগে একবার demoState যোগ করুন। Fly উদাহরণটি শুধু মান দেখায়; খেলোয়াড়কে সরায় না।'],
- ur:['Rayfield Builder Gen 1/2 میں خوش آمدید!','شروع کرنے سے پہلے آپ کیا کرنا چاہیں گے؟','سبق دیکھیں','زبان تبدیل کریں','ورژن منتخب کریں','جاری رکھیں','اختیارات','کیا آپ واقعی Rayfield پر جانا چاہتے ہیں؟','تمام بٹن اور معلومات ری سیٹ ہو جائیں گی؛ آپ کو دوبارہ شروع کرنا ہوگا۔','منسوخ کریں','ہاں، مجھے یقین ہے۔','ورژن تبدیل ہوگیا','کیا آپ اس ورژن کا سبق دیکھنا چاہتے ہیں؟','پہلے بنائیں میں ایک ہی ٹیب پر Slider (10–100)، Input، Toggle اور Button شامل کریں؛ انہیں Lua سے نہ بنائیں۔ ہر کنٹرول منتخب کرکے اس کے callback کا متن Callback خانے میں چسپاں کریں۔ تیار کردہ Lua میں CreateTab کے بعد اور کنٹرولز سے پہلے demoState ایک بار شامل کریں۔ Fly مثال صرف اقدار دکھاتی ہے؛ کھلاڑی کو حرکت نہیں دیتی۔'],
- id:['Selamat datang di Rayfield Builder Gen 1/2!','Apa yang ingin Anda lakukan sebelum memulai?','Lihat tutorial','Ubah bahasa','Pilih versi','Lanjutkan','Opsi','YAKIN INGIN BERALIH KE RAYFIELD?','Semua tombol dan informasi akan diatur ulang; Anda harus memulai dari awal.','Batal','Ya, saya yakin.','Versi diubah','Ingin melihat tutorial untuk versi ini?','Pertama, di Buat tambahkan Slider (10–100), Input, Toggle, dan Button pada tab yang sama; jangan buat dengan Lua. Pilih setiap kontrol dan tempel isi callback ke kolom Callback. Di Lua yang dihasilkan, tambahkan demoState satu kali setelah CreateTab dan sebelum kontrol. Contoh Fly hanya mencetak nilai; tidak menggerakkan pemain.'],
- tr:['Rayfield Builder Gen 1/2’ye hoş geldiniz!','Başlamadan önce ne yapmak istersiniz?','Eğitimi görüntüle','Dili değiştir','Sürüm seç','Devam et','Seçenekler','RAYFIELD’E GEÇMEK İSTEDİĞİNİZE EMİN MİSİNİZ?','Tüm düğmeler ve bilgiler sıfırlanacak; baştan başlamanız gerekecek.','İptal','Evet, eminim.','Sürüm değiştirildi','Bu sürümün eğitimini görmek ister misiniz?','Önce Oluştur bölümünde aynı sekmeye Slider (10–100), Input, Toggle ve Button ekleyin; bunları Lua ile oluşturmayın. Her kontrolü seçip callback gövdesini Callback alanına yapıştırın. Oluşturulan Lua kodunda CreateTab sonrasına ve kontrollerden öncesine demoState’i bir kez ekleyin. Fly örneği yalnızca değerleri yazdırır; oyuncuyu hareket ettirmez.'],
- vi:['Chào mừng đến với Rayfield Builder Gen 1/2!','Bạn muốn làm gì trước khi bắt đầu?','Xem hướng dẫn','Đổi ngôn ngữ','Chọn phiên bản','Tiếp tục','Tùy chọn','BẠN CÓ CHẮC MUỐN CHUYỂN SANG RAYFIELD?','Tất cả nút và thông tin sẽ bị đặt lại; bạn phải bắt đầu lại.','Hủy','Vâng, tôi chắc chắn.','Đã đổi phiên bản','Bạn có muốn xem hướng dẫn cho phiên bản này không?','Trước tiên, trong Tạo, thêm Slider (10–100), Input, Toggle và Button vào cùng một tab; không tạo chúng bằng Lua. Chọn từng điều khiển và dán phần callback vào trường Callback. Trong Lua được tạo, thêm demoState một lần sau CreateTab và trước các điều khiển. Ví dụ Fly chỉ in giá trị, không di chuyển người chơi.'],
- te:['Rayfield Builder Gen 1/2కి స్వాగతం!','ప్రారంభించే ముందు మీరు ఏమి చేయాలనుకుంటున్నారు?','ట్యుటోరియల్ చూడండి','భాష మార్చండి','వెర్షన్ ఎంచుకోండి','కొనసాగించండి','ఎంపికలు','Rayfield‌కు మారాలని ఖచ్చితంగా అనుకుంటున్నారా?','అన్ని బటన్లు, సమాచారం రీసెట్ అవుతాయి; మళ్లీ మొదటి నుంచి ప్రారంభించాలి.','రద్దు','అవును, నాకు ఖచ్చితంగా తెలుసు.','వెర్షన్ మార్చబడింది','ఈ వెర్షన్ ట్యుటోరియల్ చూడాలనుకుంటున్నారా?','ముందుగా సృష్టించు విభాగంలో ఒకే ట్యాబ్‌కు Slider (10–100), Input, Toggle, Button జోడించండి; వాటిని Luaతో సృష్టించవద్దు. ప్రతి కంట్రోల్‌ను ఎంచుకుని దాని callback భాగాన్ని Callback ఫీల్డ్‌లో పెట్టండి. రూపొందించిన Luaలో CreateTab తర్వాత, కంట్రోల్‌లకు ముందు demoStateను ఒక్కసారి జోడించండి. Fly ఉదాహరణ విలువలను మాత్రమే ముద్రిస్తుంది; ప్లేయర్‌ను కదిలించదు.'],
- mr:['Rayfield Builder Gen 1/2 मध्ये आपले स्वागत आहे!','सुरू करण्यापूर्वी तुम्हाला काय करायचे आहे?','ट्युटोरियल पहा','भाषा बदला','आवृत्ती निवडा','पुढे जा','पर्याय','तुम्हाला खरोखर Rayfield वर जायचे आहे का?','सर्व बटणे आणि माहिती रीसेट होतील; तुम्हाला पुन्हा सुरुवात करावी लागेल.','रद्द करा','हो, मला खात्री आहे.','आवृत्ती बदलली','या आवृत्तीचे ट्युटोरियल पाहायचे आहे का?','प्रथम तयार करा मध्ये एकाच टॅबवर Slider (10–100), Input, Toggle आणि Button जोडा; ते Lua मध्ये तयार करू नका. प्रत्येक कंट्रोल निवडून त्याचा callback मजकूर Callback क्षेत्रात पेस्ट करा. तयार Lua मध्ये CreateTab नंतर आणि कंट्रोल्सच्या आधी demoState एकदाच जोडा. Fly उदाहरण फक्त मूल्ये छापते; खेळाडूला हलवत नाही.'],
- ta:['Rayfield Builder Gen 1/2-க்கு வரவேற்கிறோம்!','தொடங்குவதற்கு முன் என்ன செய்ய விரும்புகிறீர்கள்?','வழிகாட்டியைப் பார்க்கவும்','மொழியை மாற்றவும்','பதிப்பைத் தேர்ந்தெடுக்கவும்','தொடரவும்','விருப்பங்கள்','Rayfield-க்கு மாற விரும்புகிறீர்களா?','அனைத்து பொத்தான்களும் தகவல்களும் மீட்டமைக்கப்படும்; மீண்டும் தொடங்க வேண்டும்.','ரத்துசெய்','ஆம், உறுதியாக இருக்கிறேன்.','பதிப்பு மாற்றப்பட்டது','இந்தப் பதிப்புக்கான வழிகாட்டியைப் பார்க்க விரும்புகிறீர்களா?','முதலில் உருவாக்கு பகுதியில் ஒரே தாவலில் Slider (10–100), Input, Toggle, Button சேர்க்கவும்; அவற்றை Lua-வில் உருவாக்க வேண்டாம். ஒவ்வொரு கட்டுப்பாட்டையும் தேர்ந்தெடுத்து callback உரையை Callback புலத்தில் ஒட்டவும். உருவாக்கிய Lua-வில் CreateTab-க்கு பிறகு, கட்டுப்பாடுகளுக்கு முன் demoState-ஐ ஒருமுறை சேர்க்கவும். Fly எடுத்துக்காட்டு மதிப்புகளை மட்டும் அச்சிடும்; வீரரை நகர்த்தாது.'],
- pa:['Rayfield Builder Gen 1/2 ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ!','ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਤੁਸੀਂ ਕੀ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?','ਟਿਊਟੋਰਿਅਲ ਵੇਖੋ','ਭਾਸ਼ਾ ਬਦਲੋ','ਵਰਜਨ ਚੁਣੋ','ਜਾਰੀ ਰੱਖੋ','ਵਿਕਲਪ','ਕੀ ਤੁਸੀਂ ਵਾਕਈ Rayfield ’ਤੇ ਜਾਣਾ ਚਾਹੁੰਦੇ ਹੋ?','ਸਾਰੇ ਬਟਨ ਅਤੇ ਜਾਣਕਾਰੀ ਰੀਸੈੱਟ ਹੋ ਜਾਣਗੇ; ਤੁਹਾਨੂੰ ਮੁੜ ਸ਼ੁਰੂ ਕਰਨਾ ਪਵੇਗਾ।','ਰੱਦ ਕਰੋ','ਹਾਂ, ਮੈਨੂੰ ਯਕੀਨ ਹੈ।','ਵਰਜਨ ਬਦਲਿਆ','ਕੀ ਤੁਸੀਂ ਇਸ ਵਰਜਨ ਦਾ ਟਿਊਟੋਰਿਅਲ ਵੇਖਣਾ ਚਾਹੁੰਦੇ ਹੋ?','ਪਹਿਲਾਂ ਬਣਾਓ ਵਿੱਚ ਇੱਕੋ ਟੈਬ ਉੱਤੇ Slider (10–100), Input, Toggle ਅਤੇ Button ਜੋੜੋ; ਇਹਨਾਂ ਨੂੰ Lua ਨਾਲ ਨਾ ਬਣਾਓ। ਹਰ ਕੰਟਰੋਲ ਚੁਣ ਕੇ callback ਦਾ ਹਿੱਸਾ Callback ਖੇਤਰ ਵਿੱਚ ਪੇਸਟ ਕਰੋ। ਬਣੇ Lua ਵਿੱਚ CreateTab ਤੋਂ ਬਾਅਦ ਅਤੇ ਕੰਟਰੋਲਾਂ ਤੋਂ ਪਹਿਲਾਂ demoState ਇੱਕ ਵਾਰ ਜੋੜੋ। Fly ਉਦਾਹਰਨ ਸਿਰਫ਼ ਮੁੱਲ ਛਾਪਦੀ ਹੈ; ਖਿਡਾਰੀ ਨੂੰ ਨਹੀਂ ਹਿਲਾਉਂਦੀ।'],
- eu:['Ongi etorri Rayfield Builder Gen 1/2ra!','Zer egin nahi duzu hasi aurretik?','Ikusi tutoriala','Aldatu hizkuntza','Aukeratu bertsioa','Jarraitu','Aukerak','ZIUR ZAude RAYFIELD-ERA ALDATU NAHI DUZULA?','Botoi eta informazio guztiak berrezarriko dira; hutsetik hasi beharko duzu.','Utzi','Bai, ziur nago.','Bertsioa aldatu da','Bertsio honen tutoriala ikusi nahi duzu?','Lehenik, Sortu atalean gehitu Slider (10–100), Input, Toggle eta Button fitxa berean; ez sortu Lua erabiliz. Hautatu kontrol bakoitza eta itsatsi callback-aren gorputza Callback eremuan. Sortutako Lua-n, gehitu demoState behin CreateTab-en ondoren eta kontrolen aurretik. Fly adibideak balioak soilik inprimatzen ditu; ez du jokalaria mugitzen.'],
- sw:['Karibu kwenye Rayfield Builder Gen 1/2!','Ungependa kufanya nini kabla ya kuanza?','Tazama mafunzo','Badilisha lugha','Chagua toleo','Endelea','Chaguo','UNAHAKIKA UNATAKA KUBADILISHA KUWA RAYFIELD?','Vifungo na maelezo yote yatawekwa upya; utahitaji kuanza tena.','Ghairi','Ndiyo, nina uhakika.','Toleo limebadilishwa','Je, ungependa kuona mafunzo ya toleo hili?','Kwanza, katika Unda ongeza Slider (10–100), Input, Toggle na Button kwenye kichupo kimoja; usiviumbe kwa Lua. Chagua kila kidhibiti na ubandike sehemu ya callback kwenye sehemu ya Callback. Kwenye Lua iliyozalishwa, ongeza demoState mara moja baada ya CreateTab na kabla ya vidhibiti. Mfano wa Fly huchapisha thamani tu; haumhamishi mchezaji.'],
- ha:['Barka da zuwa Rayfield Builder Gen 1/2!','Me kake son yi kafin ka fara?','Duba koyarwa','Canja harshe','Zaɓi siga','Ci gaba','Zaɓuɓɓuka','KA TABBATA KANA SON CANJAWA ZUWA RAYFIELD?','Za a sake saita duk maɓallai da bayanai; sai ka fara daga farko.','Soke','Eh, na tabbata.','An canja siga','Kana son duba koyarwar wannan sigar?','Da farko, a Ƙirƙira ƙara Slider (10–100), Input, Toggle da Button a shafi ɗaya; kada ka ƙirƙire su da Lua. Zaɓi kowane sarrafawa ka manna ɓangaren callback a filin Callback. A cikin Lua da aka samar, ƙara demoState sau ɗaya bayan CreateTab kuma kafin sarrafawa. Misalin Fly yana buga ƙimomi kawai; ba ya motsa ɗan wasa.']
+ ca:['Benvingut a Rayfield Builder Gen 1/2!','Què vols fer abans de començar?','Veure el tutorial','Canviar l’idioma','Triar la versió','Continuar','Opcions','VOLS CANVIAR LA VERSIÓ DE LA VISTA PRÈVIA DE RAYFIELD?','Només canviarà la vista prèvia del Builder. Les dades del projecte i la versió de Rayfield desada de cada projecte romandran sense canvis.','Cancel·lar','Sí, canvia la vista prèvia.','Versió canviada','Vols veure el tutorial d’aquesta versió?','Primer, a Crear, afegeix en una mateixa pestanya un Slider (10–100), un Input, un Toggle i un Button; no els creïs amb Lua. Selecciona cada control i enganxa el cos del callback al camp corresponent. Afegeix una sola vegada demoState al Lua generat, després de CreateTab i abans dels controls. L’exemple Fly només imprimeix valors; no mou cap jugador.'],
+ fr:['Bienvenue dans Rayfield Builder Gen 1/2 !','Que voulez-vous faire avant de commencer ?','Voir le tutoriel','Changer de langue','Choisir une version','Continuer','Options','CHANGER LA VERSION DE L’APERÇU RAYFIELD ?','Seul l’aperçu du Builder changera. Les données du projet et la version de Rayfield enregistrée de chaque projet resteront inchangées.','Annuler','Oui, changer l’aperçu.','Version modifiée','Voulez-vous consulter le tutoriel de cette version ?','Dans Créer, ajoutez d’abord dans un même onglet un Slider (10–100), un Input, un Toggle et un Button ; ne les créez pas en Lua. Sélectionnez chaque contrôle et collez le corps du callback dans son champ Callback. Ajoutez une seule fois demoState dans le Lua généré, après CreateTab et avant les contrôles. L’exemple Fly affiche seulement des valeurs ; il ne déplace aucun joueur.'],
+ de:['Willkommen bei Rayfield Builder Gen 1/2!','Was möchtest du vor dem Start tun?','Tutorial ansehen','Sprache ändern','Version auswählen','Weiter','Optionen','RAYFIELD-VORSCHAUVERSION WECHSELN?','Nur die Builder-Vorschau ändert sich. Projektdaten und die gespeicherte Rayfield-Version jedes Projekts bleiben unverändert.','Abbrechen','Ja, Vorschau wechseln.','Version geändert','Möchtest du das Tutorial für diese Version ansehen?','Füge zuerst unter „Erstellen“ im selben Tab einen Slider (10–100), Input, Toggle und Button hinzu; erstelle sie nicht in Lua. Wähle jedes Steuerelement aus und füge den Callback-Inhalt in sein Callback-Feld ein. Ergänze demoState einmal im generierten Lua-Code nach CreateTab und vor den Steuerelementen. Das Fly-Beispiel gibt nur Werte aus und bewegt keinen Spieler.'],
+ pt:['Bem-vindo ao Rayfield Builder Gen 1/2!','O que queres fazer antes de começar?','Ver tutorial','Alterar idioma','Escolher versão','Continuar','Opções','ALTERAR A VERSÃO DA PRÉ-VISUALIZAÇÃO DO RAYFIELD?','Apenas a pré-visualização do Builder será alterada. Os dados do projeto e a versão do Rayfield guardada em cada projeto permanecem inalterados.','Cancelar','Sim, alterar a pré-visualização.','Versão alterada','Quer ver o tutorial desta versão?','Em Criar, adiciona primeiro ao mesmo separador um Slider (10–100), um Input, um Toggle e um Button; não os cries em Lua. Seleciona cada controlo e cola o corpo do callback no respetivo campo Callback. Adiciona demoState uma só vez no Lua gerado, após CreateTab e antes dos controlos. O exemplo Fly apenas imprime valores; não move nenhum jogador.'],
+ it:['Benvenuto in Rayfield Builder Gen 1/2!','Cosa vuoi fare prima di iniziare?','Visualizza il tutorial','Cambia lingua','Scegli versione','Continua','Opzioni','CAMBIARE LA VERSIONE DELL’ANTEPRIMA DI RAYFIELD?','Cambierà solo l’anteprima del Builder. I dati del progetto e la versione di Rayfield salvata in ogni progetto resteranno invariati.','Annulla','Sì, cambia l’anteprima.','Versione modificata','Vuoi vedere il tutorial di questa versione?','In Crea, aggiungi prima nella stessa scheda uno Slider (10–100), un Input, un Toggle e un Button; non crearli in Lua. Seleziona ogni controllo e incolla il corpo del callback nel relativo campo Callback. Aggiungi demoState una sola volta nel Lua generato, dopo CreateTab e prima dei controlli. L’esempio Fly stampa solo valori; non sposta alcun giocatore.'],
+ zh:['欢迎使用 Rayfield Builder Gen 1/2！','开始之前，你想做什么？','查看教程','更改语言','选择版本','继续','选项','要更改 Rayfield 预览版本吗？','只会更改 Builder 的预览。项目数据和每个项目已保存的 Rayfield 版本保持不变。','取消','是，更改预览。','版本已更改','要查看此版本的教程吗？','先在“创建”中为同一个标签页添加 Slider（10–100）、Input、Toggle 和 Button；不要用 Lua 创建它们。选择每个控件，把对应的 callback 内容粘贴到 Callback 字段。然后在生成的 Lua 中、CreateTab 之后和控件之前，只添加一次 demoState 声明。Fly 示例只会打印数值，不会移动玩家。'],
+ ja:['Rayfield Builder Gen 1/2へようこそ！','開始する前に何をしますか？','チュートリアルを見る','言語を変更','バージョンを選択','続行','オプション','Rayfieldのプレビューバージョンを変更しますか？','変更されるのはBuilderのプレビューだけです。プロジェクトのデータと、各プロジェクトに保存されているRayfieldのバージョンはそのままです。','キャンセル','はい、プレビューを変更します。','バージョンを変更しました','このバージョンのチュートリアルを見ますか？','まず「作成」で同じタブに Slider（10～100）、Input、Toggle、Button を追加します。Luaで作成する必要はありません。各コントロールを選び、対応するcallback本文をCallback欄に貼り付けます。生成されたLuaではCreateTabの後、コントロールの前にdemoStateを一度だけ追加します。Flyの例は値を表示するだけで、プレイヤーを動かしません。'],
+ ko:['Rayfield Builder Gen 1/2에 오신 것을 환영합니다!','시작하기 전에 무엇을 하시겠어요?','튜토리얼 보기','언어 변경','버전 선택','계속','옵션','Rayfield 미리보기 버전을 변경할까요?','Builder 미리보기만 바뀝니다. 프로젝트 데이터와 각 프로젝트에 저장된 Rayfield 버전은 그대로 유지됩니다.','취소','예, 미리보기를 변경합니다.','버전 변경됨','이 버전의 튜토리얼을 보시겠어요?','먼저 만들기에서 같은 탭에 Slider(10–100), Input, Toggle, Button을 추가하세요. Lua로 만들지 않습니다. 각 컨트롤을 선택해 해당 callback 본문을 Callback 필드에 붙여 넣으세요. 생성된 Lua에서 CreateTab 뒤, 컨트롤 앞에 demoState 선언을 한 번 추가하세요. Fly 예시는 값만 출력하며 플레이어를 움직이지 않습니다.'],
+ ru:['Добро пожаловать в Rayfield Builder Gen 1/2!','Что вы хотите сделать перед началом?','Открыть руководство','Изменить язык','Выбрать версию','Продолжить','Параметры','СМЕНИТЬ ВЕРСИЮ ПРЕДПРОСМОТРА RAYFIELD?','Изменится только предпросмотр Builder. Данные проекта и сохранённая версия Rayfield каждого проекта останутся прежними.','Отмена','Да, сменить предпросмотр.','Версия изменена','Хотите посмотреть руководство для этой версии?','Сначала в разделе «Создать» добавьте в одну вкладку Slider (10–100), Input, Toggle и Button; не создавайте их в Lua. Выберите каждый элемент и вставьте тело callback в поле Callback. В сгенерированном Lua добавьте demoState один раз после CreateTab и перед элементами. Пример Fly только выводит значения и не перемещает игрока.'],
+ ar:['مرحبًا بك في Rayfield Builder Gen 1/2!','ماذا تريد أن تفعل قبل البدء؟','عرض البرنامج التعليمي','تغيير اللغة','اختيار الإصدار','متابعة','الخيارات','هل تريد تغيير إصدار معاينة Rayfield؟','ستتغير معاينة Builder فقط. ستبقى بيانات المشروع وإصدار Rayfield المحفوظ لكل مشروع كما هي.','إلغاء','نعم، غيّر المعاينة.','تم تغيير الإصدار','هل تريد مشاهدة البرنامج التعليمي لهذا الإصدار؟','أولًا، أضف من «إنشاء» إلى علامة تبويب واحدة Slider (10–100) وInput وToggle وButton؛ لا تنشئها باستخدام Lua. اختر كل عنصر والصق محتوى callback في حقل Callback الخاص به. أضف demoState مرة واحدة في Lua المُنشأ، بعد CreateTab وقبل العناصر. مثال Fly يطبع القيم فقط ولا يحرّك أي لاعب.'],
+ hi:['Rayfield Builder Gen 1/2 में आपका स्वागत है!','शुरू करने से पहले आप क्या करना चाहेंगे?','ट्यूटोरियल देखें','भाषा बदलें','संस्करण चुनें','जारी रखें','विकल्प','Rayfield प्रीव्यू का संस्करण बदलें?','सिर्फ़ Builder का प्रीव्यू बदलेगा। प्रोजेक्ट का डेटा और हर प्रोजेक्ट का सहेजा हुआ Rayfield संस्करण जैसा है वैसा ही रहेगा।','रद्द करें','हाँ, प्रीव्यू बदलें।','संस्करण बदल गया','क्या आप इस संस्करण का ट्यूटोरियल देखना चाहेंगे?','पहले बनाएँ में एक ही टैब पर Slider (10–100), Input, Toggle और Button जोड़ें; इन्हें Lua से न बनाएँ। हर कंट्रोल चुनकर उसका callback body Callback फ़ील्ड में चिपकाएँ। जनरेट किए गए Lua में CreateTab के बाद और कंट्रोल्स से पहले demoState को एक बार जोड़ें। Fly उदाहरण केवल मान प्रिंट करता है; खिलाड़ी को नहीं चलाता।'],
+ bn:['Rayfield Builder Gen 1/2-এ স্বাগতম!','শুরু করার আগে আপনি কী করতে চান?','টিউটোরিয়াল দেখুন','ভাষা বদলান','সংস্করণ বেছে নিন','চালিয়ে যান','বিকল্প','Rayfield প্রিভিউয়ের সংস্করণ বদলাবেন?','শুধু Builder-এর প্রিভিউ বদলাবে। প্রজেক্টের ডেটা এবং প্রতিটি প্রজেক্টে সংরক্ষিত Rayfield সংস্করণ অপরিবর্তিত থাকবে।','বাতিল','হ্যাঁ, প্রিভিউ বদলান।','সংস্করণ বদলেছে','এই সংস্করণের টিউটোরিয়াল দেখতে চান?','প্রথমে তৈরি অংশে একই ট্যাবে Slider (10–100), Input, Toggle এবং Button যোগ করুন; Lua দিয়ে এগুলো তৈরি করবেন না। প্রতিটি কন্ট্রোল বেছে নিয়ে তার callback-এর অংশ Callback ঘরে পেস্ট করুন। তৈরি Lua-তে CreateTab-এর পরে এবং কন্ট্রোলের আগে একবার demoState যোগ করুন। Fly উদাহরণটি শুধু মান দেখায়; খেলোয়াড়কে সরায় না।'],
+ ur:['Rayfield Builder Gen 1/2 میں خوش آمدید!','شروع کرنے سے پہلے آپ کیا کرنا چاہیں گے؟','سبق دیکھیں','زبان تبدیل کریں','ورژن منتخب کریں','جاری رکھیں','اختیارات','کیا Rayfield پیش منظر کا ورژن تبدیل کریں؟','صرف Builder کا پیش منظر تبدیل ہوگا۔ پروجیکٹ کا ڈیٹا اور ہر پروجیکٹ کا محفوظ شدہ Rayfield ورژن جوں کا توں رہے گا۔','منسوخ کریں','ہاں، پیش منظر تبدیل کریں۔','ورژن تبدیل ہوگیا','کیا آپ اس ورژن کا سبق دیکھنا چاہتے ہیں؟','پہلے بنائیں میں ایک ہی ٹیب پر Slider (10–100)، Input، Toggle اور Button شامل کریں؛ انہیں Lua سے نہ بنائیں۔ ہر کنٹرول منتخب کرکے اس کے callback کا متن Callback خانے میں چسپاں کریں۔ تیار کردہ Lua میں CreateTab کے بعد اور کنٹرولز سے پہلے demoState ایک بار شامل کریں۔ Fly مثال صرف اقدار دکھاتی ہے؛ کھلاڑی کو حرکت نہیں دیتی۔'],
+ id:['Selamat datang di Rayfield Builder Gen 1/2!','Apa yang ingin Anda lakukan sebelum memulai?','Lihat tutorial','Ubah bahasa','Pilih versi','Lanjutkan','Opsi','UBAH VERSI PRATINJAU RAYFIELD?','Hanya pratinjau Builder yang akan berubah. Data proyek dan versi Rayfield yang tersimpan pada setiap proyek tidak berubah.','Batal','Ya, ubah pratinjau.','Versi diubah','Ingin melihat tutorial untuk versi ini?','Pertama, di Buat tambahkan Slider (10–100), Input, Toggle, dan Button pada tab yang sama; jangan buat dengan Lua. Pilih setiap kontrol dan tempel isi callback ke kolom Callback. Di Lua yang dihasilkan, tambahkan demoState satu kali setelah CreateTab dan sebelum kontrol. Contoh Fly hanya mencetak nilai; tidak menggerakkan pemain.'],
+ tr:['Rayfield Builder Gen 1/2’ye hoş geldiniz!','Başlamadan önce ne yapmak istersiniz?','Eğitimi görüntüle','Dili değiştir','Sürüm seç','Devam et','Seçenekler','RAYFIELD ÖNİZLEME SÜRÜMÜ DEĞİŞTİRİLSİN Mİ?','Yalnızca Builder önizlemesi değişir. Proje verileri ve her projenin kayıtlı Rayfield sürümü olduğu gibi kalır.','İptal','Evet, önizlemeyi değiştir.','Sürüm değiştirildi','Bu sürümün eğitimini görmek ister misiniz?','Önce Oluştur bölümünde aynı sekmeye Slider (10–100), Input, Toggle ve Button ekleyin; bunları Lua ile oluşturmayın. Her kontrolü seçip callback gövdesini Callback alanına yapıştırın. Oluşturulan Lua kodunda CreateTab sonrasına ve kontrollerden öncesine demoState’i bir kez ekleyin. Fly örneği yalnızca değerleri yazdırır; oyuncuyu hareket ettirmez.'],
+ vi:['Chào mừng đến với Rayfield Builder Gen 1/2!','Bạn muốn làm gì trước khi bắt đầu?','Xem hướng dẫn','Đổi ngôn ngữ','Chọn phiên bản','Tiếp tục','Tùy chọn','ĐỔI PHIÊN BẢN XEM TRƯỚC RAYFIELD?','Chỉ phần xem trước của Builder thay đổi. Dữ liệu dự án và phiên bản Rayfield đã lưu của mỗi dự án vẫn giữ nguyên.','Hủy','Có, đổi bản xem trước.','Đã đổi phiên bản','Bạn có muốn xem hướng dẫn cho phiên bản này không?','Trước tiên, trong Tạo, thêm Slider (10–100), Input, Toggle và Button vào cùng một tab; không tạo chúng bằng Lua. Chọn từng điều khiển và dán phần callback vào trường Callback. Trong Lua được tạo, thêm demoState một lần sau CreateTab và trước các điều khiển. Ví dụ Fly chỉ in giá trị, không di chuyển người chơi.'],
+ te:['Rayfield Builder Gen 1/2కి స్వాగతం!','ప్రారంభించే ముందు మీరు ఏమి చేయాలనుకుంటున్నారు?','ట్యుటోరియల్ చూడండి','భాష మార్చండి','వెర్షన్ ఎంచుకోండి','కొనసాగించండి','ఎంపికలు','Rayfield ప్రివ్యూ వెర్షన్‌ను మార్చాలా?','Builder ప్రివ్యూ మాత్రమే మారుతుంది. ప్రాజెక్ట్ డేటా మరియు ప్రతి ప్రాజెక్ట్‌లో సేవ్ చేసిన Rayfield వెర్షన్ మారకుండా ఉంటాయి.','రద్దు','అవును, ప్రివ్యూను మార్చు.','వెర్షన్ మార్చబడింది','ఈ వెర్షన్ ట్యుటోరియల్ చూడాలనుకుంటున్నారా?','ముందుగా సృష్టించు విభాగంలో ఒకే ట్యాబ్‌కు Slider (10–100), Input, Toggle, Button జోడించండి; వాటిని Luaతో సృష్టించవద్దు. ప్రతి కంట్రోల్‌ను ఎంచుకుని దాని callback భాగాన్ని Callback ఫీల్డ్‌లో పెట్టండి. రూపొందించిన Luaలో CreateTab తర్వాత, కంట్రోల్‌లకు ముందు demoStateను ఒక్కసారి జోడించండి. Fly ఉదాహరణ విలువలను మాత్రమే ముద్రిస్తుంది; ప్లేయర్‌ను కదిలించదు.'],
+ mr:['Rayfield Builder Gen 1/2 मध्ये आपले स्वागत आहे!','सुरू करण्यापूर्वी तुम्हाला काय करायचे आहे?','ट्युटोरियल पहा','भाषा बदला','आवृत्ती निवडा','पुढे जा','पर्याय','Rayfield प्रीव्ह्यूची आवृत्ती बदलायची का?','फक्त Builder चा प्रीव्ह्यू बदलेल. प्रोजेक्टचा डेटा आणि प्रत्येक प्रोजेक्टमध्ये जतन केलेली Rayfield आवृत्ती जशीच्या तशी राहील.','रद्द करा','होय, प्रीव्ह्यू बदला.','आवृत्ती बदलली','या आवृत्तीचे ट्युटोरियल पाहायचे आहे का?','प्रथम तयार करा मध्ये एकाच टॅबवर Slider (10–100), Input, Toggle आणि Button जोडा; ते Lua मध्ये तयार करू नका. प्रत्येक कंट्रोल निवडून त्याचा callback मजकूर Callback क्षेत्रात पेस्ट करा. तयार Lua मध्ये CreateTab नंतर आणि कंट्रोल्सच्या आधी demoState एकदाच जोडा. Fly उदाहरण फक्त मूल्ये छापते; खेळाडूला हलवत नाही.'],
+ ta:['Rayfield Builder Gen 1/2-க்கு வரவேற்கிறோம்!','தொடங்குவதற்கு முன் என்ன செய்ய விரும்புகிறீர்கள்?','வழிகாட்டியைப் பார்க்கவும்','மொழியை மாற்றவும்','பதிப்பைத் தேர்ந்தெடுக்கவும்','தொடரவும்','விருப்பங்கள்','Rayfield முன்னோட்டப் பதிப்பை மாற்றவா?','Builder முன்னோட்டம் மட்டுமே மாறும். திட்டத் தரவும் ஒவ்வொரு திட்டத்திலும் சேமிக்கப்பட்ட Rayfield பதிப்பும் மாறாமல் இருக்கும்.','ரத்துசெய்','ஆம், முன்னோட்டத்தை மாற்று.','பதிப்பு மாற்றப்பட்டது','இந்தப் பதிப்புக்கான வழிகாட்டியைப் பார்க்க விரும்புகிறீர்களா?','முதலில் உருவாக்கு பகுதியில் ஒரே தாவலில் Slider (10–100), Input, Toggle, Button சேர்க்கவும்; அவற்றை Lua-வில் உருவாக்க வேண்டாம். ஒவ்வொரு கட்டுப்பாட்டையும் தேர்ந்தெடுத்து callback உரையை Callback புலத்தில் ஒட்டவும். உருவாக்கிய Lua-வில் CreateTab-க்கு பிறகு, கட்டுப்பாடுகளுக்கு முன் demoState-ஐ ஒருமுறை சேர்க்கவும். Fly எடுத்துக்காட்டு மதிப்புகளை மட்டும் அச்சிடும்; வீரரை நகர்த்தாது.'],
+ pa:['Rayfield Builder Gen 1/2 ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ!','ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਤੁਸੀਂ ਕੀ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?','ਟਿਊਟੋਰਿਅਲ ਵੇਖੋ','ਭਾਸ਼ਾ ਬਦਲੋ','ਵਰਜਨ ਚੁਣੋ','ਜਾਰੀ ਰੱਖੋ','ਵਿਕਲਪ','ਕੀ Rayfield ਪ੍ਰੀਵਿਊ ਦਾ ਸੰਸਕਰਣ ਬਦਲਣਾ ਹੈ?','ਸਿਰਫ਼ Builder ਦਾ ਪ੍ਰੀਵਿਊ ਬਦਲੇਗਾ। ਪ੍ਰੋਜੈਕਟ ਦਾ ਡਾਟਾ ਅਤੇ ਹਰ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ ਸੰਭਾਲਿਆ Rayfield ਸੰਸਕਰਣ ਜਿਵੇਂ ਹੈ ਉਵੇਂ ਹੀ ਰਹੇਗਾ।','ਰੱਦ ਕਰੋ','ਹਾਂ, ਪ੍ਰੀਵਿਊ ਬਦਲੋ।','ਵਰਜਨ ਬਦਲਿਆ','ਕੀ ਤੁਸੀਂ ਇਸ ਵਰਜਨ ਦਾ ਟਿਊਟੋਰਿਅਲ ਵੇਖਣਾ ਚਾਹੁੰਦੇ ਹੋ?','ਪਹਿਲਾਂ ਬਣਾਓ ਵਿੱਚ ਇੱਕੋ ਟੈਬ ਉੱਤੇ Slider (10–100), Input, Toggle ਅਤੇ Button ਜੋੜੋ; ਇਹਨਾਂ ਨੂੰ Lua ਨਾਲ ਨਾ ਬਣਾਓ। ਹਰ ਕੰਟਰੋਲ ਚੁਣ ਕੇ callback ਦਾ ਹਿੱਸਾ Callback ਖੇਤਰ ਵਿੱਚ ਪੇਸਟ ਕਰੋ। ਬਣੇ Lua ਵਿੱਚ CreateTab ਤੋਂ ਬਾਅਦ ਅਤੇ ਕੰਟਰੋਲਾਂ ਤੋਂ ਪਹਿਲਾਂ demoState ਇੱਕ ਵਾਰ ਜੋੜੋ। Fly ਉਦਾਹਰਨ ਸਿਰਫ਼ ਮੁੱਲ ਛਾਪਦੀ ਹੈ; ਖਿਡਾਰੀ ਨੂੰ ਨਹੀਂ ਹਿਲਾਉਂਦੀ।'],
+ eu:['Ongi etorri Rayfield Builder Gen 1/2ra!','Zer egin nahi duzu hasi aurretik?','Ikusi tutoriala','Aldatu hizkuntza','Aukeratu bertsioa','Jarraitu','Aukerak','RAYFIELD-EN AURREBISTAREN BERTSIOA ALDATU NAHI DUZU?','Builder-aren aurrebista bakarrik aldatuko da. Proiektuaren datuek eta proiektu bakoitzean gordetako Rayfield bertsioak ez dute aldaketarik izango.','Utzi','Bai, aldatu aurrebista.','Bertsioa aldatu da','Bertsio honen tutoriala ikusi nahi duzu?','Lehenik, Sortu atalean gehitu Slider (10–100), Input, Toggle eta Button fitxa berean; ez sortu Lua erabiliz. Hautatu kontrol bakoitza eta itsatsi callback-aren gorputza Callback eremuan. Sortutako Lua-n, gehitu demoState behin CreateTab-en ondoren eta kontrolen aurretik. Fly adibideak balioak soilik inprimatzen ditu; ez du jokalaria mugitzen.'],
+ sw:['Karibu kwenye Rayfield Builder Gen 1/2!','Ungependa kufanya nini kabla ya kuanza?','Tazama mafunzo','Badilisha lugha','Chagua toleo','Endelea','Chaguo','BADILISHA TOLEO LA HAKIKI YA RAYFIELD?','Hakiki ya Builder pekee ndiyo itakayobadilika. Data ya mradi na toleo la Rayfield lililohifadhiwa la kila mradi vitabaki bila mabadiliko.','Ghairi','Ndiyo, badilisha hakiki.','Toleo limebadilishwa','Je, ungependa kuona mafunzo ya toleo hili?','Kwanza, katika Unda ongeza Slider (10–100), Input, Toggle na Button kwenye kichupo kimoja; usiviumbe kwa Lua. Chagua kila kidhibiti na ubandike sehemu ya callback kwenye sehemu ya Callback. Kwenye Lua iliyozalishwa, ongeza demoState mara moja baada ya CreateTab na kabla ya vidhibiti. Mfano wa Fly huchapisha thamani tu; haumhamishi mchezaji.'],
+ ha:['Barka da zuwa Rayfield Builder Gen 1/2!','Me kake son yi kafin ka fara?','Duba koyarwa','Canja harshe','Zaɓi siga','Ci gaba','Zaɓuɓɓuka','CANJA SIGAR SAMFOTIN RAYFIELD?','Samfotin Builder kawai zai canza. Bayanan project da sigar Rayfield da aka adana na kowane project za su kasance yadda suke.','Soke','Eh, canja samfoti.','An canja siga','Kana son duba koyarwar wannan sigar?','Da farko, a Ƙirƙira ƙara Slider (10–100), Input, Toggle da Button a shafi ɗaya; kada ka ƙirƙire su da Lua. Zaɓi kowane sarrafawa ka manna ɓangaren callback a filin Callback. A cikin Lua da aka samar, ƙara demoState sau ɗaya bayan CreateTab kuma kafin sarrafawa. Misalin Fly yana buga ƙimomi kawai; ba ya motsa ɗan wasa.']
 };
 ONBOARDING_KEYS.forEach(function(k,i){LANGS.forEach(function(l){if(D[l[0]])D[l[0]][k]=ONBOARDING_TEXT[l[0]][i];});});
 var TUTORIAL_SEQUENCE_TEXT={
@@ -2029,14 +2110,14 @@ function builderCrc32(bytes){
 function builderZipStored(entries){
   var encoder=new TextEncoder(),locals=[],centrals=[],offset=0;
   entries.forEach(function(entry){
-    var name=encoder.encode(entry.name),data=typeof entry.data==='string'?encoder.encode(entry.data):new Uint8Array(entry.data),crc=builderCrc32(data);
+    var utf8Flag=/[^\x00-\x7f]/.test(entry.name)?0x0800:0,name=encoder.encode(entry.name),data=typeof entry.data==='string'?encoder.encode(entry.data):new Uint8Array(entry.data),crc=builderCrc32(data);
     var local=new Uint8Array(30+name.length+data.length),lv=new DataView(local.buffer);
-    lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0,true);lv.setUint16(8,0,true);
+    lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,utf8Flag,true);lv.setUint16(8,0,true);
     lv.setUint16(10,0,true);lv.setUint16(12,33,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);
     lv.setUint16(26,name.length,true);lv.setUint16(28,0,true);local.set(name,30);local.set(data,30+name.length);
     locals.push(local);
     var central=new Uint8Array(46+name.length),cv=new DataView(central.buffer);
-    cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0,true);cv.setUint16(10,0,true);
+    cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,utf8Flag,true);cv.setUint16(10,0,true);
     cv.setUint16(12,0,true);cv.setUint16(14,33,true);cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);
     cv.setUint16(28,name.length,true);cv.setUint16(30,0,true);cv.setUint16(32,0,true);cv.setUint16(34,0,true);cv.setUint16(36,0,true);
     cv.setUint32(38,0,true);cv.setUint32(42,offset,true);central.set(name,46);centrals.push(central);
@@ -2074,12 +2155,98 @@ function builderZipRead(buffer){
   }
   return entries;
 }
-function packageState(raw,strict,withCallbacks){
-  if(!raw||typeof raw!=='object'||Array.isArray(raw))return {};
-  try{return JSON.parse(JSON.stringify(raw));}catch(e){return raw;}
+/* Package/project normalizer. It only repairs STRUCTURE (missing or wrong-typed fields, ids, unknown control types) and
+   throws when the data is not recognisable as a Builder project at all. It never cuts, limits or rewrites callback code. */
+function packageText(value,fallback){
+  if(typeof value==='string')return value;
+  if(typeof value==='number'&&isFinite(value))return String(value);
+  return fallback;
+}
+function packageNumber(value,fallback){
+  var n=typeof value==='string'&&value.trim()!==''?Number(value):value;
+  return typeof n==='number'&&isFinite(n)?n:fallback;
+}
+function packageState(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||!Array.isArray(raw.tabs))throw new Error('Not a Builder project');
+  var win=raw.win&&typeof raw.win==='object'&&!Array.isArray(raw.win)?raw.win:{};
+  var theme=packageText(win.theme,'default').toLowerCase();
+  var out={n:1,tab:0,notifs:[],win:{
+    name:packageText(win.name,'My Hub'),subtitle:packageText(win.subtitle,'Rayfield'),
+    theme:THEMES.indexOf(theme)>=0?theme:'default',
+    orient:win.orient==='horizontal'||win.orient==='vertical'?win.orient:(win.sidebar?'horizontal':'vertical'),
+    save:typeof win.save==='boolean'?win.save:true,file:packageText(win.file,'MyHub')
+  },tabs:[]};
+  var idMap=Object.create(null),nextId=1,skipped=0,wantedTab=Math.floor(packageNumber(raw.tab,0)),activeTab=0;
+  raw.tabs.forEach(function(tab,tabIndex){
+    if(!tab||typeof tab!=='object'||Array.isArray(tab)){skipped++;return;}
+    if(tabIndex===wantedTab)activeTab=out.tabs.length;
+    var safeTab={name:packageText(tab.name,'Tab '+(out.tabs.length+1)),icon:tabImageId(packageText(tab.icon,'')),items:[]};
+    (Array.isArray(tab.items)?tab.items:[]).forEach(function(item){
+      if(!item||typeof item!=='object'||Array.isArray(item)||!Object.prototype.hasOwnProperty.call(T,item.type)){skipped++;return;}
+      var id='i'+nextId++;
+      if(typeof item.id==='string'&&item.id)idMap[item.id]=id;
+      var defaults=T[item.type].d(),source=item.props&&typeof item.props==='object'&&!Array.isArray(item.props)?item.props:{},props={};
+      Object.keys(defaults).forEach(function(key){
+        var fallback=defaults[key],value=source[key];
+        if(key==='cb')props.cb=typeof value==='string'?value:'';   /* Lua callback text: kept exactly as it is; a missing one stays empty */
+        else if(typeof fallback==='string')props[key]=packageText(value,fallback);
+        else if(typeof fallback==='number')props[key]=packageNumber(value,fallback);
+        else if(typeof fallback==='boolean')props[key]=typeof value==='boolean'?value:fallback;
+        else props[key]=fallback;
+      });
+      if(props.color!==undefined&&!/^#[0-9a-f]{6}$/i.test(props.color))props.color=defaults.color;
+      safeTab.items.push({id:id,type:item.type,props:props});
+    });
+    out.tabs.push(safeTab);
+  });
+  if(!out.tabs.length)throw new Error('Package has no tabs');
+  out.tab=Math.max(0,Math.min(out.tabs.length-1,activeTab));
+  (Array.isArray(raw.notifs)?raw.notifs:[]).forEach(function(note){
+    if(!note||typeof note!=='object'||Array.isArray(note)){skipped++;return;}
+    var trigger=typeof note.trigger==='string'?note.trigger:'load';
+    out.notifs.push({
+      id:'i'+nextId++,kind:note.kind==='toast'?'toast':'notify',title:packageText(note.title,'Notice'),
+      content:packageText(note.content,''),duration:Math.max(0,packageNumber(note.duration,0)),
+      position:note.position==='Bottom'?'Bottom':'Top',trigger:trigger!=='load'&&trigger in idMap?idMap[trigger]:'load'
+    });
+  });
+  out.n=nextId;
+  if(skipped)console.warn('Builder package: '+skipped+' unusable entr'+(skipped===1?'y was':'ies were')+' left out.');
+  return out;
+}
+/* Warn-only scan of Lua callbacks (a heuristic, not an antivirus). It reports; it never edits or removes anything. */
+function scanLuaRisks(source){
+  var code=String(source||'').replace(/loadstring\s*\(\s*game\s*:\s*HttpGet\s*\(\s*["']https?:\/\/sirius\.menu\/(?:gen2|rayfield)["']\s*\)\s*\)\s*\(\s*\)/gi,' ');
+  code=code.replace(/"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g,'""').replace(/--\[\[[\s\S]*?\]\]/g,' ').replace(/--[^\r\n]*/g,' ');
+  var checks=[
+    {label:'dynamic code execution',pattern:/\b(?:loadstring|loadfile|dofile)\b/i},
+    {label:'executor-only APIs',pattern:/\b(?:getgenv|getrenv|getrawmetatable|setreadonly|hookfunction|newcclosure|getgc|getconnections|queue_on_teleport|firetouchinterest|fireclickdetector|VirtualInputManager|Drawing)\b/i},
+    {label:'filesystem APIs',pattern:/\b(?:writefile|appendfile|delfile|readfile|makefolder|delfolder|isfile|isfolder)\b/i},
+    {label:'network APIs',pattern:/\b(?:HttpGet|HttpPost|GetAsync|PostAsync|http_request|request)\s*\(/i}
+  ];
+  return checks.filter(function(check){return check.pattern.test(code);}).map(function(check){return check.label;});
+}
+function riskyCallbacks(state){
+  var found=[];
+  ((state&&Array.isArray(state.tabs))?state.tabs:[]).forEach(function(tab){
+    (tab&&Array.isArray(tab.items)?tab.items:[]).forEach(function(item){
+      var props=item&&item.props;
+      if(!props||typeof props.cb!=='string'||!props.cb)return;
+      var labels=scanLuaRisks(props.cb);
+      if(labels.length)found.push({tab:tab.name||'',name:props.name||item.type,labels:labels});
+    });
+  });
+  return found;
+}
+function showImportRisk(found){
+  var max=10,list=h('ul',{class:'risk-list'},found.slice(0,max).map(function(entry){
+    return h('li',null,h('bdi',null,entry.tab),' › ',h('bdi',null,entry.name));
+  }));
+  if(found.length>max)list.append(h('li',null,'… +'+(found.length-max)));
+  openModal(tr('importRiskTitle'),tr('importRisk').replace('{n}',String(found.length)),list,[modalButton(tr('close'),closeModal,true)]);
 }
 function createBuilderPackage(source,rayfieldVersion){
-  var safeState=packageState(source,false,true),payload=JSON.stringify({format:'rayfield-builder-package',packageVersion:2,rayfieldVersion:rayfieldVersion==='classic'?'classic':'gen2',state:safeState});
+  var safeState=packageState(source),payload=JSON.stringify({format:'rayfield-builder-package',packageVersion:2,rayfieldVersion:rayfieldVersion==='classic'?'classic':'gen2',state:safeState});
   return builderZipStored([{name:'manifest.txt',data:BUILDER_PACKAGE_MANIFEST},{name:'project.dat',data:payload}]);
 }
 function readBuilderPackage(buffer){
@@ -2094,15 +2261,22 @@ function readBuilderPackage(buffer){
   try{payload=raw?JSON.parse(raw):null;}catch(e){payload=null;}
   var savedVersion=payload&&payload.rayfieldVersion==='classic'?'classic':'gen2';
   if(payload&&payload.state)payload=payload.state;
-  var state=packageState(payload||{},false,true);
+  var state=packageState(payload);
   return {state:state,version:savedVersion};
 }
 function exportProject(){
   syncActiveProject();
   try{
-    var bytes=createBuilderPackage(S,version),blob=new Blob([bytes],{type:'application/zip'}),name=(S.win&&S.win.file||projectName()).replace(/[^A-Za-z0-9_-]+/g,'-')+'.RB12PK';
+    var bytes=createBuilderPackage(S,version),blob=new Blob([bytes],{type:'application/zip'}),name=exportFileBase(S.win&&S.win.file||projectName())+'.RB12PK';
     downloadExport(blob,name);
   }catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));}
+}
+/* File names for exports keep the letters of any language (é, ñ, 日本語, العربية...) and only drop what file systems reject. */
+function exportFileBase(value){
+  var s=String(value==null?'':value);
+  try{s=s.normalize('NFC');}catch(e){}
+  s=s.replace(/[\\\/:*?"<>|\u0000-\u001f\u007f]+/g,'-').replace(/\s+/g,'-').replace(/-{2,}/g,'-').replace(/^[-.]+|[-.]+$/g,'');
+  return Array.from(s).slice(0,60).join('').replace(/[-.]+$/,'')||'project';
 }
 function downloadExport(blob,name){
   function viaLink(){
@@ -2129,7 +2303,7 @@ function exportSelected(format,ids){
   var projects=loadProjects().filter(function(p){return ids.indexOf(p.id)>=0;});
   closeModal();
   function uniqueExportName(project,index,usedNames){
-    var base=String(project.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+    var base=exportFileBase(project.name||tr('untitledProject'));
     var name=base,n=2;
     while(usedNames[name.toLowerCase()])name=base+'-'+(n++);
     usedNames[name.toLowerCase()]=true;
@@ -2137,7 +2311,7 @@ function exportSelected(format,ids){
   }
   if(format==='lua'){
     if(projects.length===1){
-      var only=projects[0],onlyName=String(only.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+      var only=projects[0],onlyName=exportFileBase(only.name||tr('untitledProject'));
       var oldS=S,oldV=version;
       try{
         S=JSON.parse(JSON.stringify(only.state));version=only.version==='classic'?'classic':'gen2';
@@ -2161,7 +2335,7 @@ function exportSelected(format,ids){
     return;
   }
   if(projects.length===1){
-    var only=projects[0],onlyName=String(only.name||tr('untitledProject')).replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+    var only=projects[0],onlyName=exportFileBase(only.name||tr('untitledProject'));
     try{downloadExport(new Blob([createBuilderPackage(only.state,only.version)],{type:'application/zip'}),onlyName+'.RB12PK');}
     catch(error){console.warn('Builder package export failed:',error);toast(tr('packageExportFailed'));}
     return;
@@ -2344,6 +2518,7 @@ function importProjectFile(file){
       version=imported.version;try{localStorage.setItem(VKEY,version);}catch(e){}
       rt={};logs=[];mode='crear';minimized=false;closeHome();persist();
       toast(tr('packageImported'));
+      var risky=riskyCallbacks(S);if(risky.length)showImportRisk(risky);
     }catch(e){console.warn('Builder package import rejected:',e);toast(tr('packageInvalid'));renderHome();}
   };
   reader.onerror=function(){toast(tr('packageInvalid'));};
@@ -2789,7 +2964,7 @@ function panelCrear(){
     h('button',{class:'chip add',type:'button',onclick:addTab},icon('plus'),tr('addTab')));
   tabIn=h('input',{class:'in',id:'tabName','aria-label':tr('tabName'),value:cur.name,oninput:function(e){
     cur.name=e.target.value;var c=chips.children[S.tab];if(c)c.replaceChildren.apply(c,tabChipContents(cur,S.tab));renderPreview();persist();}});
-  tabImageIn=h('input',{class:'in',id:'tabImage',type:'text',inputmode:'numeric',autocomplete:'off','aria-label':tr('tabImage'),placeholder:'e.g. 1234567890',value:cur.icon||'',oninput:function(e){
+  tabImageIn=h('input',{class:'in',id:'tabImage',type:'text',inputmode:'numeric',autocomplete:'off','aria-label':tr('tabImage'),placeholder:tr('tabImagePlaceholder'),value:cur.icon||'',oninput:function(e){
     cur.icon=e.target.value.trim();updateTabImageUi();renderPreview();persist();}});
   tabImagePreview=h('div',{class:'tab-image-preview','aria-label':tr('tabImage')});
   tabImageError=h('div',{class:'tab-image-error',hidden:true},tr('tabImageInvalid'));
