@@ -295,6 +295,11 @@ pre.lua{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10
 [dir="rtl"] .modal-card{text-align:right}
 [dir="rtl"] .modal-choice,[dir="rtl"] .modal-languages button{text-align:right}
 .project-create-form{display:flex;flex-direction:column;gap:12px;padding:4px 0 2px}
+.project-add-card{appearance:none;font:inherit;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:165px;padding:18px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);text-align:center;transition:border-color .18s ease,background-color .18s ease,color .18s ease,transform .18s ease}
+.project-add-card .ic{width:42px;height:42px;display:inline-flex}.project-add-card .ic svg{width:100%;height:100%;stroke-width:1.4}
+.project-add-text{font-size:13px;line-height:1.5;max-width:24ch;text-wrap:balance}
+.project-add-card:hover,.project-add-card:focus-visible{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.project-add-card:active{transform:scale(.985)}
 .risk-list{margin:0 0 14px;padding-inline-start:22px;max-height:176px;overflow:auto;font-size:13px;line-height:1.7;text-align:start}
 .project-create-field{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;align-items:start!important;gap:12px!important;margin:0!important}
 .project-create-field .lbl{margin:0!important;text-align:end!important;min-height:46px;display:flex!important;align-items:center;justify-content:flex-end}
@@ -1489,6 +1494,32 @@ addTranslations('te',{importRiskTitle:'దిగుమతి చేసిన క
 addTranslations('mr',{importRiskTitle:'इम्पोर्ट केलेला कोड तपासा',importRisk:'जोखमीची Lua फंक्शन्स (executor API, loadstring, फाइल्स किंवा नेटवर्क विनंत्या) वापरणारे callback: {n}. काहीही काढले किंवा बदलले नाही. एक्सपोर्ट केलेली स्क्रिप्ट चालवण्यापूर्वी ते वाचा. ही जलद तपासणी अँटीव्हायरस नाही; तुमचा विश्वास नसलेला कोड कधीही चालवू नका.'});
 addTranslations('ta',{importRiskTitle:'இறக்குமதி செய்த குறியீட்டைச் சரிபார்க்கவும்',importRisk:'ஆபத்தான Lua செயல்பாடுகளை (executor API, loadstring, கோப்புகள் அல்லது நெட்வொர்க் கோரிக்கைகள்) பயன்படுத்தும் callback: {n}. எதுவும் நீக்கப்படவில்லை, மாற்றப்படவில்லை. ஏற்றுமதி செய்த ஸ்கிரிப்டை இயக்கும் முன் அவற்றைப் படியுங்கள். இந்த விரைவு ஸ்கேன் ஆன்டிவைரஸ் அல்ல; நீங்கள் நம்பாத குறியீட்டை ஒருபோதும் இயக்காதீர்கள்.'});
 addTranslations('pa',{importRiskTitle:'ਇੰਪੋਰਟ ਕੀਤੇ ਕੋਡ ਦੀ ਜਾਂਚ ਕਰੋ',importRisk:'ਜੋਖਮ ਵਾਲੇ Lua ਫੰਕਸ਼ਨ (executor API, loadstring, ਫ਼ਾਈਲਾਂ ਜਾਂ ਨੈੱਟਵਰਕ ਬੇਨਤੀਆਂ) ਵਰਤਣ ਵਾਲੇ callback: {n}। ਕੁਝ ਵੀ ਹਟਾਇਆ ਜਾਂ ਬਦਲਿਆ ਨਹੀਂ ਗਿਆ। ਐਕਸਪੋਰਟ ਕੀਤੀ ਸਕ੍ਰਿਪਟ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਇਨ੍ਹਾਂ ਨੂੰ ਪੜ੍ਹ ਲਓ। ਇਹ ਤੇਜ਼ ਸਕੈਨ ਐਂਟੀਵਾਇਰਸ ਨਹੀਂ ਹੈ; ਜਿਸ ਕੋਡ ’ਤੇ ਤੁਹਾਨੂੰ ਭਰੋਸਾ ਨਹੀਂ, ਉਸਨੂੰ ਕਦੇ ਨਾ ਚਲਾਓ।'});
+/* ---------- v9 strings: add-project card and popup ---------- */
+addTranslations('en',{addProjectCard:'Add a new project or import one.',addProjectTitle:'Add a project'});
+addTranslations('es',{addProjectCard:'Añade un nuevo proyecto o importa uno nuevo.',addProjectTitle:'Añadir proyecto'});
+addTranslations('ca',{addProjectCard:'Afegeix un projecte nou o importa’n un.',addProjectTitle:'Afegeix un projecte'});
+addTranslations('fr',{addProjectCard:'Ajoutez un nouveau projet ou importez-en un.',addProjectTitle:'Ajouter un projet'});
+addTranslations('de',{addProjectCard:'Füge ein neues Projekt hinzu oder importiere eines.',addProjectTitle:'Projekt hinzufügen'});
+addTranslations('pt',{addProjectCard:'Adiciona um novo projeto ou importa um.',addProjectTitle:'Adicionar projeto'});
+addTranslations('it',{addProjectCard:'Aggiungi un nuovo progetto o importane uno.',addProjectTitle:'Aggiungi un progetto'});
+addTranslations('eu',{addProjectCard:'Gehitu proiektu berri bat edo inportatu bat.',addProjectTitle:'Gehitu proiektua'});
+addTranslations('id',{addProjectCard:'Tambahkan proyek baru atau impor satu.',addProjectTitle:'Tambah proyek'});
+addTranslations('tr',{addProjectCard:'Yeni bir proje ekleyin veya bir tane içe aktarın.',addProjectTitle:'Proje ekle'});
+addTranslations('vi',{addProjectCard:'Thêm dự án mới hoặc nhập một dự án.',addProjectTitle:'Thêm dự án'});
+addTranslations('sw',{addProjectCard:'Ongeza mradi mpya au leta mmoja.',addProjectTitle:'Ongeza mradi'});
+addTranslations('ha',{addProjectCard:'Ƙara sabon project ko shigo da ɗaya.',addProjectTitle:'Ƙara project'});
+addTranslations('ko',{addProjectCard:'새 프로젝트를 추가하거나 하나를 가져오세요.',addProjectTitle:'프로젝트 추가'});
+addTranslations('ja',{addProjectCard:'新しいプロジェクトを追加するか、既存のものをインポートします。',addProjectTitle:'プロジェクトを追加'});
+addTranslations('zh',{addProjectCard:'添加新项目，或导入一个项目。',addProjectTitle:'添加项目'});
+addTranslations('ru',{addProjectCard:'Добавьте новый проект или импортируйте существующий.',addProjectTitle:'Добавить проект'});
+addTranslations('ar',{addProjectCard:'أضف مشروعًا جديدًا أو استورد مشروعًا.',addProjectTitle:'إضافة مشروع'});
+addTranslations('hi',{addProjectCard:'नया प्रोजेक्ट जोड़ें या कोई प्रोजेक्ट इम्पोर्ट करें।',addProjectTitle:'प्रोजेक्ट जोड़ें'});
+addTranslations('bn',{addProjectCard:'নতুন প্রজেক্ট যোগ করুন বা একটি ইম্পোর্ট করুন।',addProjectTitle:'প্রজেক্ট যোগ করুন'});
+addTranslations('ur',{addProjectCard:'نیا پروجیکٹ شامل کریں یا ایک درآمد کریں۔',addProjectTitle:'پروجیکٹ شامل کریں'});
+addTranslations('te',{addProjectCard:'కొత్త ప్రాజెక్ట్‌ను జోడించండి లేదా ఒకదాన్ని దిగుమతి చేయండి.',addProjectTitle:'ప్రాజెక్ట్‌ను జోడించు'});
+addTranslations('mr',{addProjectCard:'नवीन प्रोजेक्ट जोडा किंवा एक इम्पोर्ट करा.',addProjectTitle:'प्रोजेक्ट जोडा'});
+addTranslations('ta',{addProjectCard:'புதிய திட்டத்தைச் சேர்க்கவும் அல்லது ஒன்றை இறக்குமதி செய்யவும்.',addProjectTitle:'திட்டத்தைச் சேர்'});
+addTranslations('pa',{addProjectCard:'ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ ਜੋੜੋ ਜਾਂ ਇੱਕ ਇੰਪੋਰਟ ਕਰੋ।',addProjectTitle:'ਪ੍ਰੋਜੈਕਟ ਜੋੜੋ'});
 /* ---------- element catalog ---------- */
 function F(k,l,ty){return {k:k,l:l,t:ty};}
 var NM=F('name','f_name','text'),DS=F('description','f_desc','text'),CB=F('cb','f_cb','code');
@@ -1862,8 +1893,8 @@ var THEMES=['default','cobalt','ember','amethyst','frost','rose'];
 var MODES=[['crear','m_create'],['editar','m_edit'],['notify','m_notify'],['ventana','m_window'],['lua','m_lua'],['log','m_log']];
 
 /* ---------- state ---------- */
-var KEY='rfgen2-builder-v2',LKEY='rfgen2-lang',VKEY='rfgen2-version',PROJECTS_KEY='rfgen2-projects',ACTIVE_PROJECT_KEY='rfgen2-active-project',WELCOME_KEY='rfgen2-welcome-seen';
-var S,version='gen2',rt={},logs=[],mode='crear',unseen=0,minimized=false,minimizeTimer=null,minimizeFrame=null,capture=null,saveT=null,toastT=null,previewScale=1,previewZoomMin=.5,previewZoomMax=1.5,previewOffsetX=0,previewOffsetY=0,previewDrag=null,activeProjectId=null,homeOpen=false,versionSwitchTimer=null,versionConfirmReturn=null,uiAudioContext=null,uiAudioUnavailable=false;
+var KEY='rfgen2-builder-v2',LKEY='rfgen2-lang',VKEY='rfgen2-version',PROJECTS_KEY='rfgen2-projects',ACTIVE_PROJECT_KEY='rfgen2-active-project',WELCOME_KEY='rfgen2-welcome-seen',NOPROJ_KEY='rfgen2-no-projects';
+var S,version='gen2',rt={},logs=[],mode='crear',unseen=0,minimized=false,minimizeTimer=null,minimizeFrame=null,capture=null,saveT=null,toastT=null,previewScale=1,previewZoomMin=.5,previewZoomMax=1.5,previewOffsetX=0,previewOffsetY=0,previewDrag=null,activeProjectId=null,detached=false,homeOpen=false,versionSwitchTimer=null,versionConfirmReturn=null,uiAudioContext=null,uiAudioUnavailable=false;
 function playUiSfx(kind){
   if(uiAudioUnavailable)return;
   var AudioContextType=window.AudioContext||window.webkitAudioContext;
@@ -1953,14 +1984,15 @@ function load(){
   try{var l=localStorage.getItem(LKEY);if(l&&D[l])lang=l;}catch(e){}
   try{var v=localStorage.getItem(VKEY);if(v==='gen2'||v==='classic')version=v;}catch(e){}
   try{var r=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(restoreState(r))return true;}catch(e){}
+    if(restoreState(r)){attachProject();return true;}}catch(e){}
   var projects=loadProjects(),project=projects.find(function(p){return p.id===activeProjectId;})||projects[0];
   if(project&&restoreState(project.state)){
     activeProjectId=project.id;version=project.version==='classic'?'classic':'gen2';
     try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);localStorage.setItem(VKEY,version);}catch(e){}
-    return true;
+    attachProject();return true;
   }
   blank();
+  try{if(localStorage.getItem(NOPROJ_KEY)==='1')detached=true;}catch(e){}
   return false;
 }
 function projectName(){return (S&&S.win&&S.win.name)||tr('untitledProject');}
@@ -1970,8 +2002,9 @@ function loadProjects(){
 function saveProjects(projects){
   try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(projects));}catch(e){}
 }
+function attachProject(){detached=false;try{localStorage.removeItem(NOPROJ_KEY);}catch(e){}}
 function syncActiveProject(){
-  if(!S)return;
+  if(!S||detached)return;
   var projects=loadProjects();
   if(!activeProjectId){activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}}
   var i=projects.findIndex(function(p){return p.id===activeProjectId;});
@@ -1980,16 +2013,14 @@ function syncActiveProject(){
   if(i>=0)projects[i]=project;else projects.unshift(project);
   saveProjects(projects);
 }
-function persist(){clearTimeout(saveT);saveT=setTimeout(function(){try{localStorage.setItem(KEY,JSON.stringify(S));syncActiveProject();}catch(e){}},300);}
+function persist(){clearTimeout(saveT);if(detached)return;saveT=setTimeout(function(){if(detached)return;try{localStorage.setItem(KEY,JSON.stringify(S));syncActiveProject();}catch(e){}},300);}
 function renderHome(){
   var home=$('#homeView');
   var projects=loadProjects();
   var head=h('div',{class:'home-head'},
     h('h2',null,tr('projectHome')),
     h('div',{class:'home-actions'},
-      h('button',{class:'btn primary',type:'button',onclick:newProject},tr('newProject')),
-      h('button',{class:'btn',type:'button',onclick:function(){var input=$('#projectImport');if(input)input.click();}},tr('importProject')),
-      h('button',{class:'btn',type:'button',onclick:showExportMenu},tr('exportProject'))));
+      h('button',{class:'btn',type:'button',disabled:!projects.length,onclick:showExportMenu},tr('exportProject'))));
   var cards=projects.map(function(p,index){
     var date='';if(p.updatedAt){try{date=new Date(p.updatedAt).toLocaleString(lang);}catch(e){date=new Date(p.updatedAt).toLocaleString();}}
     return h('article',{class:'project-card',style:'--project-enter-delay:'+(360+index*70)+'ms'},
@@ -2000,8 +2031,16 @@ function renderHome(){
         h('button',{class:'btn sm',type:'button',onclick:function(){renameProject(p.id);}},tr('renameProject')),
         h('button',{class:'btn sm danger',type:'button',onclick:function(){deleteProject(p.id);}},tr('deleteProject'))));
   });
-  if(!cards.length)cards=[h('div',{class:'empty'},tr('untitledProject'))];
+  cards.push(h('button',{class:'project-add-card',type:'button',style:'--project-enter-delay:'+(360+cards.length*70)+'ms',onclick:showAddProject},
+    icon('plus'),h('span',{class:'project-add-text'},tr('addProjectCard'))));
   home.replaceChildren(head,h('div',{class:'project-grid'},cards));
+}
+function showAddProject(){
+  playUiSfx('popup');
+  var choices=h('div',{class:'modal-choices'},
+    h('button',{class:'modal-choice',type:'button',onclick:function(){closeModal();newProject();}},tr('newProject')),
+    h('button',{class:'modal-choice',type:'button',onclick:function(){closeModal();var input=$('#projectImport');if(input)input.click();}},tr('importProject')));
+  openModal(tr('addProjectTitle'),'',choices,[modalButton(tr('cancel'),closeModal)]);
 }
 function openHome(){
   syncActiveProject();homeOpen=true;$('#copyTop').hidden=true;$('header.top').classList.remove('project-editor');$('#homeView').classList.remove('hidden');$('.app').classList.add('hidden');window.scrollTo(0,0);renderHome();
@@ -2052,6 +2091,7 @@ function newProject(){
     version=selectedVersion;try{localStorage.setItem(VKEY,version);}catch(e){}
     blank();S.win.name=title;S.win.subtitle=subtitle||(selectedVersion==='classic'?'Rayfield':'Rayfield Gen2');S.win.file=title.replace(/[^A-Za-z0-9_-]+/g,'')||'MyHub';
     activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
+    attachProject();
     logs=[];rt={};mode='crear';minimized=false;closeHome();persist();
   },true);
   openModal(tr('newProjectTitle'),tr('newProjectBody'),content,[modalButton(tr('cancel'),closeModal),createButton]);
@@ -2060,7 +2100,7 @@ function openProject(id){
   syncActiveProject();var project=loadProjects().find(function(p){return p.id===id;});
   if(!project||!project.state)return;
   cancelPreviewMinimize();
-  activeProjectId=id;try{localStorage.setItem(ACTIVE_PROJECT_KEY,id);}catch(e){}
+  attachProject();activeProjectId=id;try{localStorage.setItem(ACTIVE_PROJECT_KEY,id);}catch(e){}
   S=JSON.parse(JSON.stringify(project.state));S.tab=Math.min(S.tab||0,S.tabs.length-1);S.sel=null;S.notifs=Array.isArray(S.notifs)?S.notifs:[];
   version=project.version==='classic'?'classic':'gen2';try{localStorage.setItem(VKEY,version);}catch(e){}
   rt={};logs=[];mode='crear';minimized=false;closeHome(true);persist();
@@ -2092,7 +2132,11 @@ function renameProject(id){
 }
 function deleteProject(id){
   var projects=loadProjects().filter(function(p){return p.id!==id;});saveProjects(projects);
-  if(activeProjectId===id){activeProjectId=null;try{localStorage.removeItem(ACTIVE_PROJECT_KEY);}catch(e){}syncActiveProject();}
+  if(activeProjectId===id){
+    /* The project that is open in memory was deleted: detach it so nothing saves it again, now or after a reload. */
+    clearTimeout(saveT);activeProjectId=null;detached=true;
+    try{localStorage.removeItem(ACTIVE_PROJECT_KEY);localStorage.removeItem(KEY);localStorage.setItem(NOPROJ_KEY,'1');}catch(e){}
+  }
   renderHome();
 }
 var BUILDER_PACKAGE_MANIFEST_V1='Rayfield Builder Package\nformat=rb12pk\nversion=1\nstate=project.dat\ncallbacks=excluded\n';
@@ -2513,7 +2557,7 @@ function importProjectFile(file){
     try{
       var imported=readBuilderPackage(reader.result);
       cancelPreviewMinimize();
-      syncActiveProject();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
+      syncActiveProject();attachProject();activeProjectId='p'+Date.now().toString(36);try{localStorage.setItem(ACTIVE_PROJECT_KEY,activeProjectId);}catch(e){}
       S=imported.state;S.sel=null;
       version=imported.version;try{localStorage.setItem(VKEY,version);}catch(e){}
       rt={};logs=[];mode='crear';minimized=false;closeHome();persist();
